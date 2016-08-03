@@ -1,0 +1,2 @@
+/mnt/hgfs/github/jacServer/jacServer/cmake/CMakeFiles/jacClient.dir
+/mnt/hgfs/github/jacServer/jacServer/cmake/CMakeFiles/jacServer.dir
