@@ -17,6 +17,7 @@
 
 #include "MsgTypeDef.h"
 #include "tools.h"
+#include "gateway.h"
 
 using namespace muduo;
 using namespace muduo::net;
@@ -71,6 +72,11 @@ class JacServer
   //临时存放 目标地址
   UINT16 m_destAddr;
   UINT16 m_iSendNo;
+
+  // tmp
+  // std::vector<UINT16> m_vNodes;
+  // std::map<std::string,gateway> m_mGateways;
+  gateway* m_curGateway;
 
 };
 
@@ -145,18 +151,41 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
 
 void JacServer::onTimer()
 {
-  //LOG_INFO << "I am a timer;  i was called!";
+  Buffer tBuf;
+  UINT16 msgLen = 0;
 
-  if (connections_.size() == 0)
+  if (m_curGateway == NULL)
   {
-    // LOG_INFO << "no connection now!";
+    return;
+  }
+
+  //循环设置已经注册的节点
+  if (m_curGateway->getNodeSize() == 0 )
+  {
+    LOG_INFO << "no node registed now!";
     loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
     return;
   }
-  
-  Buffer tBuf;
+  else
+  {
+    msgLen = sizeof(ModifyGateWayDestAddr);
+    ModifyGateWayDestAddr* stuModifyGateWayDestAddr = (ModifyGateWayDestAddr*)new char(msgLen);
+    stuModifyGateWayDestAddr->protocolTag1 = 0xDE;
+    stuModifyGateWayDestAddr->protocolTag2 = 0xDF;
+    stuModifyGateWayDestAddr->protocolTag3 = 0xEF;
+    stuModifyGateWayDestAddr->funcCode = 0xD2;
+    stuModifyGateWayDestAddr->addr = m_curGateway->getCurNode()->addr;
+
+    tBuf.append(stuModifyGateWayDestAddr,msgLen);
+
+    sendAll(&tBuf);   // need modify
+
+  }
+
+
+  ////////////////////////////////////////
+
   UINT16 tmpCrc=0;
-  UINT16 msgLen = 0;
   UINT8  tmpCmd = getSendCmd();
   UINT16 tmpNo = getMsgSerialNo();
   LOG_INFO << "onTimer: cmd＝"<< tmpCmd;
@@ -165,7 +194,7 @@ void JacServer::onTimer()
   if(tmpCmd == MSG_GETPRODUCTION )
   {
     msgLen = sizeof(MSG_GetProduction);
-    MSG_GetProduction* stuGetProduction = (MSG_GetProduction*)new char[sizeof(MSG_GetProduction)];
+    MSG_GetProduction* stuGetProduction = (MSG_GetProduction*)new char[msgLen];
 
     stuGetProduction->header.Sof=COM_FRM_HEAD;
     stuGetProduction->header.MsgType = MSG_GETPRODUCTION;
@@ -490,10 +519,38 @@ void JacServer::sendReplyAck(TcpConnection* conn, pMSG_Header srcheader,UINT8 AC
 void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time)
 {
   
-  // LOG_INFO << "readableBytes length = " << buf->readableBytes();
+  LOG_INFO << "readableBytes length = " << buf->readableBytes();
 
    MSG_Header* tHeader = (MSG_Header*) new char[sizeof(MSG_Header)];
    UINT8 tmpAckCode;
+
+   if (buf->readableBytes() >= sizeof(RspAck))
+   {
+     pRspAck tmpAck = (pRspAck) new char[sizeof(RspAck)];
+     if ((tmpAck->protocolTag1 == 0xDE)
+      && (tmpAck->protocolTag2 == 0xDF)
+    && (tmpAck->protocolTag3 == 0xEF)
+    && (tmpAck->funcCode == 0xD2 ))
+     {
+       //处理修改目标节点命令反馈
+      if (tmpAck->ackCode == 0x00)
+      {
+        LOG_INFO << "---------modify dest node success!-------";
+        m_curGateway->setCurOperatorType(SEND_MESSAGE);
+        loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
+
+      }
+      else
+      {
+        LOG_INFO << "---------modify dest node failed!-------";
+        loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
+      }
+
+     }
+     
+     buf->retrieve(sizeof(RspAck));
+     return;
+   }
 
    if (buf->readableBytes() >= sizeof(MSG_Header))
    {
@@ -502,22 +559,6 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
     LOG_INFO << "MsgType: " << tHeader->MsgType;
     //cout << "msgtype:" <<hex<<tHeader<<endl;
-
-    // out hex
-//     std::stringstream ss;
-// for(int i=0; i<data_length; ++i)
-//     ss << std::hex << (int)data[i];
-// std::string mystr = ss.str();
-    // std::stringstream ss;
-    // int data_length = sizeof(MSG_Header);
-    // for (int j = 0; j < data_length; ++j)
-    // {
-    //   ss << std::hex << (int)tHeader[j];
-    // }
-
-    // LOG_INFO <<"MSG_Header: "<< ss.str();
-
-
   
     if (tHeader->MsgType == MSG_LOGIN)
     {
@@ -527,14 +568,6 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
         buf->retrieve(buf->readableBytes());
         return;
       }
-
-      // int iLen = buf->readableBytes();
-      // LOG_INFO << "data_len: " << iLen;
-      // for (int i = 0; i < iLen; ++i)
-      // {
-      //    printf("%02X ", buf->peek()[i]);
-      // }
-      // printf("\n");
 
        // MSG_Login
        MSG_Login* stuBody = (MSG_Login*)const_cast<char*>(buf->peek());
@@ -549,15 +582,16 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
          m_destAddr = Tranverse16(stuBody->header.srcAddr);
        }
 
-       LOG_INFO << "srcAddr: " << Tranverse16(stuBody->header.srcAddr);
+       LOG_INFO << "-------------------srcAddr: " << Tranverse16(stuBody->header.srcAddr);
+
        LOG_INFO << "destAddr: " << Tranverse16(stuBody->header.destAddr);
        LOG_INFO << "length: " << Tranverse16(stuBody->header.length);
-       LOG_INFO << "+++++++++serialNo: " << Tranverse16(stuBody->header.serialNo);
-       LOG_INFO << "++++++++++replyNo: " << Tranverse16(stuBody->header.replyNo);
+       LOG_INFO << "serialNo: " << Tranverse16(stuBody->header.serialNo);
+       LOG_INFO << "replyNo: " << Tranverse16(stuBody->header.replyNo);
        LOG_INFO << "crc16: " << stuBody->header.crc16;
 
        LOG_INFO << "protocolVersion: " << Tranverse16(stuBody->protocolVersion);
-       LOG_INFO << " StringLen: " << Tranverse16(stuBody->StringLen);
+       // LOG_INFO << " StringLen: " << Tranverse16(stuBody->StringLen);
        LOG_INFO << "gatewayId: " << stuBody->gatewayId;
 
        //报文合法性校验
@@ -578,12 +612,32 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
          tmpAckCode = ACK_MSG_ERROR;
          LOG_INFO << "ACK_MSG_ERROR";
        }
+       
+       // 节点注册成功
+       if (tmpAckCode == ACK_OK)
+       {
+         if (m_curGateway == NULL)
+         {
+           m_curGateway = new gateway();
+         }
+         m_curGateway->setName(stuBody->gatewayId);
+
+         pINFO_Node tmpNode = new INFO_Node();      // when to free pointer?
+         tmpNode->addr = (stuBody->header.srcAddr);
+
+         m_curGateway->insertNode(tmpNode);
+
+       }
 
        buf->retrieve(sizeof(MSG_Login));       
 
         connections_.insert(conn);
        sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
     }
+    // else if (/* condition */) // process the rsp ack ,modify the current node addr
+    // {
+    //   /* code */
+    // }
     else if (tHeader->MsgType == MSG_LOGOUT)
     {
       if(buf->readableBytes() < sizeof(MSG_Logout))

@@ -11,7 +11,7 @@
 #include <iostream>
 #include <stdio.h>
 
-#include "MsgTypeDef.h"
+// #include "MsgTypeDef.h"
 
 using namespace muduo;
 using namespace muduo::net;
@@ -53,48 +53,48 @@ struct teststu{
       // xuyao wanshan
       //codec_.send(get_pointer(connection_), message);
 
-      Buffer buf;
+    //   Buffer buf;
 
-      MSG_Login* stuLogin = (MSG_Login*)new char[sizeof(MSG_Login)];
+    //   MSG_Login* stuLogin = (MSG_Login*)new char[sizeof(MSG_Login)];
 
-      // MSG_Header* const tHeader = (MSG_Header*)(stuLogin->header);
-      stuLogin->header.Sof=COM_FRM_HEAD;
-      stuLogin->header.MsgType = MSG_LOGIN;
-      stuLogin->header.srcAddr = 10;
-      stuLogin->header.destAddr = 0;
-      stuLogin->header.length = 100;
-      stuLogin->header.serialNo = 1;
-      stuLogin->header.replyNo = 2;
-      stuLogin->header.crc16 = 165;
+    //   // MSG_Header* const tHeader = (MSG_Header*)(stuLogin->header);
+    //   stuLogin->header.Sof=COM_FRM_HEAD;
+    //   stuLogin->header.MsgType = MSG_LOGIN;
+    //   stuLogin->header.srcAddr = 10;
+    //   stuLogin->header.destAddr = 0;
+    //   stuLogin->header.length = 100;
+    //   stuLogin->header.serialNo = 1;
+    //   stuLogin->header.replyNo = 2;
+    //   stuLogin->header.crc16 = 165;
 
-     // stuLogin->header = tHeader;
-      // memcpy(stuLogin->header,tHeader,sizeof(MSG_Header));
-      stuLogin->protocolVersion = 102;
+    //  // stuLogin->header = tHeader;
+    //   // memcpy(stuLogin->header,tHeader,sizeof(MSG_Header));
+    //   stuLogin->protocolVersion = 102;
 
-      // char* strtmp = "fdasfda";
-      // stuLogin.gatewayId = const_cast<char*>(strtmp);
+    //   // char* strtmp = "fdasfda";
+    //   // stuLogin.gatewayId = const_cast<char*>(strtmp);
       
-      strcpy(stuLogin->gatewayId,"test10id");
+    //   strcpy(stuLogin->gatewayId,"test10id");
 
 
-      // char* tmpBuf = new char[sizeof(MSG_Login)];
+    //   // char* tmpBuf = new char[sizeof(MSG_Login)];
 
-      // memcpy(tmpBuf,stuLogin,sizeof(MSG_Login));
+    //   // memcpy(tmpBuf,stuLogin,sizeof(MSG_Login));
 
       
-      LOG_INFO<< "stuLogin->gatewayId: "<< stuLogin->gatewayId;
+    //   LOG_INFO<< "stuLogin->gatewayId: "<< stuLogin->gatewayId;
 
-    buf.append(stuLogin, sizeof(MSG_Login));
+    // buf.append(stuLogin, sizeof(MSG_Login));
 
 
-    // int32_t len = static_cast<int32_t>(message.size());
-    // int32_t be32 = muduo::net::sockets::hostToNetwork32(len);
-    //buf.prepend(&be32, sizeof be32);
+    // // int32_t len = static_cast<int32_t>(message.size());
+    // // int32_t be32 = muduo::net::sockets::hostToNetwork32(len);
+    // //buf.prepend(&be32, sizeof be32);
 
-      LOG_INFO << "length of MSG_Login " << sizeof(MSG_Login);
-      LOG_INFO << "send buf: "<< buf.readableBytes();
+    //   LOG_INFO << "length of MSG_Login " << sizeof(MSG_Login);
+    //   LOG_INFO << "send buf: "<< buf.readableBytes();
 
-      connection_->send(&buf);
+    //   connection_->send(&buf);
 
     }
   }
