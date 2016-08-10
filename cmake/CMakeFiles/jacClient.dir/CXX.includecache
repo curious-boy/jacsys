@@ -180,11 +180,7 @@ boost/scoped_ptr.hpp
 boost/shared_ptr.hpp
 -
 
-/mnt/hgfs/github/jacServer/jacServer/src/MsgTypeDef.h
-preDef.h
-/mnt/hgfs/github/jacServer/jacServer/src/preDef.h
-
-/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc
+/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc
 muduo/base/Logging.h
 -
 muduo/base/Mutex.h
@@ -201,8 +197,4 @@ iostream
 -
 stdio.h
 -
-MsgTypeDef.h
-/mnt/hgfs/github/jacServer/jacServer/src/MsgTypeDef.h
-
-/mnt/hgfs/github/jacServer/jacServer/src/preDef.h
 

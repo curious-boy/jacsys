@@ -258,11 +258,25 @@ boost/shared_ptr.hpp
 muduo/base/copyable.h
 -
 
-/mnt/hgfs/github/jacServer/jacServer/src/MsgTypeDef.h
+/mnt/hgfs/github/jacServer/jacsys/src/MsgTypeDef.h
 preDef.h
-/mnt/hgfs/github/jacServer/jacServer/src/preDef.h
+/mnt/hgfs/github/jacServer/jacsys/src/preDef.h
 
-/mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc
+/mnt/hgfs/github/jacServer/jacsys/src/StuDef.h
+preDef.h
+/mnt/hgfs/github/jacServer/jacsys/src/preDef.h
+
+/mnt/hgfs/github/jacServer/jacsys/src/gateway.h
+StuDef.h
+/mnt/hgfs/github/jacServer/jacsys/src/StuDef.h
+string
+-
+muduo/base/AsyncLogging.h
+-
+muduo/base/Logging.h
+-
+
+/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc
 muduo/net/TcpServer.h
 -
 muduo/base/AsyncLogging.h
@@ -288,11 +302,13 @@ unistd.h
 sstream
 -
 MsgTypeDef.h
-/mnt/hgfs/github/jacServer/jacServer/src/MsgTypeDef.h
+/mnt/hgfs/github/jacServer/jacsys/src/MsgTypeDef.h
 tools.h
-/mnt/hgfs/github/jacServer/jacServer/src/tools.h
+/mnt/hgfs/github/jacServer/jacsys/src/tools.h
+gateway.h
+/mnt/hgfs/github/jacServer/jacsys/src/gateway.h
 
-/mnt/hgfs/github/jacServer/jacServer/src/preDef.h
+/mnt/hgfs/github/jacServer/jacsys/src/preDef.h
 
-/mnt/hgfs/github/jacServer/jacServer/src/tools.h
+/mnt/hgfs/github/jacServer/jacsys/src/tools.h
 

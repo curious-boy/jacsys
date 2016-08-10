@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/hgfs/github/jacServer/jacServer/cmake
+CMAKE_SOURCE_DIR = /mnt/hgfs/github/jacServer/jacsys/cmake
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/hgfs/github/jacServer/jacServer/cmake
+CMAKE_BINARY_DIR = /mnt/hgfs/github/jacServer/jacsys/cmake
 
 # Include any dependencies generated for this target.
 include CMakeFiles/jacClient.dir/depend.make
@@ -49,37 +49,37 @@ include CMakeFiles/jacClient.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/jacClient.dir/flags.make
 
-CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o: CMakeFiles/jacClient.dir/flags.make
-CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o: /mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /mnt/hgfs/github/jacServer/jacServer/cmake/CMakeFiles $(CMAKE_PROGRESS_1)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o"
-	g++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o -c /mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc
+CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o: CMakeFiles/jacClient.dir/flags.make
+CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o: /mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc
+	$(CMAKE_COMMAND) -E cmake_progress_report /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles $(CMAKE_PROGRESS_1)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o"
+	g++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o -c /mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc
 
-CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.i"
-	g++  $(CXX_DEFINES) $(CXX_FLAGS) -E /mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc > CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.i
+CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.i"
+	g++  $(CXX_DEFINES) $(CXX_FLAGS) -E /mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc > CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.i
 
-CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.s"
-	g++  $(CXX_DEFINES) $(CXX_FLAGS) -S /mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc -o CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.s
+CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.s"
+	g++  $(CXX_DEFINES) $(CXX_FLAGS) -S /mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc -o CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.s
 
-CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o.requires:
-.PHONY : CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o.requires
+CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o.requires:
+.PHONY : CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o.requires
 
-CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o.provides: CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o.requires
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o.provides.build
-.PHONY : CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o.provides
+CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o.provides: CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o.requires
+	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o.provides.build
+.PHONY : CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o.provides
 
-CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o.provides.build: CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o
+CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o.provides.build: CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o
 
 # Object files for target jacClient
 jacClient_OBJECTS = \
-"CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o"
+"CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o"
 
 # External object files for target jacClient
 jacClient_EXTERNAL_OBJECTS =
 
-bin/jacClient: CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o
+bin/jacClient: CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o
 bin/jacClient: CMakeFiles/jacClient.dir/build.make
 bin/jacClient: /mnt/hgfs/github/jacServer/build/release-install/lib/libmuduo_net.a
 bin/jacClient: /mnt/hgfs/github/jacServer/build/release-install/lib/libmuduo_base.a
@@ -91,7 +91,7 @@ bin/jacClient: CMakeFiles/jacClient.dir/link.txt
 CMakeFiles/jacClient.dir/build: bin/jacClient
 .PHONY : CMakeFiles/jacClient.dir/build
 
-CMakeFiles/jacClient.dir/requires: CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o.requires
+CMakeFiles/jacClient.dir/requires: CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o.requires
 .PHONY : CMakeFiles/jacClient.dir/requires
 
 CMakeFiles/jacClient.dir/clean:
@@ -99,6 +99,6 @@ CMakeFiles/jacClient.dir/clean:
 .PHONY : CMakeFiles/jacClient.dir/clean
 
 CMakeFiles/jacClient.dir/depend:
-	cd /mnt/hgfs/github/jacServer/jacServer/cmake && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/hgfs/github/jacServer/jacServer/cmake /mnt/hgfs/github/jacServer/jacServer/cmake /mnt/hgfs/github/jacServer/jacServer/cmake /mnt/hgfs/github/jacServer/jacServer/cmake /mnt/hgfs/github/jacServer/jacServer/cmake/CMakeFiles/jacClient.dir/DependInfo.cmake --color=$(COLOR)
+	cd /mnt/hgfs/github/jacServer/jacsys/cmake && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/hgfs/github/jacServer/jacsys/cmake /mnt/hgfs/github/jacServer/jacsys/cmake /mnt/hgfs/github/jacServer/jacsys/cmake /mnt/hgfs/github/jacServer/jacsys/cmake /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles/jacClient.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/jacClient.dir/depend
 

@@ -60,6 +60,8 @@ class JacServer
 
   UINT8  getSendCmd();
 
+  void modifyDestAddr(UINT16 addr);
+
 
   typedef std::set<TcpConnectionPtr> ConnectionList;
   EventLoop* loop_;
@@ -138,14 +140,14 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
             << conn->localAddress().toIpPort() << " is "
             << (conn->connected() ? "UP" : "DOWN");
 
-  // if (conn->connected())
-  //   {
-  //     connections_.insert(conn);
-  //   }
-  //   else
-  //   {
-  //     connections_.erase(conn);
-  //   }
+  if (conn->connected())
+    {
+      connections_.insert(conn);
+    }
+    else
+    {
+      connections_.erase(conn);
+    }
 
 }
 
@@ -156,6 +158,7 @@ void JacServer::onTimer()
 
   if (m_curGateway == NULL)
   {
+    loop_->runAfter(3, boost::bind(&JacServer::onTimer, this));
     return;
   }
 
@@ -166,301 +169,250 @@ void JacServer::onTimer()
     loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
     return;
   }
-  else
+  else if (m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
   {
+    LOG_INFO << "^^^^^^^^^^^^^^^^^^ send cmd MODIFY_DEST_NODE";
     msgLen = sizeof(ModifyGateWayDestAddr);
     ModifyGateWayDestAddr* stuModifyGateWayDestAddr = (ModifyGateWayDestAddr*)new char(msgLen);
     stuModifyGateWayDestAddr->protocolTag1 = 0xDE;
     stuModifyGateWayDestAddr->protocolTag2 = 0xDF;
     stuModifyGateWayDestAddr->protocolTag3 = 0xEF;
     stuModifyGateWayDestAddr->funcCode = 0xD2;
-    stuModifyGateWayDestAddr->addr = m_curGateway->getCurNode()->addr;
 
+    UINT16 destAddr = m_curGateway->getNextNode()->addr;    // getNextNode不要重复调用
+    LOG_INFO << "^^^^^^^^^^^^^^^^^^ send modify dest node, addr = " << destAddr;
+    stuModifyGateWayDestAddr->addr = destAddr;
+    
     tBuf.append(stuModifyGateWayDestAddr,msgLen);
 
     sendAll(&tBuf);   // need modify
-
+    return;
   }
-
-
-  ////////////////////////////////////////
-
-  UINT16 tmpCrc=0;
-  UINT8  tmpCmd = getSendCmd();
-  UINT16 tmpNo = getMsgSerialNo();
-  LOG_INFO << "onTimer: cmd＝"<< tmpCmd;
-  LOG_INFO << "onTimer: tmpNo=" <<tmpNo;
-
-  if(tmpCmd == MSG_GETPRODUCTION )
+  else
   {
-    msgLen = sizeof(MSG_GetProduction);
-    MSG_GetProduction* stuGetProduction = (MSG_GetProduction*)new char[msgLen];
+    UINT16 tmpCrc=0;
+    UINT8  tmpCmd = getSendCmd();
+    UINT16 tmpNo = getMsgSerialNo();
+    LOG_INFO << "onTimer: cmd＝"<< tmpCmd;
+    LOG_INFO << "onTimer: tmpNo=" <<tmpNo;
 
-    stuGetProduction->header.Sof=COM_FRM_HEAD;
-    stuGetProduction->header.MsgType = MSG_GETPRODUCTION;
-    stuGetProduction->header.srcAddr = (m_localAddr);
-    stuGetProduction->header.destAddr = Tranverse16(m_destAddr);
-    stuGetProduction->header.length = Tranverse16(msgLen) ;
-    stuGetProduction->header.serialNo = Tranverse16(tmpNo);
-    stuGetProduction->header.replyNo = 0;
-    stuGetProduction->header.crc16 = 0;
-    stuGetProduction->Eof = COM_FRM_END;
+    if(tmpCmd == MSG_GETPRODUCTION )
+    {
+      msgLen = sizeof(MSG_GetProduction);
+      MSG_GetProduction* stuGetProduction = (MSG_GetProduction*)new char[msgLen];
 
-    tmpCrc = CalcCRC16(0,&stuGetProduction->header.Sof,msgLen);
-    stuGetProduction->header.crc16 = Tranverse16(tmpCrc);
+      stuGetProduction->header.Sof=COM_FRM_HEAD;
+      stuGetProduction->header.MsgType = MSG_GETPRODUCTION;
+      stuGetProduction->header.srcAddr = (m_localAddr);
+      stuGetProduction->header.destAddr = Tranverse16(m_destAddr);
+      stuGetProduction->header.length = Tranverse16(msgLen) ;
+      stuGetProduction->header.serialNo = Tranverse16(tmpNo);
+      stuGetProduction->header.replyNo = 0;
+      stuGetProduction->header.crc16 = 0;
+      stuGetProduction->Eof = COM_FRM_END;
 
-    tBuf.append(stuGetProduction, msgLen);
+      tmpCrc = CalcCRC16(0,&stuGetProduction->header.Sof,msgLen);
+      stuGetProduction->header.crc16 = Tranverse16(tmpCrc);
+
+      tBuf.append(stuGetProduction, msgLen);
+    }
+    else if( tmpCmd == MSG_SETMACINFO)
+    {
+      //#define MSG_SETMACINFO           0X40  //设置机器信息
+      msgLen = sizeof(MSG_MacInfo);
+      MSG_MacInfo* stuSetMacInfo = (MSG_MacInfo*)new char[sizeof(MSG_MacInfo)];
+
+      stuSetMacInfo->header.Sof=COM_FRM_HEAD;
+      stuSetMacInfo->header.MsgType = MSG_SETMACINFO;
+      stuSetMacInfo->header.srcAddr = (m_localAddr);
+      stuSetMacInfo->header.destAddr = Tranverse16(m_destAddr);
+      stuSetMacInfo->header.length = Tranverse16(msgLen) ;
+      stuSetMacInfo->header.serialNo = Tranverse16(tmpNo);
+      stuSetMacInfo->header.replyNo = 0;
+      stuSetMacInfo->header.crc16 = 0;
+
+      stuSetMacInfo->Row = 2;
+      stuSetMacInfo->Col = 3;
+      stuSetMacInfo->WeftDensity = Tranverse16(0x01);
+      stuSetMacInfo->OpeningDegree = Tranverse16(0x01);
+      stuSetMacInfo->OutNum = 5;
+      stuSetMacInfo->Installation = 01;
+      stuSetMacInfo->CardSlot = 1;
+      stuSetMacInfo->Eof = COM_FRM_END;
+
+      tmpCrc = CalcCRC16(0,&stuSetMacInfo->header.Sof,msgLen);
+      stuSetMacInfo->header.crc16 = Tranverse16(tmpCrc);
+
+      tBuf.append(stuSetMacInfo, msgLen);
+    }
+    else if (tmpCmd == MSG_GETMACINFO)
+    {
+        // #define MSG_GETMACINFO        0X43  //获取机器信息
+      msgLen = sizeof(MSG_GetMacInfo);
+      MSG_GetMacInfo* stuGetMacInfo = (MSG_GetMacInfo*)new char[sizeof(MSG_GetMacInfo)];
+
+      stuGetMacInfo->header.Sof=COM_FRM_HEAD;
+      stuGetMacInfo->header.MsgType = MSG_GETMACINFO;
+      stuGetMacInfo->header.srcAddr = (m_localAddr);
+      stuGetMacInfo->header.destAddr = Tranverse16(m_destAddr);
+      stuGetMacInfo->header.length = Tranverse16(msgLen) ;
+      stuGetMacInfo->header.serialNo = Tranverse16(tmpNo);
+      stuGetMacInfo->header.replyNo = 0;
+      stuGetMacInfo->header.crc16 = 0;
+      stuGetMacInfo->Eof = COM_FRM_END;
+
+      tmpCrc = CalcCRC16(0,&stuGetMacInfo->header.Sof,msgLen);
+      stuGetMacInfo->header.crc16 = Tranverse16(tmpCrc);
+
+      tBuf.append(stuGetMacInfo, msgLen);
+    }
+    else if( tmpCmd == MSG_GETTASKINFO)
+    {
+        // #define MSG_GETTASKINFO       0X44  //获取生产任务
+
+      msgLen = sizeof(MSG_GetTaskInfo);
+      MSG_GetTaskInfo* stuGetTaskInfo = (MSG_GetTaskInfo*)new char[sizeof(MSG_GetTaskInfo)];
+
+      stuGetTaskInfo->header.Sof=COM_FRM_HEAD;
+      stuGetTaskInfo->header.MsgType = MSG_GETTASKINFO;
+      stuGetTaskInfo->header.srcAddr = (m_localAddr);
+      stuGetTaskInfo->header.destAddr = Tranverse16(m_destAddr);
+      stuGetTaskInfo->header.length = Tranverse16(msgLen) ;
+      stuGetTaskInfo->header.serialNo = Tranverse16(tmpNo);
+      stuGetTaskInfo->header.replyNo = 0;
+      stuGetTaskInfo->header.crc16 = 0;
+      stuGetTaskInfo->Eof = COM_FRM_END;
+
+      tmpCrc = CalcCRC16(0,&stuGetTaskInfo->header.Sof,msgLen);
+      stuGetTaskInfo->header.crc16 = Tranverse16(tmpCrc);
+
+      tBuf.append(stuGetTaskInfo, msgLen);
+    }
+
+    else if(tmpCmd == MSG_GETFIRMWAREINFO)
+    {
+        // #define MSG_GETFIRMWAREINFO   0X46  //获取固件信息等
+      msgLen = sizeof(MSG_GetFirmWareInfo);
+      MSG_GetFirmWareInfo* stuGetFirmWareInfo = (MSG_GetFirmWareInfo*)new char[sizeof(MSG_GetFirmWareInfo)];
+
+      stuGetFirmWareInfo->header.Sof=COM_FRM_HEAD;
+      stuGetFirmWareInfo->header.MsgType = MSG_GETFIRMWAREINFO;
+      stuGetFirmWareInfo->header.srcAddr = (m_localAddr);
+      stuGetFirmWareInfo->header.destAddr = Tranverse16(m_destAddr);
+      stuGetFirmWareInfo->header.length = Tranverse16(msgLen);
+      stuGetFirmWareInfo->header.serialNo = Tranverse16(tmpNo);
+      stuGetFirmWareInfo->header.replyNo = 0;
+      stuGetFirmWareInfo->header.crc16 = 0;
+      stuGetFirmWareInfo->Eof = COM_FRM_END;
+
+      tmpCrc = CalcCRC16(0,&stuGetFirmWareInfo->header.Sof,msgLen);
+      stuGetFirmWareInfo->header.crc16 = Tranverse16(tmpCrc);
+
+      tBuf.append(stuGetFirmWareInfo, msgLen);
+    }
+    else if (tmpCmd == MSG_SETINTERVAL)
+    {
+  // #define MSG_SETINTERVAL       0X47  //设置节点定时消息时间间隔
+
+      msgLen = sizeof(MSG_Interval);
+      MSG_Interval* stuInterval = (MSG_Interval*)new char[sizeof(MSG_Interval)];
+
+      stuInterval->header.Sof=COM_FRM_HEAD;
+      stuInterval->header.MsgType = MSG_SETINTERVAL;
+      stuInterval->header.srcAddr = (m_localAddr);
+      stuInterval->header.destAddr = Tranverse16(m_destAddr);
+      stuInterval->header.length = Tranverse16(msgLen) ;
+      stuInterval->header.serialNo = Tranverse16(tmpNo);
+      stuInterval->header.replyNo = 0;
+      stuInterval->header.crc16 = 0;
+      stuInterval->Interval = 5;    // set
+      stuInterval->Eof = COM_FRM_END;
+
+      tmpCrc = CalcCRC16(0,&stuInterval->header.Sof,msgLen);
+      stuInterval->header.crc16 = Tranverse16(tmpCrc);
+
+      tBuf.append(stuInterval, msgLen);
+    }
+    else if(tmpCmd == MSG_SETTIME)
+    {
+        // #define MSG_SETTIME           0X48  //设置节点时间
+      msgLen = sizeof(MSG_SetTime);
+      MSG_SetTime* stuSetTime = (MSG_SetTime*)new char[sizeof(MSG_SetTime)];
+
+      stuSetTime->header.Sof=COM_FRM_HEAD;
+      stuSetTime->header.MsgType = MSG_SETTIME;
+      stuSetTime->header.srcAddr = (m_localAddr);
+      stuSetTime->header.destAddr = Tranverse16(m_destAddr);
+      stuSetTime->header.length = Tranverse16(msgLen);
+      stuSetTime->header.serialNo = Tranverse16(tmpNo);
+      stuSetTime->header.replyNo = 0;
+      stuSetTime->header.crc16 = 0;
+      // get system time and set it 
+      stuSetTime->hour = 12;
+      stuSetTime->minute = 22;
+      stuSetTime->second = 30;
+      stuSetTime->date = 20;
+      stuSetTime->month = 10;
+      stuSetTime->year = Tranverse16(2016);
+
+      stuSetTime->Eof = COM_FRM_END;
+
+      tmpCrc = CalcCRC16(0,&stuSetTime->header.Sof,msgLen);
+      stuSetTime->header.crc16 = Tranverse16(tmpCrc);
+
+      tBuf.append(stuSetTime, msgLen);
+    }
+    else if(tmpCmd == MSG_GETMACSTATE)
+    {
+      // #define MSG_GETMACSTATE       0X49  //获取机器状态信息
+      msgLen = sizeof(MSG_GetMacState);
+      MSG_GetMacState* stuGetMacState = (MSG_GetMacState*)new char[sizeof(MSG_GetMacState)];
+
+      stuGetMacState->header.Sof=COM_FRM_HEAD;
+      stuGetMacState->header.MsgType = MSG_GETMACSTATE;
+      stuGetMacState->header.srcAddr = (m_localAddr);
+      stuGetMacState->header.destAddr = Tranverse16(m_destAddr);
+      stuGetMacState->header.length = Tranverse16(msgLen);
+      stuGetMacState->header.serialNo = Tranverse16(tmpNo);
+      stuGetMacState->header.replyNo = 0;
+      stuGetMacState->header.crc16 = 0;
+      stuGetMacState->Eof = COM_FRM_END;
+
+      tmpCrc = CalcCRC16(0,&stuGetMacState->header.Sof,msgLen);
+      stuGetMacState->header.crc16 = Tranverse16(tmpCrc);
+
+      tBuf.append(stuGetMacState, msgLen);
+    }
+    else if (tmpCmd == MSG_GETPATPARA)
+    {
+        // #define MSG_GETPATPARA        0X4A  //获取花样信息
+      msgLen = sizeof(MSG_GetPatPara);
+      MSG_GetPatPara* stuGetPatPara = (MSG_GetPatPara*)new char[sizeof(MSG_GetPatPara)];
+
+      stuGetPatPara->header.Sof=COM_FRM_HEAD;
+      stuGetPatPara->header.MsgType = MSG_GETPATPARA;
+      stuGetPatPara->header.srcAddr = (m_localAddr);
+      stuGetPatPara->header.destAddr = Tranverse16(m_destAddr);
+      stuGetPatPara->header.length = Tranverse16(msgLen);
+      stuGetPatPara->header.serialNo = Tranverse16(tmpNo);
+      stuGetPatPara->header.replyNo = 0;
+      stuGetPatPara->header.crc16 = 0;
+      stuGetPatPara->Eof = COM_FRM_END;
+
+      tmpCrc = CalcCRC16(0,&stuGetPatPara->header.Sof,msgLen);
+      stuGetPatPara->header.crc16 = Tranverse16(tmpCrc);
+
+      tBuf.append(stuGetPatPara, msgLen);
+
+
+      m_curGateway->setCurOperatorType(MODIFY_DEST_NODE);   // for change operation type
+    }
+
+    sendAll(&tBuf);
+
+    loop_->runAfter(3, boost::bind(&JacServer::onTimer, this));
+
   }
-  else if( tmpCmd == MSG_SETMACINFO)
-  {
-    //#define MSG_SETMACINFO           0X40  //设置机器信息
-    msgLen = sizeof(MSG_MacInfo);
-    MSG_MacInfo* stuSetMacInfo = (MSG_MacInfo*)new char[sizeof(MSG_MacInfo)];
-
-    stuSetMacInfo->header.Sof=COM_FRM_HEAD;
-    stuSetMacInfo->header.MsgType = MSG_SETMACINFO;
-    stuSetMacInfo->header.srcAddr = (m_localAddr);
-    stuSetMacInfo->header.destAddr = Tranverse16(m_destAddr);
-    stuSetMacInfo->header.length = Tranverse16(msgLen) ;
-    stuSetMacInfo->header.serialNo = Tranverse16(tmpNo);
-    stuSetMacInfo->header.replyNo = 0;
-    stuSetMacInfo->header.crc16 = 0;
-
-    stuSetMacInfo->Row = 2;
-    stuSetMacInfo->Col = 3;
-    stuSetMacInfo->WeftDensity = Tranverse16(0x01);
-    stuSetMacInfo->OpeningDegree = Tranverse16(0x01);
-    stuSetMacInfo->OutNum = 5;
-    stuSetMacInfo->Installation = 01;
-    stuSetMacInfo->CardSlot = 1;
-    stuSetMacInfo->Eof = COM_FRM_END;
-
-    tmpCrc = CalcCRC16(0,&stuSetMacInfo->header.Sof,msgLen);
-    stuSetMacInfo->header.crc16 = Tranverse16(tmpCrc);
-
-    tBuf.append(stuSetMacInfo, msgLen);
-  }
-  else if( tmpCmd == MSG_SETPATPARA)
-  {
-    // #define MSG_SETPATPARA           0X41  //下传花样信息
-    msgLen = sizeof(MSG_PatPara);
-    MSG_PatPara* stuSetPatPara = (MSG_PatPara*)new char[sizeof(MSG_PatPara)];
-
-    stuSetPatPara->header.Sof=COM_FRM_HEAD;
-    stuSetPatPara->header.MsgType = MSG_SETPATPARA;
-    stuSetPatPara->header.srcAddr = (m_localAddr);
-    stuSetPatPara->header.destAddr = Tranverse16(m_destAddr);
-    stuSetPatPara->header.length = Tranverse16(msgLen) ;
-    stuSetPatPara->header.serialNo = Tranverse16(tmpNo);
-    stuSetPatPara->header.replyNo = 0;
-    stuSetPatPara->header.crc16 = 0;
-
-    stuSetPatPara->TotalWeft = Tranverse16(24);
-    stuSetPatPara->Warp = Tranverse16(6);
-    stuSetPatPara->FileSize = Tranverse16(66);
-    stuSetPatPara->StringLen = Tranverse16(24);
-
-    string tmpStr = "test.file";
-    strcpy(stuSetPatPara->FileName, tmpStr.c_str());
-
-    stuSetPatPara->Eof = COM_FRM_END;
-
-    tmpCrc = CalcCRC16(0,&stuSetPatPara->header.Sof,msgLen);
-    stuSetPatPara->header.crc16 = Tranverse16(tmpCrc);
-
-    tBuf.append(stuSetPatPara, msgLen);
-  }
-  else if (tmpCmd == MSG_FIGUREFILE)
-  {
-    // #define MSG_FIGUREFILE        0X42  //送花样文件
-    msgLen = sizeof(MSG_PatFile);
-    MSG_PatFile* stuSetPatFile = (MSG_PatFile*)new char[sizeof(MSG_PatFile)];
-
-    stuSetPatFile->header.Sof=COM_FRM_HEAD;
-    stuSetPatFile->header.MsgType = MSG_FIGUREFILE;
-    stuSetPatFile->header.srcAddr = m_localAddr;
-    stuSetPatFile->header.destAddr = Tranverse16(m_destAddr);
-    stuSetPatFile->header.length = Tranverse16(msgLen) ;
-    stuSetPatFile->header.serialNo = Tranverse16(tmpNo);
-    stuSetPatFile->header.replyNo = 0;
-    stuSetPatFile->header.crc16 = 0;
-
-    stuSetPatFile->Totalpackets = Tranverse16(100);
-    stuSetPatFile->packetCnt = Tranverse16(33);
-    stuSetPatFile->Datasize = 35;
-    // stuSetPatFile->Data = {0};
-    memset(stuSetPatFile->Data,0,sizeof(UINT8)*256);
-
-    stuSetPatFile->Eof = COM_FRM_END;
-
-    tmpCrc = CalcCRC16(0,&stuSetPatFile->header.Sof,msgLen);
-    stuSetPatFile->header.crc16 = Tranverse16(tmpCrc);
-
-    tBuf.append(stuSetPatFile, msgLen);
-  }
-  else if (tmpCmd == MSG_GETMACINFO)
-  {
-      // #define MSG_GETMACINFO        0X43  //获取机器信息
-    msgLen = sizeof(MSG_GetMacInfo);
-    MSG_GetMacInfo* stuGetMacInfo = (MSG_GetMacInfo*)new char[sizeof(MSG_GetMacInfo)];
-
-    stuGetMacInfo->header.Sof=COM_FRM_HEAD;
-    stuGetMacInfo->header.MsgType = MSG_GETMACINFO;
-    stuGetMacInfo->header.srcAddr = (m_localAddr);
-    stuGetMacInfo->header.destAddr = Tranverse16(m_destAddr);
-    stuGetMacInfo->header.length = Tranverse16(msgLen) ;
-    stuGetMacInfo->header.serialNo = Tranverse16(tmpNo);
-    stuGetMacInfo->header.replyNo = 0;
-    stuGetMacInfo->header.crc16 = 0;
-    stuGetMacInfo->Eof = COM_FRM_END;
-
-    tmpCrc = CalcCRC16(0,&stuGetMacInfo->header.Sof,msgLen);
-    stuGetMacInfo->header.crc16 = Tranverse16(tmpCrc);
-
-    tBuf.append(stuGetMacInfo, msgLen);
-  }
-  else if( tmpCmd == MSG_GETTASKINFO)
-  {
-      // #define MSG_GETTASKINFO       0X44  //获取生产任务
-
-    msgLen = sizeof(MSG_GetTaskInfo);
-    MSG_GetTaskInfo* stuGetTaskInfo = (MSG_GetTaskInfo*)new char[sizeof(MSG_GetTaskInfo)];
-
-    stuGetTaskInfo->header.Sof=COM_FRM_HEAD;
-    stuGetTaskInfo->header.MsgType = MSG_GETTASKINFO;
-    stuGetTaskInfo->header.srcAddr = (m_localAddr);
-    stuGetTaskInfo->header.destAddr = Tranverse16(m_destAddr);
-    stuGetTaskInfo->header.length = Tranverse16(msgLen) ;
-    stuGetTaskInfo->header.serialNo = Tranverse16(tmpNo);
-    stuGetTaskInfo->header.replyNo = 0;
-    stuGetTaskInfo->header.crc16 = 0;
-    stuGetTaskInfo->Eof = COM_FRM_END;
-
-    tmpCrc = CalcCRC16(0,&stuGetTaskInfo->header.Sof,msgLen);
-    stuGetTaskInfo->header.crc16 = Tranverse16(tmpCrc);
-
-    tBuf.append(stuGetTaskInfo, msgLen);
-  }
-
-  else if(tmpCmd == MSG_GETFIRMWAREINFO)
-  {
-      // #define MSG_GETFIRMWAREINFO   0X46  //获取固件信息等
-    msgLen = sizeof(MSG_GetFirmWareInfo);
-    MSG_GetFirmWareInfo* stuGetFirmWareInfo = (MSG_GetFirmWareInfo*)new char[sizeof(MSG_GetFirmWareInfo)];
-
-    stuGetFirmWareInfo->header.Sof=COM_FRM_HEAD;
-    stuGetFirmWareInfo->header.MsgType = MSG_GETFIRMWAREINFO;
-    stuGetFirmWareInfo->header.srcAddr = (m_localAddr);
-    stuGetFirmWareInfo->header.destAddr = Tranverse16(m_destAddr);
-    stuGetFirmWareInfo->header.length = Tranverse16(msgLen);
-    stuGetFirmWareInfo->header.serialNo = Tranverse16(tmpNo);
-    stuGetFirmWareInfo->header.replyNo = 0;
-    stuGetFirmWareInfo->header.crc16 = 0;
-    stuGetFirmWareInfo->Eof = COM_FRM_END;
-
-    tmpCrc = CalcCRC16(0,&stuGetFirmWareInfo->header.Sof,msgLen);
-    stuGetFirmWareInfo->header.crc16 = Tranverse16(tmpCrc);
-
-    tBuf.append(stuGetFirmWareInfo, msgLen);
-  }
-  else if (tmpCmd == MSG_SETINTERVAL)
-  {
-// #define MSG_SETINTERVAL       0X47  //设置节点定时消息时间间隔
-
-    msgLen = sizeof(MSG_Interval);
-    MSG_Interval* stuInterval = (MSG_Interval*)new char[sizeof(MSG_Interval)];
-
-    stuInterval->header.Sof=COM_FRM_HEAD;
-    stuInterval->header.MsgType = MSG_SETINTERVAL;
-    stuInterval->header.srcAddr = (m_localAddr);
-    stuInterval->header.destAddr = Tranverse16(m_destAddr);
-    stuInterval->header.length = Tranverse16(msgLen) ;
-    stuInterval->header.serialNo = Tranverse16(tmpNo);
-    stuInterval->header.replyNo = 0;
-    stuInterval->header.crc16 = 0;
-    stuInterval->Interval = 5;    // set
-    stuInterval->Eof = COM_FRM_END;
-
-    tmpCrc = CalcCRC16(0,&stuInterval->header.Sof,msgLen);
-    stuInterval->header.crc16 = Tranverse16(tmpCrc);
-
-    tBuf.append(stuInterval, msgLen);
-  }
-  else if(tmpCmd == MSG_SETTIME)
-  {
-      // #define MSG_SETTIME           0X48  //设置节点时间
-    msgLen = sizeof(MSG_SetTime);
-    MSG_SetTime* stuSetTime = (MSG_SetTime*)new char[sizeof(MSG_SetTime)];
-
-    stuSetTime->header.Sof=COM_FRM_HEAD;
-    stuSetTime->header.MsgType = MSG_SETTIME;
-    stuSetTime->header.srcAddr = (m_localAddr);
-    stuSetTime->header.destAddr = Tranverse16(m_destAddr);
-    stuSetTime->header.length = Tranverse16(msgLen);
-    stuSetTime->header.serialNo = Tranverse16(tmpNo);
-    stuSetTime->header.replyNo = 0;
-    stuSetTime->header.crc16 = 0;
-    // get system time and set it 
-    stuSetTime->hour = 12;
-    stuSetTime->minute = 22;
-    stuSetTime->second = 30;
-    stuSetTime->date = 20;
-    stuSetTime->month = 10;
-    stuSetTime->year = Tranverse16(2016);
-
-    stuSetTime->Eof = COM_FRM_END;
-
-    tmpCrc = CalcCRC16(0,&stuSetTime->header.Sof,msgLen);
-    stuSetTime->header.crc16 = Tranverse16(tmpCrc);
-
-    tBuf.append(stuSetTime, msgLen);
-  }
-  else if(tmpCmd == MSG_GETMACSTATE)
-  {
-    // #define MSG_GETMACSTATE       0X49  //获取机器状态信息
-    msgLen = sizeof(MSG_GetMacState);
-    MSG_GetMacState* stuGetMacState = (MSG_GetMacState*)new char[sizeof(MSG_GetMacState)];
-
-    stuGetMacState->header.Sof=COM_FRM_HEAD;
-    stuGetMacState->header.MsgType = MSG_GETMACSTATE;
-    stuGetMacState->header.srcAddr = (m_localAddr);
-    stuGetMacState->header.destAddr = Tranverse16(m_destAddr);
-    stuGetMacState->header.length = Tranverse16(msgLen);
-    stuGetMacState->header.serialNo = Tranverse16(tmpNo);
-    stuGetMacState->header.replyNo = 0;
-    stuGetMacState->header.crc16 = 0;
-    stuGetMacState->Eof = COM_FRM_END;
-
-    tmpCrc = CalcCRC16(0,&stuGetMacState->header.Sof,msgLen);
-    stuGetMacState->header.crc16 = Tranverse16(tmpCrc);
-
-    tBuf.append(stuGetMacState, msgLen);
-  }
-  else if (tmpCmd == MSG_GETPATPARA)
-  {
-      // #define MSG_GETPATPARA        0X4A  //获取花样信息
-    msgLen = sizeof(MSG_GetPatPara);
-    MSG_GetPatPara* stuGetPatPara = (MSG_GetPatPara*)new char[sizeof(MSG_GetPatPara)];
-
-    stuGetPatPara->header.Sof=COM_FRM_HEAD;
-    stuGetPatPara->header.MsgType = MSG_GETPATPARA;
-    stuGetPatPara->header.srcAddr = (m_localAddr);
-    stuGetPatPara->header.destAddr = Tranverse16(m_destAddr);
-    stuGetPatPara->header.length = Tranverse16(msgLen);
-    stuGetPatPara->header.serialNo = Tranverse16(tmpNo);
-    stuGetPatPara->header.replyNo = 0;
-    stuGetPatPara->header.crc16 = 0;
-    stuGetPatPara->Eof = COM_FRM_END;
-
-    tmpCrc = CalcCRC16(0,&stuGetPatPara->header.Sof,msgLen);
-    stuGetPatPara->header.crc16 = Tranverse16(tmpCrc);
-
-    tBuf.append(stuGetPatPara, msgLen);
-  }
-
-  sendAll(&tBuf);
-
-  loop_->runAfter(3, boost::bind(&JacServer::onTimer, this));
 
 }
 
@@ -482,6 +434,9 @@ void JacServer::sendReplyAck(TcpConnection* conn, pMSG_Header srcheader,UINT8 AC
   pMSG_Header pheader = &stuAck.header;       
   UINT16 msgLen = sizeof(MSG_ACK);
   UINT16 tmpCrc=0;
+
+  // modify dest addr
+  modifyDestAddr(srcheader->srcAddr);
 
   // ack
   Buffer ackBuf;
@@ -521,43 +476,45 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
   
   LOG_INFO << "readableBytes length = " << buf->readableBytes();
 
-   MSG_Header* tHeader = (MSG_Header*) new char[sizeof(MSG_Header)];
-   UINT8 tmpAckCode;
+  MSG_Header* tHeader = (MSG_Header*) new char[sizeof(MSG_Header)];
+  UINT8 tmpAckCode=ACK_OK;
 
-   if (buf->readableBytes() >= sizeof(RspAck))
-   {
-     pRspAck tmpAck = (pRspAck) new char[sizeof(RspAck)];
-     if ((tmpAck->protocolTag1 == 0xDE)
-      && (tmpAck->protocolTag2 == 0xDF)
-    && (tmpAck->protocolTag3 == 0xEF)
-    && (tmpAck->funcCode == 0xD2 ))
+  if (buf->readableBytes() >= sizeof(RspAck))
+  {
+    pRspAck tmpAck = (pRspAck) new char[sizeof(RspAck)];
+    tmpAck = (pRspAck)const_cast<char*>(buf->peek());
+
+    if ((tmpAck->protocolTag1 == 0xDE)
+     && (tmpAck->protocolTag2 == 0xDF)
+   && (tmpAck->protocolTag3 == 0xEF)
+   && (tmpAck->funcCode == 0xD2 ))
+    {
+      //处理修改目标节点命令反馈
+     if (tmpAck->ackCode == 0x00)
      {
-       //处理修改目标节点命令反馈
-      if (tmpAck->ackCode == 0x00)
-      {
-        LOG_INFO << "---------modify dest node success!-------";
-        m_curGateway->setCurOperatorType(SEND_MESSAGE);
-        loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
-
-      }
-      else
-      {
-        LOG_INFO << "---------modify dest node failed!-------";
-        loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
-      }
+       LOG_INFO << "---------modify dest node success!-------";
+       
+       m_curGateway->setCurOperatorType(SEND_MESSAGE);
+       loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
 
      }
-     
+     else
+     {
+       LOG_INFO << "---------modify dest node failed!-------";
+       loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
+     }
+
      buf->retrieve(sizeof(RspAck));
-     return;
-   }
+    return;
+    }
+  }
 
    if (buf->readableBytes() >= sizeof(MSG_Header))
    {
      /* code */
     tHeader = (MSG_Header*)const_cast<char*>(buf->peek());
 
-    LOG_INFO << "MsgType: " << tHeader->MsgType;
+    LOG_INFO << "onMessage, msgType: " << tHeader->MsgType;
     //cout << "msgtype:" <<hex<<tHeader<<endl;
   
     if (tHeader->MsgType == MSG_LOGIN)
@@ -570,69 +527,81 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
       }
 
        // MSG_Login
-       MSG_Login* stuBody = (MSG_Login*)const_cast<char*>(buf->peek());
+      tmpAckCode=ACK_OK;
+      MSG_Login* stuBody = (MSG_Login*)const_cast<char*>(buf->peek());
 
-       if (m_localAddr == 0)
-       {
-         m_localAddr = (stuBody->header.destAddr);
-       }
+      if (m_localAddr == 0)
+      {
+        m_localAddr = (stuBody->header.destAddr);
+      }
 
-       if (m_destAddr == 0)
-       {
-         m_destAddr = Tranverse16(stuBody->header.srcAddr);
-       }
+      if (m_destAddr == 0)
+      {
+        m_destAddr = Tranverse16(stuBody->header.srcAddr);
+      }
 
-       LOG_INFO << "-------------------srcAddr: " << Tranverse16(stuBody->header.srcAddr);
+      LOG_INFO << "-------------------srcAddr: " << Tranverse16(stuBody->header.srcAddr);
 
-       LOG_INFO << "destAddr: " << Tranverse16(stuBody->header.destAddr);
-       LOG_INFO << "length: " << Tranverse16(stuBody->header.length);
-       LOG_INFO << "serialNo: " << Tranverse16(stuBody->header.serialNo);
-       LOG_INFO << "replyNo: " << Tranverse16(stuBody->header.replyNo);
-       LOG_INFO << "crc16: " << stuBody->header.crc16;
+      LOG_INFO << "destAddr: " << Tranverse16(stuBody->header.destAddr);
+      LOG_INFO << "length: " << Tranverse16(stuBody->header.length);
+      LOG_INFO << "serialNo: " << Tranverse16(stuBody->header.serialNo);
+      LOG_INFO << "replyNo: " << Tranverse16(stuBody->header.replyNo);
+      LOG_INFO << "crc16: " << stuBody->header.crc16;
 
-       LOG_INFO << "protocolVersion: " << Tranverse16(stuBody->protocolVersion);
-       // LOG_INFO << " StringLen: " << Tranverse16(stuBody->StringLen);
-       LOG_INFO << "gatewayId: " << stuBody->gatewayId;
+      LOG_INFO << "protocolVersion: " << Tranverse16(stuBody->protocolVersion);
+      // LOG_INFO << " StringLen: " << Tranverse16(stuBody->StringLen);
+      LOG_INFO << "gatewayId: " << stuBody->gatewayId;
 
-       //报文合法性校验
-       if(Tranverse16(stuBody->header.length) != sizeof(MSG_Login))
-       {
-          tmpAckCode = ACK_OUTOFMEM;
-          LOG_INFO << "ACK_OUTOFMEM";
-       }
+      //报文合法性校验
+      if(Tranverse16(stuBody->header.length) != sizeof(MSG_Login))
+      {
+         tmpAckCode = ACK_OUTOFMEM;
+         LOG_INFO << "ACK_OUTOFMEM";
+      }
 
-       if ((stuBody->header.Sof != COM_FRM_HEAD) || (stuBody->Eof != COM_FRM_END))
-       {
-         tmpAckCode = ACK_DATALOSS;
-         LOG_INFO << "ACK_DATALOSS";
-       }
+      if ((stuBody->header.Sof != COM_FRM_HEAD) || (stuBody->Eof != COM_FRM_END))
+      {
+        tmpAckCode = ACK_DATALOSS;
+        LOG_INFO << "ACK_DATALOSS";
+      }
 
-       if (stuBody->header.destAddr != m_localAddr)
-       {
-         tmpAckCode = ACK_MSG_ERROR;
-         LOG_INFO << "ACK_MSG_ERROR";
-       }
-       
-       // 节点注册成功
-       if (tmpAckCode == ACK_OK)
-       {
-         if (m_curGateway == NULL)
-         {
-           m_curGateway = new gateway();
-         }
-         m_curGateway->setName(stuBody->gatewayId);
+      if (stuBody->header.destAddr != m_localAddr)
+      {
+        tmpAckCode = ACK_MSG_ERROR;
+        LOG_INFO << "ACK_MSG_ERROR";
+      }
+      
+      // 节点注册成功
+      if (tmpAckCode == ACK_OK)
+      {
+        if (m_curGateway == NULL)
+        {
+          m_curGateway = new gateway();
+          m_curGateway->setName(stuBody->gatewayId);
+        }
 
-         pINFO_Node tmpNode = new INFO_Node();      // when to free pointer?
-         tmpNode->addr = (stuBody->header.srcAddr);
+        if (!m_curGateway->isExistNode(stuBody->header.srcAddr))
+        {
+          pINFO_Node tmpNode = new INFO_Node();      // when to free pointer?
+          tmpNode->addr = (stuBody->header.srcAddr);
+          LOG_INFO << "-----------new node registed!!!!";
 
-         m_curGateway->insertNode(tmpNode);
+          m_curGateway->insertNode(tmpNode);
+        }
+        else
+        {
+          LOG_INFO << "-----------The node have been registed!!!!";
+        }
+      }
+      else
+      {
+         LOG_INFO << "-----------The node registed failed!!!!";
+      }
 
-       }
+      buf->retrieve(sizeof(MSG_Login));       
 
-       buf->retrieve(sizeof(MSG_Login));       
-
-        connections_.insert(conn);
-       sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
+       // connections_.insert(conn);
+      sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
     }
     // else if (/* condition */) // process the rsp ack ,modify the current node addr
     // {
@@ -670,10 +639,24 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
        buf->retrieve(sizeof(MSG_Logout));
 
+       // add code to process logout   remove node info in gateway
+        // 节点注册成功
+       if (tmpAckCode == ACK_OK)
+       {
+         
+         if (m_curGateway->isExistNode(stuBody->header.srcAddr))
+         {
+           m_curGateway->deleteNodeByAddr(stuBody->header.srcAddr);
+         }
+         else
+         {
+           LOG_INFO << "-----------The node " 
+                    << stuBody->header.srcAddr 
+                    << " logout failed!";
+         }
+       }
        // ack
-       // connections_.erase(conn);
        sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
-       
     }
     else if (tHeader->MsgType == MSG_COMACK)
     {
@@ -689,7 +672,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
        //MSG_Logout* stuBody = (MSG_Logout*) new char[sizeof(MSG_Logout)];
        MSG_ACK* stuBody = (MSG_ACK*)const_cast<char*>(buf->peek());
 
-       LOG_DEBUG << "common ack,serialNo = " << stuBody->header.serialNo << " | " 
+       LOG_INFO << "－－－－－－－common ack,serialNo = " << stuBody->header.serialNo << " | " 
                 << "replyNo = " << stuBody->header.replyNo;
 
         //报文合法性校验
@@ -741,7 +724,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
        buf->retrieve(sizeof(MSG_Production));
 
-       LOG_INFO << "Speed: " << Tranverse16(stuBody->Speed);
+       LOG_INFO << "######### Speed: " << Tranverse16(stuBody->Speed);
        LOG_INFO << "Production: " << Tranverse32(stuBody->Production);
        LOG_INFO << "AckCode: " << tmpAckCode;
 
@@ -751,6 +734,45 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
        }
 
        // sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
+    }
+    else if (tHeader->MsgType == (MSG_REPLY|MSG_GETFIRMWAREINFO))
+    {
+      if(buf->readableBytes() < sizeof(MSG_FirmWareInfo))
+      {
+        buf->retrieve(buf->readableBytes());
+        LOG_INFO << "-------- ACK_DATALOSS ";
+        return;
+      }
+
+// }MSG_TaskInfo,*pMSG_TaskInfo;
+       MSG_FirmWareInfo* stuBody = (MSG_FirmWareInfo*)const_cast<char*>(buf->peek());
+
+        //报文合法性校验
+       if(Tranverse16(stuBody->header.length) != sizeof(MSG_FirmWareInfo))
+       {
+          tmpAckCode = ACK_OUTOFMEM;
+       }
+
+       if ((stuBody->header.Sof != COM_FRM_HEAD) || (stuBody->Eof != COM_FRM_END))
+       {
+         tmpAckCode = ACK_DATALOSS;
+       }
+
+       if (stuBody->header.destAddr != m_localAddr)
+       {
+         tmpAckCode = ACK_MSG_ERROR;
+       }
+
+       buf->retrieve(sizeof(MSG_FirmWareInfo));
+
+       LOG_INFO << "McuVer: " << (stuBody->McuVer);
+       LOG_INFO << "UiVer: " << (stuBody->UiVer);
+       LOG_INFO << "HwVer: " << (stuBody->HwVer);
+
+       if (tmpAckCode != ACK_OK)
+       {
+        LOG_INFO << "exception: "<< tmpAckCode;
+       }
     }
     else if (tHeader->MsgType == (MSG_REPLY|MSG_GETTASKINFO))
     {
@@ -894,7 +916,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
       MSG_MacInfo* stuBody = (MSG_MacInfo*)const_cast<char*>(buf->peek());
 
 
-      LOG_INFO << "cmd type: " << stuBody->header.MsgType;
+      LOG_INFO << "＃＃＃＃＃＃cmd type: " << stuBody->header.MsgType;
 
       //报文合法性校验
       if(Tranverse16(stuBody->header.length) != sizeof(MSG_MacInfo))
@@ -934,14 +956,6 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
       LOG_INFO << "###############---------unknown cmd----################";
       // disconnect 
 
-      // char* pBuf = (char*)const_cast<char*>(buf->peek());
-      // int data_len = buf->readableBytes();
-      // char buffer[data_len+1];
-      // buffer[data_len+1] = 0;
-
-      // for(int j = 0; j < data_len; j++)
-      //     sprintf(buffer[2*j], "%02X", pBuf[j]);
-
       int iLen = buf->readableBytes();
       LOG_INFO << "data_len: " << iLen;
       for (int i = 0; i < iLen; ++i)
@@ -949,7 +963,6 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
          printf("%02X ", buf->peek()[i]);
       }
       printf("\n");
-
 
     // LOG_INFO <<"MSG_Header: "<< ss.str();
 
@@ -977,6 +990,28 @@ UINT16 JacServer::getMsgSerialNo()
 
   return m_curMsgSerialNo;
 
+}
+
+void JacServer::modifyDestAddr(UINT16 addr)
+{
+    Buffer tBuf;
+    UINT16 msgLen = 0;
+
+    LOG_INFO << "^^^^^^^^^^^^^^^^^^ send cmd MODIFY_DEST_NODE";
+    msgLen = sizeof(ModifyGateWayDestAddr);
+    ModifyGateWayDestAddr* stuModifyGateWayDestAddr = (ModifyGateWayDestAddr*)new char(msgLen);
+    stuModifyGateWayDestAddr->protocolTag1 = 0xDE;
+    stuModifyGateWayDestAddr->protocolTag2 = 0xDF;
+    stuModifyGateWayDestAddr->protocolTag3 = 0xEF;
+    stuModifyGateWayDestAddr->funcCode = 0xD2;
+
+    UINT16 destAddr = m_curGateway->getNextNode()->addr;    // getNextNode不要重复调用
+    LOG_INFO << "^^^^^^^^^^^^^^^^^^ send modify dest node, addr = " << destAddr;
+    stuModifyGateWayDestAddr->addr = destAddr;
+    
+    tBuf.append(stuModifyGateWayDestAddr,msgLen);
+
+    sendAll(&tBuf);   // need modify
 }
 
 int kRollSize = 500*1000*1000;

@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc" "/mnt/hgfs/github/jacServer/jacServer/cmake/CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o"
+  "/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc" "/mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

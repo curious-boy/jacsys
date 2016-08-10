@@ -39,10 +39,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/hgfs/github/jacServer/jacServer/cmake
+CMAKE_SOURCE_DIR = /mnt/hgfs/github/jacServer/jacsys/cmake
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/hgfs/github/jacServer/jacServer/cmake
+CMAKE_BINARY_DIR = /mnt/hgfs/github/jacServer/jacsys/cmake
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -69,9 +69,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/hgfs/github/jacServer/jacServer/cmake/CMakeFiles /mnt/hgfs/github/jacServer/jacServer/cmake/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/hgfs/github/jacServer/jacServer/cmake/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -124,53 +124,53 @@ jacServer/fast:
 	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/build
 .PHONY : jacServer/fast
 
-mnt/hgfs/github/jacServer/jacServer/src/jacClient.o: mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacClient.o
+mnt/hgfs/github/jacServer/jacsys/src/jacClient.o: mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacClient.o
 
 # target to build an object file
-mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o:
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.o
+mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o:
+	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.o
 
-mnt/hgfs/github/jacServer/jacServer/src/jacClient.i: mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.i
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacClient.i
+mnt/hgfs/github/jacServer/jacsys/src/jacClient.i: mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.i
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacClient.i
 
 # target to preprocess a source file
-mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.i:
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.i
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.i
+mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.i:
+	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.i
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.i
 
-mnt/hgfs/github/jacServer/jacServer/src/jacClient.s: mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.s
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacClient.s
+mnt/hgfs/github/jacServer/jacsys/src/jacClient.s: mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.s
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacClient.s
 
 # target to generate assembly for a file
-mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.s:
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.s
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacClient.cc.s
+mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.s:
+	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.s
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacClient.cc.s
 
-mnt/hgfs/github/jacServer/jacServer/src/jacServer.o: mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.o
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacServer.o
+mnt/hgfs/github/jacServer/jacsys/src/jacServer.o: mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacServer.o
 
 # target to build an object file
-mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.o:
-	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.o
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.o
+mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o
 
-mnt/hgfs/github/jacServer/jacServer/src/jacServer.i: mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.i
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacServer.i
+mnt/hgfs/github/jacServer/jacsys/src/jacServer.i: mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.i
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacServer.i
 
 # target to preprocess a source file
-mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.i:
-	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.i
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.i
+mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.i:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.i
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.i
 
-mnt/hgfs/github/jacServer/jacServer/src/jacServer.s: mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.s
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacServer.s
+mnt/hgfs/github/jacServer/jacsys/src/jacServer.s: mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.s
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacServer.s
 
 # target to generate assembly for a file
-mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.s:
-	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.s
-.PHONY : mnt/hgfs/github/jacServer/jacServer/src/jacServer.cc.s
+mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.s:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.s
+.PHONY : mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.s
 
 # Help Target
 help:
@@ -182,12 +182,12 @@ help:
 	@echo "... jacClient"
 	@echo "... jacServer"
 	@echo "... rebuild_cache"
-	@echo "... mnt/hgfs/github/jacServer/jacServer/src/jacClient.o"
-	@echo "... mnt/hgfs/github/jacServer/jacServer/src/jacClient.i"
-	@echo "... mnt/hgfs/github/jacServer/jacServer/src/jacClient.s"
-	@echo "... mnt/hgfs/github/jacServer/jacServer/src/jacServer.o"
-	@echo "... mnt/hgfs/github/jacServer/jacServer/src/jacServer.i"
-	@echo "... mnt/hgfs/github/jacServer/jacServer/src/jacServer.s"
+	@echo "... mnt/hgfs/github/jacServer/jacsys/src/jacClient.o"
+	@echo "... mnt/hgfs/github/jacServer/jacsys/src/jacClient.i"
+	@echo "... mnt/hgfs/github/jacServer/jacsys/src/jacClient.s"
+	@echo "... mnt/hgfs/github/jacServer/jacsys/src/jacServer.o"
+	@echo "... mnt/hgfs/github/jacServer/jacsys/src/jacServer.i"
+	@echo "... mnt/hgfs/github/jacServer/jacsys/src/jacServer.s"
 .PHONY : help
 
 

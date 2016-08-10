@@ -4,6 +4,8 @@
 
 #include "StuDef.h"
 #include <string>
+#include <muduo/base/AsyncLogging.h>
+#include <muduo/base/Logging.h>
 // using namespace std;
 
 
@@ -30,19 +32,22 @@ public:
 	std::string		getName();
 	void 		setName(std::string name);
 	pINFO_Node	getCurNode();
+	pINFO_Node  getNextNode();
 	void		setCurNode(UINT16 curAddr);
 	void 		setCurOperatorType(OperatorType oType);
 	OperatorType getCurOperatorType();
-
+	bool 		isExistNode(UINT16 addr);
 
 private:
 	// TcpConnectionPtr 	m_pConn;
 	pINFO_Node 			m_pCurNode;
 	// std::vector<INFO_Node> m_vNodes;
 	std::map<UINT16, pINFO_Node> m_mNodesInfo;
+	std::vector<UINT16> m_vNodeAddrs;
 	std::string 		m_strName;
 	UINT16				m_curNodeAddr;
 	OperatorType		m_CurOperatortype;
+	int 				m_curIndex;
 
 	// addr unreplyNum
 
@@ -55,6 +60,18 @@ gateway::gateway()
 	m_strName = "";
 	m_curNodeAddr=0x0000;
 	m_CurOperatortype = MODIFY_DEST_NODE;
+	m_curIndex = 0;
+}
+
+bool gateway::isExistNode(UINT16 addr)
+{
+	std::map<UINT16,pINFO_Node>::iterator it;
+	it = m_mNodesInfo.find(addr);
+	if (it != m_mNodesInfo.end())
+	{
+		return true;
+	}
+	return false;
 }
 
 OperatorType gateway::getCurOperatorType()
@@ -70,6 +87,16 @@ void gateway::setCurOperatorType(OperatorType oType)
 pINFO_Node gateway::getCurNode()
 {
 	return m_pCurNode;
+}
+
+pINFO_Node gateway::getNextNode()
+{
+	m_curIndex++;
+	// m_curIndex%(m_mNodesInfo.size());
+	int iTmp = m_curIndex%(m_mNodesInfo.size());
+
+	LOG_INFO << "++++++++++++++++ m_vNodeAddrs[" << iTmp << "]: " << m_vNodeAddrs[iTmp];
+	return m_mNodesInfo[m_vNodeAddrs[iTmp]];
 }
 
 void gateway::setCurNode(UINT16 curAddr)
@@ -94,6 +121,7 @@ void gateway::insertNode(pINFO_Node pNode)
 	if (pNode != NULL)
 	{
 		m_mNodesInfo[pNode->addr] = pNode;
+		m_vNodeAddrs.push_back(pNode->addr);
 	}
 }
 
@@ -105,11 +133,21 @@ UINT16 gateway::getNodeSize()
 void gateway::removeAllNodes()
 {
 	m_mNodesInfo.clear();
+	m_vNodeAddrs.clear();
 }
 
 void gateway::deleteNodeByAddr(UINT16 addr)
 {
 	m_mNodesInfo.erase(addr);
+
+	for (int i = 0; i < m_vNodeAddrs.size(); ++i)
+	{
+		if (m_vNodeAddrs[i] == addr)
+		{
+			m_vNodeAddrs.erase(m_vNodeAddrs.begin()+i);
+			LOG_INFO << "^^^^^^^^^^^^^^^^ node," << addr << " was deleted!";
+		}
+	}
 }
 
 std::string gateway::getName()
