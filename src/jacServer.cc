@@ -26,7 +26,7 @@ class JacServer
 {
  public:
   JacServer(EventLoop* loop, const InetAddress& listenAddr)
-    : loop_(loop),
+    : m_loop(loop),
       server_(loop, listenAddr, "JacServer")
   {
     server_.setConnectionCallback(
@@ -34,7 +34,7 @@ class JacServer
     server_.setMessageCallback(
         boost::bind(&JacServer::onMessage, this, _1, _2, _3));
 
-    loop_->runAfter(2,boost::bind(&JacServer::onTimer,this));
+    m_roundTimer = m_loop->runAfter(2,boost::bind(&JacServer::onTimer,this));
 
     m_curMsgSerialNo = 0;
     m_iSendNo = 0;
@@ -64,7 +64,7 @@ class JacServer
 
 
   typedef std::set<TcpConnectionPtr> ConnectionList;
-  EventLoop* loop_;
+  EventLoop* m_loop;
   TcpServer server_;
   ConnectionList connections_;
 
@@ -79,6 +79,8 @@ class JacServer
   // std::vector<UINT16> m_vNodes;
   // std::map<std::string,gateway> m_mGateways;
   gateway* m_curGateway;
+
+  TimerId  m_roundTimer;
 
 };
 
@@ -158,7 +160,7 @@ void JacServer::onTimer()
 
   if (m_curGateway == NULL)
   {
-    loop_->runAfter(3, boost::bind(&JacServer::onTimer, this));
+    m_roundTimer = m_loop->runAfter(3, boost::bind(&JacServer::onTimer, this));
     return;
   }
 
@@ -166,7 +168,7 @@ void JacServer::onTimer()
   if (m_curGateway->getNodeSize() == 0 )
   {
     LOG_INFO << "no node registed now!";
-    loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
+    m_roundTimer = m_loop->runAfter(5, boost::bind(&JacServer::onTimer, this));
     return;
   }
   else if (m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
@@ -410,7 +412,7 @@ void JacServer::onTimer()
 
     sendAll(&tBuf);
 
-    loop_->runAfter(3, boost::bind(&JacServer::onTimer, this));
+    m_roundTimer = m_loop->runAfter(3, boost::bind(&JacServer::onTimer, this));
 
   }
 
@@ -436,7 +438,7 @@ void JacServer::sendReplyAck(TcpConnection* conn, pMSG_Header srcheader,UINT8 AC
   UINT16 tmpCrc=0;
 
   // modify dest addr
-  modifyDestAddr(srcheader->srcAddr);
+  // modifyDestAddr(srcheader->srcAddr);
 
   // ack
   Buffer ackBuf;
@@ -495,13 +497,13 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
        LOG_INFO << "---------modify dest node success!-------";
        
        m_curGateway->setCurOperatorType(SEND_MESSAGE);
-       loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
+       m_roundTimer = m_loop->runAfter(5, boost::bind(&JacServer::onTimer, this));
 
      }
      else
      {
        LOG_INFO << "---------modify dest node failed!-------";
-       loop_->runAfter(5, boost::bind(&JacServer::onTimer, this));
+       m_roundTimer = m_loop->runAfter(5, boost::bind(&JacServer::onTimer, this));
      }
 
      buf->retrieve(sizeof(RspAck));
@@ -600,8 +602,17 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
       buf->retrieve(sizeof(MSG_Login));       
 
-       // connections_.insert(conn);
+      // 1 暂时取消轮询定时
+      // 2 设置网关目标节点地址为当前注册节点地址，并发送注册成功应答
+      // 3 恢复原轮询状态，继续轮询；
+      m_loop->cancel(m_roundTimer);
+      modifyDestAddr(stuBody->header.srcAddr);
+      usleep(30000);
       sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
+
+      modifyDestAddr(m_curGateway->getCurNode()->addr);
+      m_roundTimer = m_loop->runAfter(5, boost::bind(&JacServer::onTimer, this));
+
     }
     // else if (/* condition */) // process the rsp ack ,modify the current node addr
     // {
@@ -656,7 +667,14 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
          }
        }
        // ack
-       sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
+       // sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
+        m_loop->cancel(m_roundTimer);
+        modifyDestAddr(stuBody->header.srcAddr);
+        usleep(30000);
+        sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
+
+        modifyDestAddr(m_curGateway->getCurNode()->addr);
+        m_roundTimer = m_loop->runAfter(5, boost::bind(&JacServer::onTimer, this));
     }
     else if (tHeader->MsgType == MSG_COMACK)
     {
