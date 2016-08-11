@@ -86,17 +86,25 @@ void gateway::setCurOperatorType(OperatorType oType)
 
 pINFO_Node gateway::getCurNode()
 {
+	if (m_pCurNode == NULL)
+	{
+		m_pCurNode = m_mNodesInfo[m_vNodeAddrs[0]];
+	}
 	return m_pCurNode;
 }
 
 pINFO_Node gateway::getNextNode()
 {
 	m_curIndex++;
-	// m_curIndex%(m_mNodesInfo.size());
-	int iTmp = m_curIndex%(m_mNodesInfo.size());
+	LOG_INFO << "m_curIndex: " << m_curIndex
+			 << " m_mNodesInfo.size(), " << m_mNodesInfo.size();
 
-	LOG_INFO << "++++++++++++++++ m_vNodeAddrs[" << iTmp << "]: " << m_vNodeAddrs[iTmp];
-	return m_mNodesInfo[m_vNodeAddrs[iTmp]];
+	// m_curIndex%(m_mNodesInfo.size());
+	m_curIndex = m_curIndex%(m_mNodesInfo.size());
+
+	LOG_INFO << "++++++++++++++++ m_vNodeAddrs[" << m_curIndex << "]: " << m_vNodeAddrs[m_curIndex];
+	m_pCurNode = m_mNodesInfo[m_vNodeAddrs[m_curIndex]];
+	return m_pCurNode;
 }
 
 void gateway::setCurNode(UINT16 curAddr)
@@ -120,8 +128,10 @@ void gateway::insertNode(pINFO_Node pNode)
 {
 	if (pNode != NULL)
 	{
+		LOG_INFO << "gateway::insertNode 01 ";
 		m_mNodesInfo[pNode->addr] = pNode;
 		m_vNodeAddrs.push_back(pNode->addr);
+		LOG_INFO << "gateway::insertNode 02 ";
 	}
 }
 

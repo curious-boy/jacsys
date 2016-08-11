@@ -34,10 +34,12 @@ class JacServer
     server_.setMessageCallback(
         boost::bind(&JacServer::onMessage, this, _1, _2, _3));
 
-    m_roundTimer = m_loop->runAfter(2,boost::bind(&JacServer::onTimer,this));
+    m_loop->cancel(m_roundTimer);
+    m_roundTimer = m_loop->runAfter(8,boost::bind(&JacServer::onTimer,this));
 
     m_curMsgSerialNo = 0;
     m_iSendNo = 0;
+    m_curGateway = NULL;
   }
 
   void start()
@@ -160,7 +162,8 @@ void JacServer::onTimer()
 
   if (m_curGateway == NULL)
   {
-    m_roundTimer = m_loop->runAfter(3, boost::bind(&JacServer::onTimer, this));
+    m_loop->cancel(m_roundTimer);
+    m_roundTimer = m_loop->runAfter(10, boost::bind(&JacServer::onTimer, this));
     return;
   }
 
@@ -168,26 +171,18 @@ void JacServer::onTimer()
   if (m_curGateway->getNodeSize() == 0 )
   {
     LOG_INFO << "no node registed now!";
-    m_roundTimer = m_loop->runAfter(5, boost::bind(&JacServer::onTimer, this));
+    m_loop->cancel(m_roundTimer);
+    m_roundTimer = m_loop->runAfter(10, boost::bind(&JacServer::onTimer, this));
     return;
   }
   else if (m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
   {
-    LOG_INFO << "^^^^^^^^^^^^^^^^^^ send cmd MODIFY_DEST_NODE";
-    msgLen = sizeof(ModifyGateWayDestAddr);
-    ModifyGateWayDestAddr* stuModifyGateWayDestAddr = (ModifyGateWayDestAddr*)new char(msgLen);
-    stuModifyGateWayDestAddr->protocolTag1 = 0xDE;
-    stuModifyGateWayDestAddr->protocolTag2 = 0xDF;
-    stuModifyGateWayDestAddr->protocolTag3 = 0xEF;
-    stuModifyGateWayDestAddr->funcCode = 0xD2;
 
-    UINT16 destAddr = m_curGateway->getNextNode()->addr;    // getNextNode不要重复调用
-    LOG_INFO << "^^^^^^^^^^^^^^^^^^ send modify dest node, addr = " << destAddr;
-    stuModifyGateWayDestAddr->addr = destAddr;
-    
-    tBuf.append(stuModifyGateWayDestAddr,msgLen);
+    UINT16 destAddr = m_curGateway->getNextNode()->addr;
+    modifyDestAddr(destAddr);
+    LOG_INFO << "%%%%%%%%%%%%%%%%%m_destAddr: " << m_destAddr;
 
-    sendAll(&tBuf);   // need modify
+    // m_roundTimer = m_loop->runAfter(3, boost::bind(&JacServer::onTimer, this));
     return;
   }
   else
@@ -412,7 +407,8 @@ void JacServer::onTimer()
 
     sendAll(&tBuf);
 
-    m_roundTimer = m_loop->runAfter(3, boost::bind(&JacServer::onTimer, this));
+    m_loop->cancel(m_roundTimer);
+    m_roundTimer = m_loop->runAfter(10, boost::bind(&JacServer::onTimer, this));
 
   }
 
@@ -497,13 +493,15 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
        LOG_INFO << "---------modify dest node success!-------";
        
        m_curGateway->setCurOperatorType(SEND_MESSAGE);
-       m_roundTimer = m_loop->runAfter(5, boost::bind(&JacServer::onTimer, this));
+       m_loop->cancel(m_roundTimer);
+       m_roundTimer = m_loop->runAfter(10, boost::bind(&JacServer::onTimer, this));
 
      }
      else
      {
        LOG_INFO << "---------modify dest node failed!-------";
-       m_roundTimer = m_loop->runAfter(5, boost::bind(&JacServer::onTimer, this));
+       m_loop->cancel(m_roundTimer);
+       m_roundTimer = m_loop->runAfter(10, boost::bind(&JacServer::onTimer, this));
      }
 
      buf->retrieve(sizeof(RspAck));
@@ -573,15 +571,24 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
         LOG_INFO << "ACK_MSG_ERROR";
       }
       
-      // 节点注册成功
-      if (tmpAckCode == ACK_OK)
-      {
-        if (m_curGateway == NULL)
+      // 1 暂时取消轮询定时
+      // 2 设置网关目标节点地址为当前注册节点地址，并发送注册成功应答
+      // 3 恢复原轮询状态，继续轮询；
+      if (m_curGateway == NULL)
         {
           m_curGateway = new gateway();
           m_curGateway->setName(stuBody->gatewayId);
         }
 
+      m_loop->cancel(m_roundTimer);
+      modifyDestAddr(stuBody->header.srcAddr);
+      usleep(50000);
+      sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
+      usleep(50000);
+
+      // 节点注册成功
+      if (tmpAckCode == ACK_OK)
+      {
         if (!m_curGateway->isExistNode(stuBody->header.srcAddr))
         {
           pINFO_Node tmpNode = new INFO_Node();      // when to free pointer?
@@ -600,24 +607,17 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
          LOG_INFO << "-----------The node registed failed!!!!";
       }
 
-      buf->retrieve(sizeof(MSG_Login));       
+      buf->retrieve(sizeof(MSG_Login));   
 
-      // 1 暂时取消轮询定时
-      // 2 设置网关目标节点地址为当前注册节点地址，并发送注册成功应答
-      // 3 恢复原轮询状态，继续轮询；
+      if (m_curGateway->getNodeSize() > 0 )
+      {
+        modifyDestAddr(m_curGateway->getCurNode()->addr);
+      }
+
       m_loop->cancel(m_roundTimer);
-      modifyDestAddr(stuBody->header.srcAddr);
-      usleep(30000);
-      sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
-
-      modifyDestAddr(m_curGateway->getCurNode()->addr);
-      m_roundTimer = m_loop->runAfter(5, boost::bind(&JacServer::onTimer, this));
+      m_roundTimer = m_loop->runAfter(9, boost::bind(&JacServer::onTimer, this));
 
     }
-    // else if (/* condition */) // process the rsp ack ,modify the current node addr
-    // {
-    //   /* code */
-    // }
     else if (tHeader->MsgType == MSG_LOGOUT)
     {
       if(buf->readableBytes() < sizeof(MSG_Logout))
@@ -668,13 +668,21 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
        }
        // ack
        // sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
+
+        if (m_curGateway == NULL)
+        {
+          m_curGateway = new gateway();
+          m_curGateway->setName(stuBody->gatewayId);
+        }
+
         m_loop->cancel(m_roundTimer);
         modifyDestAddr(stuBody->header.srcAddr);
         usleep(30000);
         sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
 
         modifyDestAddr(m_curGateway->getCurNode()->addr);
-        m_roundTimer = m_loop->runAfter(5, boost::bind(&JacServer::onTimer, this));
+        m_loop->cancel(m_roundTimer);
+        m_roundTimer = m_loop->runAfter(8, boost::bind(&JacServer::onTimer, this));
     }
     else if (tHeader->MsgType == MSG_COMACK)
     {
@@ -1023,12 +1031,14 @@ void JacServer::modifyDestAddr(UINT16 addr)
     stuModifyGateWayDestAddr->protocolTag3 = 0xEF;
     stuModifyGateWayDestAddr->funcCode = 0xD2;
 
-    UINT16 destAddr = m_curGateway->getNextNode()->addr;    // getNextNode不要重复调用
-    LOG_INFO << "^^^^^^^^^^^^^^^^^^ send modify dest node, addr = " << destAddr;
-    stuModifyGateWayDestAddr->addr = destAddr;
+    //LOG_INFO << "modifyDestAddr, test01";
+   // UINT16 destAddr = m_curGateway->getNextNode()->addr;    // getNextNode不要重复调用
+    LOG_INFO << "^^^^^^^^^^^^^^^^^^ send modify dest node, addr = " << addr;
+    stuModifyGateWayDestAddr->addr = addr;
     
     tBuf.append(stuModifyGateWayDestAddr,msgLen);
 
+    m_destAddr = Tranverse16(addr);
     sendAll(&tBuf);   // need modify
 }
 
