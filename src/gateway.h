@@ -40,6 +40,7 @@ public:
     void                setCurNode(UINT16 curAddr);
     void                increaseUnReplyNum(int inum=1);             //增加当前节点未返回的请求数
     int                 getUnReplyNum();                                        //返回当前节点未返回的请求数
+    void                resetUnReplyNum();                                  //重置当前节点的未返回的请求数
     void                setCurOperatorType(OperatorType oType);
     OperatorType    getCurOperatorType();
     bool                isExistNode(UINT16 addr);
@@ -96,9 +97,19 @@ void gateway::increaseUnReplyNum(int inum = 1)
     m_pCurNode->unReplyNum = m_pCurNode->unReplyNum + inum;
 }
 
+
 int gateway::getUnReplyNum()
 {
     return m_pCurNode->unReplyNum;
+}
+
+void gateway::resetUnReplyNum()
+{
+    if(m_pCurNode == NULL)
+    {
+        return;
+    }
+    m_pCurNode->unReplyNum =0;
 }
 
 pINFO_Node gateway::getCurNode()
@@ -152,7 +163,7 @@ pINFO_Node gateway:: getNodeByAddr(UINT16 addr)
 
 void gateway::insertNode(pINFO_Node pNode)
 {
-    
+
     if(m_pTmpNode == NULL)
     {
         m_pTmpNode = new INFO_Node();
@@ -161,6 +172,8 @@ void gateway::insertNode(pINFO_Node pNode)
     if(pNode != NULL )
     {
         m_pTmpNode->addr = pNode->addr;
+        m_pTmpNode->unReplyNum = pNode->unReplyNum;
+        //m_pTmpNode->state =
         LOG_INFO << " m_pTmpNode->addr: " <<  m_pTmpNode->addr;
     }
     else

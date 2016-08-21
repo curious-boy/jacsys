@@ -1,0 +1,4 @@
+# radd iignore file
+*.[oa]
+jacServer
+jacClient

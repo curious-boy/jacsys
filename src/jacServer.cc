@@ -169,7 +169,7 @@ void JacServer::onTimer()
 {
     Buffer tBuf;
     UINT16 msgLen = 0;
-	LOG_INFO << "onTimer....";
+    LOG_INFO << "onTimer....";
 
     if (m_curGateway == NULL)
     {
@@ -469,21 +469,18 @@ void JacServer::sendReplyAck(TcpConnection* conn, pMSG_Header srcheader,UINT8 AC
     UINT16 msgLen = sizeof(MSG_ACK);
     UINT16 tmpCrc=0;
 
-    // modify dest addr
-    // modifyDestAddr(srcheader->srcAddr);
-
     // ack
     Buffer ackBuf;
-    // MSG_ACK* stuAck = (MSG_ACK*)new char[sizeof(MSG_ACK)];
-    // LOG_INFO <<"haahhahhahahahhahhhhahhhhhhhh";
     UINT16 tmpNo = getMsgSerialNo();
-    // LOG_INFO << "############################";
 
     pheader->Sof=COM_FRM_HEAD;
     pheader->MsgType = MSG_COMACK;
     pheader->srcAddr = srcheader->destAddr;
     pheader->destAddr = srcheader->srcAddr;
     pheader->length = Tranverse16(msgLen);
+    LOG_DEBUG << "-----))))))))))))))))))))pheader->length: " << pheader->length;
+    LOG_DEBUG << "-----))))))))))))))))))))msgLen: " << msgLen;
+
     pheader->serialNo = Tranverse16(tmpNo);
     pheader->replyNo = srcheader->serialNo;
     LOG_INFO << "----------serialNo: " << Tranverse16(pheader->serialNo);
@@ -496,7 +493,6 @@ void JacServer::sendReplyAck(TcpConnection* conn, pMSG_Header srcheader,UINT8 AC
 
     tmpCrc = CalcCRC16(0,&stuAck.header.Sof,msgLen);
     pheader->crc16=Tranverse16(tmpCrc);
-
 
     ackBuf.append(&stuAck, sizeof(MSG_ACK));
 
@@ -531,7 +527,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 if(m_curGateway->getCurOperatorType() == REGISTER_NODE)
                 {
                     sendReplyAck(get_pointer(conn),m_pTmpHeader,tmpAckCode);
-			m_curGateway->insertNodeFinished();
+                    m_curGateway->insertNodeFinished();
                     m_curGateway->setCurOperatorType(REGISTER_FINISH);
                 }
                 if(m_curGateway->getCurOperatorType() == REGISTER_FINISH)
@@ -542,10 +538,10 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                         modifyDestAddr(m_curGateway->getCurNode()->addr);
                     }
 
-			m_curGateway->setCurOperatorType(SEND_MESSAGE);
+                    m_curGateway->setCurOperatorType(SEND_MESSAGE);
 
-			LOG_INFO << "before runafter--------";
-			m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS, boost::bind(&JacServer::onTimer, this));
+                    LOG_INFO << "before runafter--------";
+                    m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
                 }
                 if(m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
                 {
@@ -654,6 +650,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             LOG_INFO << "-------------------srcAddr: " << (stuBody->header.srcAddr);
 
             LOG_INFO << "destAddr: " << (stuBody->header.destAddr);
+	     LOG_INFO << "srcAddr: " << (stuBody->header.srcAddr);
             LOG_INFO << "length: " << Tranverse16(stuBody->header.length);
             LOG_INFO << "serialNo: " << Tranverse16(stuBody->header.serialNo);
             LOG_INFO << "replyNo: " << Tranverse16(stuBody->header.replyNo);
@@ -695,8 +692,14 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             m_loop->cancel(m_roundTimer);
             modifyDestAddr(stuBody->header.srcAddr);
 
-            m_pTmpHeader = (pMSG_Header)&stuBody->header;
-
+            if(m_pTmpHeader == NULL )
+            {
+                m_pTmpHeader = new MSG_Header();
+            }
+            m_pTmpHeader->destAddr= stuBody->header.destAddr;
+            m_pTmpHeader->srcAddr= stuBody->header.srcAddr;
+	     m_pTmpHeader->serialNo = stuBody->header.serialNo;
+	     m_pTmpHeader->replyNo = stuBody->header.replyNo;
 
             //usleep(50000);
             //sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
@@ -709,6 +712,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 {
                     pINFO_Node tmpNode = new INFO_Node();      // when to free pointer?
                     tmpNode->addr = (stuBody->header.srcAddr);
+			tmpNode->unReplyNum = 0;
                     LOG_INFO << "-----------new node registed!!!!";
 
                     m_curGateway->insertNode(tmpNode);
@@ -814,7 +818,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                      << "replyNo = " << stuBody->header.replyNo;
 
             //报文合法性校验
-            if(Tranverse16(stuBody->header.length) != sizeof(MSG_Logout))
+            if(Tranverse16(stuBody->header.length) != sizeof(MSG_ACK))
             {
                 tmpAckCode = ACK_OUTOFMEM;
             }
@@ -829,7 +833,8 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 tmpAckCode = ACK_MSG_ERROR;
             }
 
-            LOG_WARN << "common ack, errCode = " << tmpAckCode;
+
+            LOG_DEBUG << "common ack, errCode = " << tmpAckCode;
 
             buf->retrieve(sizeof(MSG_ACK));
         }
@@ -1105,6 +1110,8 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             buf->retrieve(buf->readableBytes());
         }
 
+	LOG_DEBUG << "... resetUnReplyNum ...";
+	m_curGateway->resetUnReplyNum();
         return;
     }
 
