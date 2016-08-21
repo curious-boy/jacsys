@@ -46,11 +46,14 @@ RM = /usr/bin/cmake -E remove -f
 # Escaping for special characters.
 EQUALS = =
 
+# The program to use to edit the cache.
+CMAKE_EDIT_COMMAND = /usr/bin/ccmake
+
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/hgfs/github/jacServer/jacsys/cmake
+CMAKE_SOURCE_DIR = /home/admin/frankz/github/jacsys/cmake
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/hgfs/github/jacServer/jacsys/cmake
+CMAKE_BINARY_DIR = /home/admin/frankz/github/jacsys/cmake
 
 #=============================================================================
 # Target rules for target CMakeFiles/jacClient.dir
@@ -59,7 +62,7 @@ CMAKE_BINARY_DIR = /mnt/hgfs/github/jacServer/jacsys/cmake
 CMakeFiles/jacClient.dir/all:
 	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/depend
 	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles  1
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/admin/frankz/github/jacsys/cmake/CMakeFiles  1
 	@echo "Built target jacClient"
 .PHONY : CMakeFiles/jacClient.dir/all
 
@@ -69,9 +72,9 @@ all: CMakeFiles/jacClient.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/jacClient.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/frankz/github/jacsys/cmake/CMakeFiles 1
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/jacClient.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/frankz/github/jacsys/cmake/CMakeFiles 0
 .PHONY : CMakeFiles/jacClient.dir/rule
 
 # Convenience name for target.
@@ -94,7 +97,7 @@ clean: CMakeFiles/jacClient.dir/clean
 CMakeFiles/jacServer.dir/all:
 	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/depend
 	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles  2
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/admin/frankz/github/jacsys/cmake/CMakeFiles  2
 	@echo "Built target jacServer"
 .PHONY : CMakeFiles/jacServer.dir/all
 
@@ -104,9 +107,9 @@ all: CMakeFiles/jacServer.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/jacServer.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/frankz/github/jacsys/cmake/CMakeFiles 1
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/jacServer.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/frankz/github/jacsys/cmake/CMakeFiles 0
 .PHONY : CMakeFiles/jacServer.dir/rule
 
 # Convenience name for target.

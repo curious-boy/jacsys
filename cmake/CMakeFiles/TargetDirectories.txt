@@ -1,2 +1,2 @@
-/mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles/jacClient.dir
-/mnt/hgfs/github/jacServer/jacsys/cmake/CMakeFiles/jacServer.dir
+/home/admin/frankz/github/jacsys/cmake/CMakeFiles/jacClient.dir
+/home/admin/frankz/github/jacsys/cmake/CMakeFiles/jacServer.dir

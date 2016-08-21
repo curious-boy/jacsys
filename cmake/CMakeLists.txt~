@@ -11,11 +11,12 @@ if(NOT MUDUO_PATH)
 endif()
 
 set(CXX_FLAGS
- #-g
+ -g
  # -DVALGRIND
  # -DMUDUO_STD_STRING
   -Wall
  -Wextra
+-fpermissive
  # -m32
  # -Werror
  -Wconversion

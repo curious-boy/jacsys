@@ -39,8 +39,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -finline-limit=1000 -DNDEBUG")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
-#set(MUDUO_PATH "/home/admin/frankz/github/build/release-install")
-set(MUDUO_PATH "/mnt/hgfs/github/jacServer/build/release-install")
+set(MUDUO_PATH "/home/admin/frankz/github/build/release-install")
+#set(MUDUO_PATH "/mnt/hgfs/github/jacServer/build/release-install")
 
 
 find_path(Muduo_INCLUDE_DIR muduo "${MUDUO_PATH}/include")

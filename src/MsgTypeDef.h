@@ -90,8 +90,10 @@
 #define EVENT_HMI_RECCMD		6//HMI接收命令
 #define LASTEVENT				6		// 最后一个事件
 
-#define  PRODUCTION_TIMER 10//秒
-#define  LOGIN_TIMER  3//秒
+#define  PRODUCTION_TIMER 10                           //秒
+#define  LOGIN_TIMER  3                                     //秒
+#define  ROUND_INTERVAL_SECONDS  10             //轮询间隔时间
+
 
 //网关标识,可变
 #define  GW_ID "HuiGuan-001"
@@ -102,6 +104,7 @@
 #define TMR_START 1
 #define TMR_STOP  0
 #define TMR_OUT   0XFF
+
 typedef struct  
 {
 	UINT8 TimerFlg;//定时器标志0停止 1启动 0xff时间到

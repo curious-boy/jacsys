@@ -1,5 +1,5 @@
 FILE(REMOVE_RECURSE
-  "CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o"
+  "CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o"
   "bin/jacServer.pdb"
   "bin/jacServer"
 )

@@ -8,7 +8,8 @@ typedef uint32_t		UINT32;
 typedef uint64_t		UINT64;
 
 
-#define MAX_SERIAL_NO  65535
+#define MAX_SERIAL_NO  65535          // 最大命令序号，超过后重新排序
+#define MAX_UNREPLY_NUM 8           //节点未响应最大次数
 
 //淇敼缃戝叧鐨勭洰鏍囪妭鐐瑰湴鍧�搴旂瓟
 typedef struct
@@ -18,7 +19,6 @@ typedef struct
 	UINT8 protocolTag3;
 	UINT8 funcCode;
 	UINT8 ackCode;	
-
 	
 } RspAck,*pRspAck;
 
