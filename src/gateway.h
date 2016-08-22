@@ -1,4 +1,4 @@
-// the header of class gateway
+// the header of class Gateway
 #ifndef GATEWAY_H
 #define GATEWAY_H
 
@@ -18,11 +18,11 @@ typedef enum
 
 } OperatorType;
 
-class gateway
+class Gateway
 {
 public:
-    gateway();
-    ~gateway();
+    Gateway();
+    ~Gateway();
 
 
 public:
@@ -61,7 +61,7 @@ private:
 
 };
 
-gateway::gateway()
+Gateway::Gateway()
 {
     // m_pConn = NULL;
     m_pCurNode = NULL;
@@ -71,7 +71,7 @@ gateway::gateway()
     m_curIndex = 0;
 }
 
-bool gateway::isExistNode(UINT16 addr)
+bool Gateway::isExistNode(UINT16 addr)
 {
     std::map<UINT16,pINFO_Node>::iterator it;
     it = m_mNodesInfo.find(addr);
@@ -82,28 +82,28 @@ bool gateway::isExistNode(UINT16 addr)
     return false;
 }
 
-OperatorType gateway::getCurOperatorType()
+OperatorType Gateway::getCurOperatorType()
 {
     return m_CurOperatortype;
 }
 
-void gateway::setCurOperatorType(OperatorType oType)
+void Gateway::setCurOperatorType(OperatorType oType)
 {
     m_CurOperatortype = oType;
 }
 
-void gateway::increaseUnReplyNum(int inum = 1)
+void Gateway::increaseUnReplyNum(int inum = 1)
 {
     m_pCurNode->unReplyNum = m_pCurNode->unReplyNum + inum;
 }
 
 
-int gateway::getUnReplyNum()
+int Gateway::getUnReplyNum()
 {
     return m_pCurNode->unReplyNum;
 }
 
-void gateway::resetUnReplyNum()
+void Gateway::resetUnReplyNum()
 {
     if(m_pCurNode == NULL)
     {
@@ -112,7 +112,7 @@ void gateway::resetUnReplyNum()
     m_pCurNode->unReplyNum =0;
 }
 
-pINFO_Node gateway::getCurNode()
+pINFO_Node Gateway::getCurNode()
 {
     if (m_pCurNode == NULL)
     {
@@ -121,7 +121,7 @@ pINFO_Node gateway::getCurNode()
     return m_pCurNode;
 }
 
-pINFO_Node gateway::getTmpNode()
+pINFO_Node Gateway::getTmpNode()
 {
     if (m_pTmpNode != NULL)
     {
@@ -130,7 +130,7 @@ pINFO_Node gateway::getTmpNode()
     return NULL;
 }
 
-pINFO_Node gateway::getNextNode()
+pINFO_Node Gateway::getNextNode()
 {
     m_curIndex++;
     LOG_INFO << "m_curIndex: " << m_curIndex
@@ -144,12 +144,12 @@ pINFO_Node gateway::getNextNode()
     return m_pCurNode;
 }
 
-void gateway::setCurNode(UINT16 curAddr)
+void Gateway::setCurNode(UINT16 curAddr)
 {
     m_pCurNode = m_mNodesInfo.find(curAddr)->second;
 }
 
-pINFO_Node gateway:: getNodeByAddr(UINT16 addr)
+pINFO_Node Gateway:: getNodeByAddr(UINT16 addr)
 {
     std::map<UINT16,pINFO_Node>::iterator it;
     it = m_mNodesInfo.find(addr);
@@ -161,7 +161,7 @@ pINFO_Node gateway:: getNodeByAddr(UINT16 addr)
     return NULL;
 }
 
-void gateway::insertNode(pINFO_Node pNode)
+void Gateway::insertNode(pINFO_Node pNode)
 {
 
     if(m_pTmpNode == NULL)
@@ -185,7 +185,7 @@ void gateway::insertNode(pINFO_Node pNode)
 
 }
 
-void gateway::insertNodeFinished()
+void Gateway::insertNodeFinished()
 {
 
     if(m_pTmpNode != NULL)
@@ -199,18 +199,18 @@ void gateway::insertNodeFinished()
     }
 }
 
-UINT16 gateway::getNodeSize()
+UINT16 Gateway::getNodeSize()
 {
     return (UINT16)m_mNodesInfo.size();
 }
 
-void gateway::removeAllNodes()
+void Gateway::removeAllNodes()
 {
     m_mNodesInfo.clear();
     m_vNodeAddrs.clear();
 }
 
-void gateway::deleteNodeByAddr(UINT16 addr)
+void Gateway::deleteNodeByAddr(UINT16 addr)
 {
     m_mNodesInfo.erase(addr);
 
@@ -224,12 +224,12 @@ void gateway::deleteNodeByAddr(UINT16 addr)
     }
 }
 
-std::string gateway::getName()
+std::string Gateway::getName()
 {
     return m_strName;
 }
 
-void gateway::setName(std::string name)
+void Gateway::setName(std::string name)
 {
     m_strName = name;
 }
