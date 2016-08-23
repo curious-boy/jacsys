@@ -69,6 +69,7 @@ private:
     UINT8  getSendCmd();
 
     void modifyDestAddr(UINT16 addr);
+    void modifyDestAddr();
 
 
     typedef std::set<TcpConnectionPtr> ConnectionList;
@@ -91,6 +92,7 @@ private:
     Gateway*  m_curGateway;       //当前线程所处理的网关，目前只支持一个线程，一个网关
 
     TimerId   m_roundTimer;        //轮询定时器
+    TimerId   m_resendTimer;        //指令重发定时器  修改目标节点地址
 
     Buffer*       m_delayBuf;         //缓存延迟处理的数据
     Buffer       m_sendBuf;
@@ -189,10 +191,8 @@ void JacServer::onTimer()
     {
 
         UINT16 destAddr = m_curGateway->getNextNode()->addr;
+        LOG_INFO << "%%%%%%%%%%%%%%%%%m_destAddr: " << destAddr;
         modifyDestAddr(destAddr);
-        LOG_INFO << "%%%%%%%%%%%%%%%%%m_destAddr: " << m_destAddr;
-
-        // m_roundTimer = m_loop->runAfter(3, boost::bind(&JacServer::onTimer, this));
         return;
     }
     else
@@ -211,8 +211,8 @@ void JacServer::onTimer()
             }
 
 //轮询下一个节点的地址
-            UINT16 destAddr = m_curGateway->getNextNode()->addr;
-            modifyDestAddr(destAddr);
+            m_destAddr= m_curGateway->getNextNode()->addr;
+            modifyDestAddr(m_destAddr);
 
             m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
             return;
@@ -221,7 +221,7 @@ void JacServer::onTimer()
         UINT16 tmpCrc=0;
         UINT8  tmpCmd = getSendCmd();
         UINT16 tmpNo = getMsgSerialNo();
-        LOG_INFO << "onTimer: cmd＝"<< tmpCmd;
+        LOG_INFO << "onTimer: cmd="<< tmpCmd;
         LOG_INFO << "onTimer: tmpNo=" <<tmpNo;
 
         if(tmpCmd == MSG_GETPRODUCTION )
@@ -455,7 +455,7 @@ void JacServer::sendAll(Buffer* buf)
          ++it)
     {
         get_pointer(*it)->setTcpNoDelay(true);
-        get_pointer(*it)->send(buf);    
+        get_pointer(*it)->send(buf);
     }
 
     m_iSendNo++;
@@ -522,25 +522,29 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             //处理修改目标节点命令反馈
             if (tmpAck->ackCode == 0x00)
             {
-
+                m_loop->cancel( m_resendTimer );
                 if(m_curGateway->getCurOperatorType() == REGISTER_NODE)
                 {
                     sendReplyAck(get_pointer(conn),m_pTmpHeader,tmpAckCode);
                     m_curGateway->insertNodeFinished();
                     m_curGateway->setCurOperatorType(REGISTER_FINISH);
+
+                    if (m_destAddr == 0)
+                    {
+                        m_destAddr = Tranverse16(m_pTmpHeader->srcAddr);
+                    }
                 }
                 if(m_curGateway->getCurOperatorType() == REGISTER_FINISH)
                 {
-                    LOG_INFO << "--------------register 03";
+
                     if (m_curGateway->getNodeSize() > 0 )
                     {
                         sleep(1);
                         modifyDestAddr(m_curGateway->getCurNode()->addr);
                     }
-
+                    LOG_INFO << "RRRRRRRRRRRRRR---register final success----";
                     m_curGateway->setCurOperatorType(SEND_MESSAGE);
 
-                    LOG_INFO << "before runafter--------";
                     m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
                 }
                 if(m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
@@ -551,14 +555,24 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     m_loop->cancel(m_roundTimer);
                     m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
                 }
-
-
             }
             else
             {
-                LOG_INFO << "---------modify dest node failed!-------";
-                m_loop->cancel(m_roundTimer);
-                m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS, boost::bind(&JacServer::onTimer, this));
+
+                if(m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
+                {
+                    LOG_INFO << "---------modify dest node failed!-------";
+                    m_loop->cancel(m_roundTimer);
+
+                    m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS, boost::bind(&JacServer::onTimer, this));
+
+                }
+                else
+                {
+                    LOG_INFO << "---------modifyDestAddr-------";
+                    modifyDestAddr(m_pTmpHeader->srcAddr);
+                }
+
             }
 
             buf->retrieve(sizeof(RspAck));
@@ -573,7 +587,33 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
            ||(m_curGateway->getCurOperatorType() == REGISTER_NODE))
         {
             int iTempLen = buf->readableBytes();
-            buf->retrieve(iTempLen);
+            int iHeaderIndex=0;
+            int iEndIndex = 0;
+
+            char * pTmpChar = const_cast<char*>(buf->peek());
+            for(int i=0; i<iTempLen; i++)
+            {
+                if((UINT8)pTmpChar[i] == (UINT8)COM_FRM_HEAD)
+                {
+                    iHeaderIndex = i;
+                }
+            }
+            for(int i=0; i<iTempLen; i++)
+            {
+                if((UINT8)pTmpChar[i] == (UINT8)COM_FRM_END)
+                {
+                    iEndIndex= i;
+                }
+            }
+            if((iHeaderIndex< iEndIndex) && (iEndIndex <= iTempLen))
+            {
+                buf->retrieve(iEndIndex);
+            }
+            else
+            {
+                buf->retrieve(iTempLen);
+            }
+
             LOG_INFO << "*******Registering..., throw bytes, length = " << iTempLen;
         }
     }
@@ -626,6 +666,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
         if (tHeader->MsgType == MSG_LOGIN)
         {
+        	LOG_INFO << "===========MSG_LOGIN++++++++";
             if(buf->readableBytes() < sizeof(MSG_Login))
             {
                 sendReplyAck(get_pointer(conn),tHeader,ACK_DATALOSS);
@@ -641,12 +682,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             {
                 m_localAddr = (stuBody->header.destAddr);
             }
-
-            if (m_destAddr == 0)
-            {
-                m_destAddr = Tranverse16(stuBody->header.srcAddr);
-            }
-
+		
             LOG_INFO << "-------------------srcAddr: " << (stuBody->header.srcAddr);
             LOG_INFO << "destAddr: " << (stuBody->header.destAddr);
 
@@ -712,10 +748,8 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     pINFO_Node tmpNode = new INFO_Node();      // when to free pointer?
                     tmpNode->addr = (stuBody->header.srcAddr);
                     tmpNode->unReplyNum = 0;
-                    LOG_INFO << "-----------new node registed!!!!";
 
                     m_curGateway->insertNode(tmpNode);
-                    LOG_INFO<<"-------- new node inserted!";
                 }
                 else
                 {
@@ -989,9 +1023,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
             buf->retrieve(sizeof(MSG_MacState));
 
-            LOG_INFO << "MacState: " << (stuBody->MacState);
-            LOG_INFO << "MacErr: " << (stuBody->MacErr);
-            LOG_INFO << "StopTmLen: " << Tranverse32(stuBody->StopTmLen);
+            LOG_DEBUG<< "MacState: " << (stuBody->MacState);
+            LOG_DEBUG << "MacErr: " << (stuBody->MacErr);
+            LOG_DEBUG << "StopTmLen: " << Tranverse32(stuBody->StopTmLen);
 
             if (tmpAckCode != ACK_OK)
             {
@@ -1149,6 +1183,30 @@ void JacServer::modifyDestAddr(UINT16 addr)
 
     m_destAddr = Tranverse16(addr);
     sendAll(&m_sendBuf);   // need modify
+
+	m_loop->cancel(m_resendTimer);
+    m_resendTimer = m_loop->runAfter(3,boost::bind(&JacServer::modifyDestAddr,this));
+}
+
+void JacServer::modifyDestAddr()
+{
+	LOG_INFO << "TIMER : modifyDestAddr...";
+    UINT16 msgLen = 0;
+
+    msgLen = sizeof(ModifyGateWayDestAddr);
+    ModifyGateWayDestAddr* stuModifyGateWayDestAddr = (ModifyGateWayDestAddr*)new char(msgLen);
+    stuModifyGateWayDestAddr->protocolTag1 = 0xDE;
+    stuModifyGateWayDestAddr->protocolTag2 = 0xDF;
+    stuModifyGateWayDestAddr->protocolTag3 = 0xEF;
+    stuModifyGateWayDestAddr->funcCode = 0xD2;
+
+    stuModifyGateWayDestAddr->addr = Tranverse16(m_destAddr);
+
+    m_sendBuf.append(stuModifyGateWayDestAddr,msgLen);
+
+    sendAll(&m_sendBuf);   // need modify
+    m_loop->cancel(m_resendTimer);
+    m_resendTimer = m_loop->runAfter(3,boost::bind(&JacServer::modifyDestAddr,this));
 }
 
 int kRollSize = 500*1000*1000;

@@ -135,12 +135,17 @@ pINFO_Node Gateway::getNextNode()
     m_curIndex++;
     LOG_INFO << "m_curIndex: " << m_curIndex
              << " m_mNodesInfo.size(), " << m_mNodesInfo.size();
+    for(int i=0; i<m_mNodesInfo.size(); i++)
+    {
+        LOG_INFO << "WHY... " << m_mNodesInfo[m_vNodeAddrs[i]]->addr;
+    }
 
     // m_curIndex%(m_mNodesInfo.size());
     m_curIndex = m_curIndex%(m_mNodesInfo.size());
 
     LOG_INFO << "++++++++++++++++ m_vNodeAddrs[" << m_curIndex << "]: " << m_vNodeAddrs[m_curIndex];
     m_pCurNode = m_mNodesInfo[m_vNodeAddrs[m_curIndex]];
+    LOG_INFO << "++++++++++++++++ m_pCurNode " << m_pCurNode->addr;
     return m_pCurNode;
 }
 
@@ -190,7 +195,10 @@ void Gateway::insertNodeFinished()
 
     if(m_pTmpNode != NULL)
     {
-        m_mNodesInfo[m_pTmpNode->addr] = m_pTmpNode;
+        pINFO_Node tmpNode = new INFO_Node();
+        tmpNode->addr = m_pTmpNode->addr;
+        tmpNode->unReplyNum = m_pTmpNode->unReplyNum;
+        m_mNodesInfo[m_pTmpNode->addr] = tmpNode;
         m_vNodeAddrs.push_back(m_pTmpNode->addr);
     }
     else
@@ -212,6 +220,8 @@ void Gateway::removeAllNodes()
 
 void Gateway::deleteNodeByAddr(UINT16 addr)
 {
+    delete    m_mNodesInfo[addr];
+    m_mNodesInfo[addr] = NULL;
     m_mNodesInfo.erase(addr);
 
     for (int i = 0; i < m_vNodeAddrs.size(); ++i)
