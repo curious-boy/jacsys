@@ -92,7 +92,7 @@
 
 #define  PRODUCTION_TIMER 10                           //秒
 #define  LOGIN_TIMER  3                                     //秒
-#define  ROUND_INTERVAL_SECONDS  5             //轮询间隔时间
+#define  ROUND_INTERVAL_SECONDS  0.5             //轮询间隔时间
 
 
 //网关标识,可变

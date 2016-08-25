@@ -35,7 +35,6 @@ public:
     std::string             getName();
     void                    setName(std::string name);
     pINFO_Node      getCurNode();
-    pINFO_Node      getTmpNode();
     pINFO_Node      getNextNode();
     void                setCurNode(UINT16 curAddr);
     void                increaseUnReplyNum(int inum=1);             //增加当前节点未返回的请求数
@@ -46,16 +45,12 @@ public:
     bool                isExistNode(UINT16 addr);
 
 private:
-    // TcpConnectionPtr     m_pConn;
-    pINFO_Node          m_pCurNode;
-    pINFO_Node               m_pTmpNode;             //临时节点对象，调用 insertFinished后插入到节点列表中
-    // std::vector<INFO_Node> m_vNodes;
-    std::map<UINT16, pINFO_Node> m_mNodesInfo;
-    std::vector<UINT16> m_vNodeAddrs;
+    std::vector<pINFO_Node> m_vNodesInfo;
     std::string         m_strName;
+    std::string         m_strIP;        // ip address
     UINT16              m_curNodeAddr;
     OperatorType        m_CurOperatortype;
-    int                 m_curIndex;
+    int                     m_curIndex;
 
     // addr unreplyNum
 
@@ -64,20 +59,20 @@ private:
 Gateway::Gateway()
 {
     // m_pConn = NULL;
-    m_pCurNode = NULL;
     m_strName = "";
-    m_curNodeAddr=0x0000;
+    m_strIP = "";
     m_CurOperatortype = REGISTER_NODE;
     m_curIndex = 0;
 }
 
 bool Gateway::isExistNode(UINT16 addr)
 {
-    std::map<UINT16,pINFO_Node>::iterator it;
-    it = m_mNodesInfo.find(addr);
-    if (it != m_mNodesInfo.end())
+    for(int i=0; i<m_vNodesInfo.size(); i++)
     {
-        return true;
+        if(m_vNodesInfo[i]->addr == addr)
+        {
+            return true;
+        }
     }
     return false;
 }
@@ -94,142 +89,102 @@ void Gateway::setCurOperatorType(OperatorType oType)
 
 void Gateway::increaseUnReplyNum(int inum = 1)
 {
-    m_pCurNode->unReplyNum = m_pCurNode->unReplyNum + inum;
+    m_vNodesInfo[m_curIndex]->unReplyNum= m_vNodesInfo[m_curIndex]->unReplyNum + inum;
 }
 
 
 int Gateway::getUnReplyNum()
 {
-    return m_pCurNode->unReplyNum;
+    return m_vNodesInfo[m_curIndex]->unReplyNum;
 }
 
 void Gateway::resetUnReplyNum()
 {
-    if(m_pCurNode == NULL)
+    if(m_vNodesInfo.size()==0)
     {
         return;
     }
-    m_pCurNode->unReplyNum =0;
+    m_vNodesInfo[m_curIndex]->unReplyNum =0;
 }
 
 pINFO_Node Gateway::getCurNode()
 {
-    if (m_pCurNode == NULL)
+    if(m_vNodesInfo.size() < 0 )
     {
-        m_pCurNode = m_mNodesInfo[m_vNodeAddrs[0]];
+        return NULL;
     }
-    return m_pCurNode;
-}
-
-pINFO_Node Gateway::getTmpNode()
-{
-    if (m_pTmpNode != NULL)
-    {
-        return m_pTmpNode;
-    }
-    return NULL;
+    return m_vNodesInfo[m_curIndex];
 }
 
 pINFO_Node Gateway::getNextNode()
 {
     m_curIndex++;
     LOG_INFO << "m_curIndex: " << m_curIndex
-             << " m_mNodesInfo.size(), " << m_mNodesInfo.size();
-    for(int i=0; i<m_mNodesInfo.size(); i++)
+             << " m_vNodesInfo.size(), " << m_vNodesInfo.size();
+    for(int i=0; i<m_vNodesInfo.size(); i++)
     {
-        LOG_INFO << "WHY... " << m_mNodesInfo[m_vNodeAddrs[i]]->addr;
+        LOG_DEBUG << "WHY... " << m_vNodesInfo[i]->addr;
     }
 
-    // m_curIndex%(m_mNodesInfo.size());
-    m_curIndex = m_curIndex%(m_mNodesInfo.size());
+    m_curIndex = m_curIndex%(m_vNodesInfo.size());
 
-    LOG_INFO << "++++++++++++++++ m_vNodeAddrs[" << m_curIndex << "]: " << m_vNodeAddrs[m_curIndex];
-    m_pCurNode = m_mNodesInfo[m_vNodeAddrs[m_curIndex]];
-    LOG_INFO << "++++++++++++++++ m_pCurNode " << m_pCurNode->addr;
-    return m_pCurNode;
+    return m_vNodesInfo[m_curIndex];
 }
 
 void Gateway::setCurNode(UINT16 curAddr)
 {
-    m_pCurNode = m_mNodesInfo.find(curAddr)->second;
+    for(int i=0; i<m_vNodesInfo.size(); i++)
+    {
+        if(m_vNodesInfo[i]->addr == curAddr)
+        {
+            m_curIndex = i;
+        }
+    }
 }
 
 pINFO_Node Gateway:: getNodeByAddr(UINT16 addr)
 {
-    std::map<UINT16,pINFO_Node>::iterator it;
-    it = m_mNodesInfo.find(addr);
-    if (it != m_mNodesInfo.end())
+    for(int i=0; i<m_vNodesInfo.size(); i++)
     {
-        return it->second;
+        if(m_vNodesInfo[i]->addr == addr)
+        {
+            return m_vNodesInfo[i];
+        }
     }
-
     return NULL;
 }
 
 void Gateway::insertNode(pINFO_Node pNode)
 {
-
-    if(m_pTmpNode == NULL)
+    if(!isExistNode(pNode->addr) )
     {
-        m_pTmpNode = new INFO_Node();
-    }
-
-    if(pNode != NULL )
-    {
-        m_pTmpNode->addr = pNode->addr;
-        m_pTmpNode->unReplyNum = pNode->unReplyNum;
-        //m_pTmpNode->state =
-        LOG_INFO << " m_pTmpNode->addr: " <<  m_pTmpNode->addr;
-    }
-    else
-    {
-        // WARN
-
-    }
-
-
-}
-
-void Gateway::insertNodeFinished()
-{
-
-    if(m_pTmpNode != NULL)
-    {
-        pINFO_Node tmpNode = new INFO_Node();
-        tmpNode->addr = m_pTmpNode->addr;
-        tmpNode->unReplyNum = m_pTmpNode->unReplyNum;
-        m_mNodesInfo[m_pTmpNode->addr] = tmpNode;
-        m_vNodeAddrs.push_back(m_pTmpNode->addr);
-    }
-    else
-    {
-        //warn....here
+        if(pNode != NULL )
+        {
+            m_vNodesInfo.push_back(pNode);
+            LOG_INFO << " pNode->addr: " <<  pNode->addr;
+        }
     }
 }
 
 UINT16 Gateway::getNodeSize()
 {
-    return (UINT16)m_mNodesInfo.size();
+    return (UINT16)m_vNodesInfo.size();
 }
 
 void Gateway::removeAllNodes()
 {
-    m_mNodesInfo.clear();
-    m_vNodeAddrs.clear();
+    m_vNodesInfo.clear();
 }
 
 void Gateway::deleteNodeByAddr(UINT16 addr)
 {
-    delete    m_mNodesInfo[addr];
-    m_mNodesInfo[addr] = NULL;
-    m_mNodesInfo.erase(addr);
-
-    for (int i = 0; i < m_vNodeAddrs.size(); ++i)
+    for(int i=0; i<m_vNodesInfo.size(); i++)
     {
-        if (m_vNodeAddrs[i] == addr)
+        if(m_vNodesInfo[i]->addr == addr)
         {
-            m_vNodeAddrs.erase(m_vNodeAddrs.begin()+i);
-            LOG_INFO << "^^^^^^^^^^^^^^^^ node," << addr << " was deleted!";
+            delete m_vNodesInfo[i];
+            m_vNodesInfo[i]=NULL;
+            m_vNodesInfo.erase(m_vNodesInfo.begin()+i);
         }
     }
 }

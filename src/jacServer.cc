@@ -38,8 +38,8 @@ public:
         server_.setMessageCallback(
             boost::bind(&JacServer::onMessage, this, _1, _2, _3));
 
-        m_loop->cancel(m_roundTimer);
-        m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS,boost::bind(&JacServer::onTimer,this));
+        //m_loop->cancel(m_roundTimer);
+        //m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS,boost::bind(&JacServer::onTimer,this));
 
         m_curMsgSerialNo = 0;
         m_iSendNo = 0;
@@ -197,13 +197,16 @@ void JacServer::onTimer()
     }
     else
     {
-
 //未响应的命令数超过8时，判定节点掉线；从网关信息中删除该节点
+        LOG_INFO << "+++++ getUnReplyNum , " << m_curGateway->getUnReplyNum();
+
         if(m_curGateway->getUnReplyNum() > MAX_UNREPLY_NUM)
         {
             LOG_INFO << "----- node, addr= "
                      << m_curGateway->getCurNode()->addr << " was removed!";
+            LOG_INFO << ">>>>>>before deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
             m_curGateway->deleteNodeByAddr(m_curGateway->getCurNode()->addr);
+            LOG_INFO << ">>>>>>after deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
 
             if(m_curGateway->getNodeSize() == 0)
             {
@@ -526,7 +529,12 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 if(m_curGateway->getCurOperatorType() == REGISTER_NODE)
                 {
                     sendReplyAck(get_pointer(conn),m_pTmpHeader,tmpAckCode);
-                    m_curGateway->insertNodeFinished();
+
+                    pINFO_Node tmpNode = new INFO_Node();
+                    tmpNode->addr = m_pTmpHeader->srcAddr;
+                    tmpNode->unReplyNum = 0;
+                    m_curGateway->insertNode(tmpNode);
+
                     m_curGateway->setCurOperatorType(REGISTER_FINISH);
 
                     if (m_destAddr == 0)
@@ -666,7 +674,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
         if (tHeader->MsgType == MSG_LOGIN)
         {
-        	LOG_INFO << "===========MSG_LOGIN++++++++";
+            LOG_INFO << "===========MSG_LOGIN++++++++";
             if(buf->readableBytes() < sizeof(MSG_Login))
             {
                 sendReplyAck(get_pointer(conn),tHeader,ACK_DATALOSS);
@@ -682,7 +690,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             {
                 m_localAddr = (stuBody->header.destAddr);
             }
-		
+
             LOG_INFO << "-------------------srcAddr: " << (stuBody->header.srcAddr);
             LOG_INFO << "destAddr: " << (stuBody->header.destAddr);
 
@@ -723,6 +731,20 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 m_curGateway->setName(stuBody->gatewayId);
             }
 
+            //
+            if (tmpAckCode == ACK_OK)
+            {
+                if (m_curGateway->isExistNode(stuBody->header.srcAddr))
+                {
+                    LOG_INFO << "-----------The node have been registed!!!!";
+                }
+            }
+            else
+            {
+                LOG_INFO << "-----------The node registed failed!!!!";
+                return;
+            }
+
             m_curGateway->setCurOperatorType( REGISTER_NODE);
             m_loop->cancel(m_roundTimer);
             modifyDestAddr(stuBody->header.srcAddr);
@@ -735,31 +757,6 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             m_pTmpHeader->srcAddr= stuBody->header.srcAddr;
             m_pTmpHeader->serialNo = stuBody->header.serialNo;
             m_pTmpHeader->replyNo = stuBody->header.replyNo;
-
-            //usleep(50000);
-            //sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
-            //usleep(50000);
-
-            // 节点注册成功
-            if (tmpAckCode == ACK_OK)
-            {
-                if (!m_curGateway->isExistNode(stuBody->header.srcAddr))
-                {
-                    pINFO_Node tmpNode = new INFO_Node();      // when to free pointer?
-                    tmpNode->addr = (stuBody->header.srcAddr);
-                    tmpNode->unReplyNum = 0;
-
-                    m_curGateway->insertNode(tmpNode);
-                }
-                else
-                {
-                    LOG_INFO << "-----------The node have been registed!!!!";
-                }
-            }
-            else
-            {
-                LOG_INFO << "-----------The node registed failed!!!!";
-            }
 
             buf->retrieve(sizeof(MSG_Login));
 
@@ -1184,13 +1181,13 @@ void JacServer::modifyDestAddr(UINT16 addr)
     m_destAddr = Tranverse16(addr);
     sendAll(&m_sendBuf);   // need modify
 
-	m_loop->cancel(m_resendTimer);
+    m_loop->cancel(m_resendTimer);
     m_resendTimer = m_loop->runAfter(3,boost::bind(&JacServer::modifyDestAddr,this));
 }
 
 void JacServer::modifyDestAddr()
 {
-	LOG_INFO << "TIMER : modifyDestAddr...";
+    LOG_INFO << "TIMER : modifyDestAddr...";
     UINT16 msgLen = 0;
 
     msgLen = sizeof(ModifyGateWayDestAddr);
@@ -1203,6 +1200,7 @@ void JacServer::modifyDestAddr()
     stuModifyGateWayDestAddr->addr = Tranverse16(m_destAddr);
 
     m_sendBuf.append(stuModifyGateWayDestAddr,msgLen);
+    LOG_INFO << "^^^^^^^^^^^^^^^^^^ send modify dest node, addr = " << stuModifyGateWayDestAddr->addr;
 
     sendAll(&m_sendBuf);   // need modify
     m_loop->cancel(m_resendTimer);
