@@ -1,108 +1,28 @@
-#include <muduo/net/TcpServer.h>
+#include "jacServer.h"
 
-#include <muduo/base/AsyncLogging.h>
-#include <muduo/base/Logging.h>
-#include <muduo/base/Thread.h>
-#include <muduo/net/EventLoop.h>
-#include <muduo/net/InetAddress.h>
-
-#include <boost/bind.hpp>
-
-#include <utility>
-
-#include <set>
-#include <stdio.h>
-#include <unistd.h>
-#include <sstream>
-
-#include <sys/time.h>
-
-#include "MsgTypeDef.h"
-#include "tools.h"
-#include "gateway.h"
-
-
-
-using namespace muduo;
-using namespace muduo::net;
-
-class JacServer
+void JacServer::processDB()
 {
-public:
-    JacServer(EventLoop* loop, const InetAddress& listenAddr)
-        : m_loop(loop),
-          server_(loop, listenAddr, "JacServer")
+    LOG_INFO << "... processDB ...";
+    while(true)
     {
-        server_.setConnectionCallback(
-            boost::bind(&JacServer::onConnection, this, _1));
-        server_.setMessageCallback(
-            boost::bind(&JacServer::onMessage, this, _1, _2, _3));
+        while(tasks_.size() > 0)
+        {
+		MutexLockGuard lock(task_list_mutex_);
+		DatabaseOperatorTask operatorTask = tasks_.back();
+		tasks_.pop_back();
 
-        //m_loop->cancel(m_roundTimer);
-        //m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS,boost::bind(&JacServer::onTimer,this));
+		LOG_INFO << "operatorTask, "
 
-        m_curMsgSerialNo = 0;
-        m_iSendNo = 0;
-        m_curGateway = NULL;
-        m_delayBuf = NULL;
-        m_pTmpHeader = NULL;
+        }
+
+        usleep(50);
+
     }
 
-    void start()
-    {
-        server_.start();
-    }
-
-private:
-    void onConnection(const TcpConnectionPtr& conn);
-
-    void onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time);
-
-    void onTimer();
-
-    void sendAll(Buffer* buf);
-
-    void sendReplyAck(TcpConnection* conn, pMSG_Header srcheader,UINT8 ACK_code);
-
-    UINT16 getMsgSerialNo();
-
-    UINT8  getSendCmd();
-
-    void modifyDestAddr(UINT16 addr);
-    void modifyDestAddr();
-
-
-    typedef std::set<TcpConnectionPtr> ConnectionList;
-    EventLoop* m_loop;
-    TcpServer server_;
-    ConnectionList connections_;
-
-    UINT16 m_curMsgSerialNo;
-    UINT16 m_localAddr;
-
-    //临时存放 目标地址
-    UINT16 m_destAddr;
-    UINT16 m_iSendNo;
-
-    pMSG_Header m_pTmpHeader;       //临时存放消息头，用于新节点注册时的交互
-
-    // tmp
-    // std::vector<UINT16> m_vNodes;
-    // std::map<std::string,Gateway> m_mGateways;
-    Gateway*  m_curGateway;       //当前线程所处理的网关，目前只支持一个线程，一个网关
-
-    TimerId   m_roundTimer;        //轮询定时器
-    TimerId   m_resendTimer;        //指令重发定时器  修改目标节点地址
-
-    Buffer*       m_delayBuf;         //缓存延迟处理的数据
-    Buffer       m_sendBuf;
-
-};
+}
 
 UINT8 JacServer::getSendCmd()
 {
-    // m_iSendNo++;
-
     UINT16 iTmp = m_iSendNo % 11;
 
     if (iTmp == 0)
@@ -157,9 +77,13 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
              << conn->localAddress().toIpPort() << " is "
              << (conn->connected() ? "UP" : "DOWN");
 
-    if (conn->connected())
+    if (conn->connected()  && connections_.size() > 0)
     {
-        connections_.insert(conn);
+        conn->shutdown();       //one server process , one gateway
+    }
+    else if( conn->connected())
+    {
+        connections_.erase(conn);
     }
     else
     {
@@ -1227,14 +1151,14 @@ void setLogging(const char* argv0)
 
 int main(int argc, char* argv[])
 {
-    //setLogging(argv[0]);
     Logger::setLogLevel(Logger::INFO);
 
     LOG_INFO << "pid = " << getpid() << ", tid = " << CurrentThread::tid();
     EventLoop loop;
+
     InetAddress listenAddr(2007);
     LOG_INFO << "Listening at: " << listenAddr.toPort();
-    JacServer server(&loop, listenAddr);
+    JacServer server(&loop, listenAddr,2);
 
     server.start();
 

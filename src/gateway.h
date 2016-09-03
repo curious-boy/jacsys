@@ -43,6 +43,7 @@ public:
     void                setCurOperatorType(OperatorType oType);
     OperatorType    getCurOperatorType();
     bool                isExistNode(UINT16 addr);
+    
 
 private:
     std::vector<pINFO_Node> m_vNodesInfo;

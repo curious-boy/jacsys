@@ -68,7 +68,7 @@
 #define CanDataSize 8
 #define MsgSize 512//
 #define HostAddr 0x2002//主机地址初始值，可变
-#define STRING_MAXLEN 20
+#define STRING_MAXLEN       128             //最大的字符串长度，暂定
 
 #pragma pack(1)    //设置1字节对齐
 
@@ -93,6 +93,7 @@
 #define  PRODUCTION_TIMER 10                           //秒
 #define  LOGIN_TIMER  3                                     //秒
 #define  ROUND_INTERVAL_SECONDS  0.5             //轮询间隔时间
+#define  MAX_THREAD_NUM             6                   //最大线程数目 与支持的网关数有关
 
 
 //网关标识,可变

@@ -14,6 +14,7 @@ CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o
  /home/admin/frankz/github/build/release-install/include/muduo/base/Mutex.h
  /home/admin/frankz/github/build/release-install/include/muduo/base/StringPiece.h
  /home/admin/frankz/github/build/release-install/include/muduo/base/Thread.h
+ /home/admin/frankz/github/build/release-install/include/muduo/base/ThreadPool.h
  /home/admin/frankz/github/build/release-install/include/muduo/base/Timestamp.h
  /home/admin/frankz/github/build/release-install/include/muduo/base/Types.h
  /home/admin/frankz/github/build/release-install/include/muduo/base/copyable.h
@@ -29,5 +30,6 @@ CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o
  /home/admin/frankz/github/jacsys/src/StuDef.h
  /home/admin/frankz/github/jacsys/src/gateway.h
  /home/admin/frankz/github/jacsys/src/jacServer.cc
+ /home/admin/frankz/github/jacsys/src/jacServer.h
  /home/admin/frankz/github/jacsys/src/preDef.h
  /home/admin/frankz/github/jacsys/src/tools.h

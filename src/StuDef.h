@@ -4,7 +4,7 @@
 #include "preDef.h"
 
 
-// info of gateway
+// info of Gateway
 // typedef struct 
 // {
 // 	string gatewayId;
