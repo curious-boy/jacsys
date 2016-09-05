@@ -141,6 +141,18 @@ Muduo_INCLUDE_DIR:PATH=/home/admin/frankz/github/build/release-install/include
 //Path to a file.
 Muduo_LIBRARY_DIR:PATH=/home/admin/frankz/github/build/release-install/lib
 
+//Path to a file.
+Mysql_INCLUDE_DIR:PATH=/usr/bin
+
+//Path to a file.
+Mysql_LIBRARY_DIR:PATH=Mysql_LIBRARY_DIR-NOTFOUND
+
+//Path to a file.
+Mysqlpp_INCLUDE_DIR:PATH=Mysqlpp_INCLUDE_DIR-NOTFOUND
+
+//Path to a file.
+Mysqlpp_LIBRARY_DIR:PATH=/usr/local/lib
+
 //Value Computed by CMake
 jacSystem_BINARY_DIR:STATIC=/home/admin/frankz/github/jacsys/cmake
 
@@ -152,6 +164,12 @@ muduo_base:FILEPATH=/home/admin/frankz/github/build/release-install/lib/libmuduo
 
 //Path to a library.
 muduo_net:FILEPATH=/home/admin/frankz/github/build/release-install/lib/libmuduo_net.a
+
+//Path to a library.
+mysqlclient:FILEPATH=mysqlclient-NOTFOUND
+
+//Path to a library.
+mysqlpp:FILEPATH=/usr/local/lib/libmysqlpp.so
 
 
 ########################

@@ -5,8 +5,9 @@
 
 #include <muduo/base/AsyncLogging.h>
 #include <muduo/base/Logging.h>
-#include <muduo/base/Thread.h>
+#include <muduo/base/Condition.h>
 #include <muduo/base/Mutex.h>
+#include <muduo/base/Thread.h>
 #include <muduo/base/ThreadPool.h>
 #include <muduo/net/EventLoop.h>
 #include <muduo/net/InetAddress.h>
@@ -26,17 +27,13 @@
 #include "MsgTypeDef.h"
 #include "tools.h"
 #include "gateway.h"
+#
 
-typedef struct 
-{
-    UINT16  task_type;                      //different task ,different select cause;
-    UINT8    operator_type;             // insert ,select ,update ,and so on
-    char[STRING_MAXLEN]     content;        // detailed content
-
-}DatabaseOperatorTask, *pDatabaseOperatorTask; 
 
 using namespace muduo;
 using namespace muduo::net;
+
+
 
 class JacServer
 {
@@ -44,9 +41,7 @@ public:
     JacServer(EventLoop* loop, const InetAddress& listenAddr, int numThreads)
         : m_loop(loop),
           server_(loop, listenAddr, "JacServer"),
-          numThreads_(numThreads),
-          task_list_mutex_();
-
+          numThreads_(numThreads)         
     {
         server_.setConnectionCallback(
             boost::bind(&JacServer::onConnection, this, _1));
@@ -60,15 +55,7 @@ public:
         m_pTmpHeader = NULL;
     }
 
-    void start()
-    {
-        LOG_INFO << "starting " << numThreads_ << " threads.";
-        threadPool_.start(numThreads_);
-
-        // create dbthread here
-        threadPool_.run(boost::bind(&processDB));
-        server_.start();
-    }
+    void start();
 
 private:
     void onConnection(const TcpConnectionPtr& conn);
@@ -114,9 +101,7 @@ private:
     Buffer*       m_delayBuf;         //缓存延迟处理的数据
     Buffer          m_sendBuf;
 
-    typedef std::vector<DatabaseOperatorTask> DatabaseOperatorTaskList;
-    static DatabaseOperatorTaskList tasks_;                // database task list
-    Mutex       task_list_mutex_;                               //
+    
 
 };
 

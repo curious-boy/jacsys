@@ -45,6 +45,7 @@ set(MUDUO_PATH "/home/admin/frankz/github/build/release-install")
 
 find_path(Muduo_INCLUDE_DIR muduo "${MUDUO_PATH}/include")
 find_path(Muduo_LIBRARY_DIR libmuduo_net.a "${MUDUO_PATH}/lib")
+
 set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${Muduo_LIBRARY_DIR})
 message(STATUS ${Muduo_INCLUDE_DIR})
 message(STATUS ${Muduo_LIBRARY_DIR})
@@ -55,19 +56,44 @@ find_library(muduo_net muduo_net)
 message(STATUS ${muduo_base})
 message(STATUS ${muduo_net})
 
+set(MYSQL_PATH "/usr")
+find_path(Mysql_INCLUDE_DIR mysql "${MYSQL_PATH}/include")
+find_path(Mysql_LIBRARY_DIR libmysqlclient.so "${MYSQL_PATH}/lib/mysql")
+
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${Mysql_LIBRARY_DIR})
+message(STATUS ${Mysql_INCLUDE_DIR})
+message(STATUS ${Mysql_LIBRARY_DIR})
+
+include_directories(${Mysql_INCLUDE_DIR})
+find_library(mysqlclient mysqlclient)
+message(STATUS ${mysqlclient})
+set(Mysql_INCLUDE_DIRS "/usr/include/mysql")
+
+set(MYSQLPP_PATH "/usr/local")
+find_path(Mysqlpp_INCLUDE_DIR mysqlpp "${MYSQL	PP_PATH}/include/mysql++")
+find_path(Mysqlpp_LIBRARY_DIR libmysqlpp.so "${MYSQLPP_PATH}/lib")
+
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${Mysqlpp_LIBRARY_DIR})
+message(STATUS ${Mysqlpp_INCLUDE_DIR})
+message(STATUS ${Mysqlpp_LIBRARY_DIR})
+
+include_directories(${Mysqlpp_INCLUDE_DIR})
+find_library(mysqlpp mysqlpp)
+message(STATUS ${mysqlpp})
+set(Mysqlpp_INCLUDE_DIRS "/usr/local/include/mysql++")
+
+
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-add_executable(jacServer ../src/jacServer.cc)
+add_executable(jacServer ../src/jacServer.cc ../src/database_operator.cc)
 target_link_libraries(jacServer ${muduo_net})
 target_link_libraries(jacServer ${muduo_base})
-target_link_libraries(jacServer pthread rt)
+target_link_libraries(jacServer pthread rt mysqlpp)
 
-
-
-add_executable(jacClient ../src/jacClient.cc)
+add_executable(jacClient ../src/jacClient.cc )
 
 target_link_libraries(jacClient ${muduo_net})
 target_link_libraries(jacClient ${muduo_base})

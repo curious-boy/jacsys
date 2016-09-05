@@ -1,17 +1,21 @@
 #include "jacServer.h"
+#include "database_operator.h"
+
+
+DatabaseOperator g_DatabaseOperator;
 
 void JacServer::processDB()
 {
     LOG_INFO << "... processDB ...";
     while(true)
     {
-        while(tasks_.size() > 0)
+        while(g_DatabaseOperator.tasks_.size() > 0)
         {
-		MutexLockGuard lock(task_list_mutex_);
-		DatabaseOperatorTask operatorTask = tasks_.back();
-		tasks_.pop_back();
+            //MutexLockGuard    lock(task_list_mutex_);
+            //DatabaseOperatorTask operatorTask = tasks_.back();
+            //tasks_.pop_back();
 
-		LOG_INFO << "operatorTask, "
+            LOG_INFO << "operatorTask... ";
 
         }
 
@@ -20,6 +24,17 @@ void JacServer::processDB()
     }
 
 }
+
+void JacServer::start()
+{
+    LOG_INFO << "starting " << numThreads_ << " threads.";
+    threadPool_.start(numThreads_);
+
+    // create dbthread here
+    threadPool_.run(boost::bind(&processDB));
+    server_.start();
+}
+
 
 UINT8 JacServer::getSendCmd()
 {

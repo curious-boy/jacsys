@@ -127,6 +127,30 @@ jacServer/fast:
 	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/build
 .PHONY : jacServer/fast
 
+home/admin/frankz/github/jacsys/src/database_operator.o: home/admin/frankz/github/jacsys/src/database_operator.cc.o
+.PHONY : home/admin/frankz/github/jacsys/src/database_operator.o
+
+# target to build an object file
+home/admin/frankz/github/jacsys/src/database_operator.cc.o:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o
+.PHONY : home/admin/frankz/github/jacsys/src/database_operator.cc.o
+
+home/admin/frankz/github/jacsys/src/database_operator.i: home/admin/frankz/github/jacsys/src/database_operator.cc.i
+.PHONY : home/admin/frankz/github/jacsys/src/database_operator.i
+
+# target to preprocess a source file
+home/admin/frankz/github/jacsys/src/database_operator.cc.i:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.i
+.PHONY : home/admin/frankz/github/jacsys/src/database_operator.cc.i
+
+home/admin/frankz/github/jacsys/src/database_operator.s: home/admin/frankz/github/jacsys/src/database_operator.cc.s
+.PHONY : home/admin/frankz/github/jacsys/src/database_operator.s
+
+# target to generate assembly for a file
+home/admin/frankz/github/jacsys/src/database_operator.cc.s:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.s
+.PHONY : home/admin/frankz/github/jacsys/src/database_operator.cc.s
+
 home/admin/frankz/github/jacsys/src/jacClient.o: home/admin/frankz/github/jacsys/src/jacClient.cc.o
 .PHONY : home/admin/frankz/github/jacsys/src/jacClient.o
 
@@ -185,6 +209,9 @@ help:
 	@echo "... jacClient"
 	@echo "... jacServer"
 	@echo "... rebuild_cache"
+	@echo "... home/admin/frankz/github/jacsys/src/database_operator.o"
+	@echo "... home/admin/frankz/github/jacsys/src/database_operator.i"
+	@echo "... home/admin/frankz/github/jacsys/src/database_operator.s"
 	@echo "... home/admin/frankz/github/jacsys/src/jacClient.o"
 	@echo "... home/admin/frankz/github/jacsys/src/jacClient.i"
 	@echo "... home/admin/frankz/github/jacsys/src/jacClient.s"

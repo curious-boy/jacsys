@@ -75,14 +75,39 @@ CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o.prov
 
 CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o.provides.build: CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o
 
+CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o: CMakeFiles/jacServer.dir/flags.make
+CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o: /home/admin/frankz/github/jacsys/src/database_operator.cc
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/admin/frankz/github/jacsys/cmake/CMakeFiles $(CMAKE_PROGRESS_2)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o"
+	g++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o -c /home/admin/frankz/github/jacsys/src/database_operator.cc
+
+CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.i"
+	g++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/admin/frankz/github/jacsys/src/database_operator.cc > CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.i
+
+CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.s"
+	g++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/admin/frankz/github/jacsys/src/database_operator.cc -o CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.s
+
+CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o.requires:
+.PHONY : CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o.requires
+
+CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o.provides: CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o.requires
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o.provides.build
+.PHONY : CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o.provides
+
+CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o.provides.build: CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o
+
 # Object files for target jacServer
 jacServer_OBJECTS = \
-"CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o"
+"CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o" \
+"CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o"
 
 # External object files for target jacServer
 jacServer_EXTERNAL_OBJECTS =
 
 bin/jacServer: CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o
+bin/jacServer: CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o
 bin/jacServer: CMakeFiles/jacServer.dir/build.make
 bin/jacServer: /home/admin/frankz/github/build/release-install/lib/libmuduo_net.a
 bin/jacServer: /home/admin/frankz/github/build/release-install/lib/libmuduo_base.a
@@ -95,6 +120,7 @@ CMakeFiles/jacServer.dir/build: bin/jacServer
 .PHONY : CMakeFiles/jacServer.dir/build
 
 CMakeFiles/jacServer.dir/requires: CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o.requires
+CMakeFiles/jacServer.dir/requires: CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o.requires
 .PHONY : CMakeFiles/jacServer.dir/requires
 
 CMakeFiles/jacServer.dir/clean:
