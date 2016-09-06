@@ -27,12 +27,11 @@
 #include "MsgTypeDef.h"
 #include "tools.h"
 #include "gateway.h"
-#
+#include "database_operator.h"
 
 
 using namespace muduo;
 using namespace muduo::net;
-
 
 
 class JacServer
@@ -100,7 +99,6 @@ private:
 
     Buffer*       m_delayBuf;         //缓存延迟处理的数据
     Buffer          m_sendBuf;
-
     
 
 };

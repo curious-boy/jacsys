@@ -102,19 +102,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named jacClient
-
-# Build rule for target.
-jacClient: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 jacClient
-.PHONY : jacClient
-
-# fast build rule for target.
-jacClient/fast:
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/build
-.PHONY : jacClient/fast
-
-#=============================================================================
 # Target rules for targets named jacServer
 
 # Build rule for target.
@@ -151,30 +138,6 @@ home/admin/frankz/github/jacsys/src/database_operator.cc.s:
 	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.s
 .PHONY : home/admin/frankz/github/jacsys/src/database_operator.cc.s
 
-home/admin/frankz/github/jacsys/src/jacClient.o: home/admin/frankz/github/jacsys/src/jacClient.cc.o
-.PHONY : home/admin/frankz/github/jacsys/src/jacClient.o
-
-# target to build an object file
-home/admin/frankz/github/jacsys/src/jacClient.cc.o:
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/home/admin/frankz/github/jacsys/src/jacClient.cc.o
-.PHONY : home/admin/frankz/github/jacsys/src/jacClient.cc.o
-
-home/admin/frankz/github/jacsys/src/jacClient.i: home/admin/frankz/github/jacsys/src/jacClient.cc.i
-.PHONY : home/admin/frankz/github/jacsys/src/jacClient.i
-
-# target to preprocess a source file
-home/admin/frankz/github/jacsys/src/jacClient.cc.i:
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/home/admin/frankz/github/jacsys/src/jacClient.cc.i
-.PHONY : home/admin/frankz/github/jacsys/src/jacClient.cc.i
-
-home/admin/frankz/github/jacsys/src/jacClient.s: home/admin/frankz/github/jacsys/src/jacClient.cc.s
-.PHONY : home/admin/frankz/github/jacsys/src/jacClient.s
-
-# target to generate assembly for a file
-home/admin/frankz/github/jacsys/src/jacClient.cc.s:
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/home/admin/frankz/github/jacsys/src/jacClient.cc.s
-.PHONY : home/admin/frankz/github/jacsys/src/jacClient.cc.s
-
 home/admin/frankz/github/jacsys/src/jacServer.o: home/admin/frankz/github/jacsys/src/jacServer.cc.o
 .PHONY : home/admin/frankz/github/jacsys/src/jacServer.o
 
@@ -206,15 +169,11 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... jacClient"
 	@echo "... jacServer"
 	@echo "... rebuild_cache"
 	@echo "... home/admin/frankz/github/jacsys/src/database_operator.o"
 	@echo "... home/admin/frankz/github/jacsys/src/database_operator.i"
 	@echo "... home/admin/frankz/github/jacsys/src/database_operator.s"
-	@echo "... home/admin/frankz/github/jacsys/src/jacClient.o"
-	@echo "... home/admin/frankz/github/jacsys/src/jacClient.i"
-	@echo "... home/admin/frankz/github/jacsys/src/jacClient.s"
 	@echo "... home/admin/frankz/github/jacsys/src/jacServer.o"
 	@echo "... home/admin/frankz/github/jacsys/src/jacServer.i"
 	@echo "... home/admin/frankz/github/jacsys/src/jacServer.s"

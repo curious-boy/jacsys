@@ -27,6 +27,7 @@ set(CXX_FLAGS
  -Wshadow
  -Wwrite-strings
  -march=native
+ -w
  # -MMD
  # -std=c++0x
  -rdynamic
@@ -59,13 +60,13 @@ message(STATUS ${muduo_net})
 
 # need change for the real path
 set(MYSQL_PATH "/usr")
-include_directories(${MYSQL_PATH}/include)
-link_directories(${MYSQL_PATH}/lib)
+include_directories(${MYSQL_PATH}/include/mysql)
+link_directories(${MYSQL_PATH}/lib64/mysql)
 
 # need change for the real path
 set(MYSQLPP_PATH "/usr/local")
-include_directories(${MYSQLPP_PATH}/include)
-link_directories(${MYSQLPP_PATH}/lib)
+include_directories(${MYSQLPP_PATH}/include/mysql++)
+link_directories(${MYSQLPP_PATH}/lib64)
 
 
 find_package(Boost REQUIRED)
@@ -73,12 +74,13 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR})
 
 add_executable(jacServer ../src/jacServer.cc ../src/database_operator.cc)
+#add_executable(jacServer ../src/jacServer.cc )
 target_link_libraries(jacServer ${muduo_net})
 target_link_libraries(jacServer ${muduo_base})
 target_link_libraries(jacServer pthread rt mysqlclient mysqlpp)
 
 #add_executable(jacClient ../src/jacClient.cc )
 
-target_link_libraries(jacClient ${muduo_net})
-target_link_libraries(jacClient ${muduo_base})
-target_link_libraries(jacClient pthread rt)
+#target_link_libraries(jacClient ${muduo_net})
+#target_link_libraries(jacClient ${muduo_base})
+#target_link_libraries(jacClient pthread rt)

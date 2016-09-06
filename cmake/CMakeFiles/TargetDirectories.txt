@@ -1,2 +1,1 @@
-/home/admin/frankz/github/jacsys/cmake/CMakeFiles/jacClient.dir
 /home/admin/frankz/github/jacsys/cmake/CMakeFiles/jacServer.dir

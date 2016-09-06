@@ -56,48 +56,13 @@ CMAKE_SOURCE_DIR = /home/admin/frankz/github/jacsys/cmake
 CMAKE_BINARY_DIR = /home/admin/frankz/github/jacsys/cmake
 
 #=============================================================================
-# Target rules for target CMakeFiles/jacClient.dir
-
-# All Build rule for target.
-CMakeFiles/jacClient.dir/all:
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/depend
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/admin/frankz/github/jacsys/cmake/CMakeFiles  1
-	@echo "Built target jacClient"
-.PHONY : CMakeFiles/jacClient.dir/all
-
-# Include target in all.
-all: CMakeFiles/jacClient.dir/all
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/jacClient.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/frankz/github/jacsys/cmake/CMakeFiles 1
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/jacClient.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/frankz/github/jacsys/cmake/CMakeFiles 0
-.PHONY : CMakeFiles/jacClient.dir/rule
-
-# Convenience name for target.
-jacClient: CMakeFiles/jacClient.dir/rule
-.PHONY : jacClient
-
-# clean rule for target.
-CMakeFiles/jacClient.dir/clean:
-	$(MAKE) -f CMakeFiles/jacClient.dir/build.make CMakeFiles/jacClient.dir/clean
-.PHONY : CMakeFiles/jacClient.dir/clean
-
-# clean rule for target.
-clean: CMakeFiles/jacClient.dir/clean
-.PHONY : clean
-
-#=============================================================================
 # Target rules for target CMakeFiles/jacServer.dir
 
 # All Build rule for target.
 CMakeFiles/jacServer.dir/all:
 	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/depend
 	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/admin/frankz/github/jacsys/cmake/CMakeFiles  2 3
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/admin/frankz/github/jacsys/cmake/CMakeFiles  1 2
 	@echo "Built target jacServer"
 .PHONY : CMakeFiles/jacServer.dir/all
 

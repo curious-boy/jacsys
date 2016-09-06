@@ -1,8 +1,21 @@
 #include "jacServer.h"
+
 #include "database_operator.h"
 
 
-DatabaseOperator g_DatabaseOperator;
+DatabaseOperator        g_DatabaseOperator;
+
+void JacServer::start()
+{
+    LOG_INFO << "starting " << numThreads_ << " threads.";
+    threadPool_.start(numThreads_);
+
+    g_DatabaseOperator.Init();
+
+    // create dbthread here
+    threadPool_.run(boost::bind(&processDB));
+    server_.start();
+}
 
 void JacServer::processDB()
 {
@@ -19,21 +32,12 @@ void JacServer::processDB()
 
         }
 
-        usleep(50);
+        usleep(500);
 
     }
 
 }
 
-void JacServer::start()
-{
-    LOG_INFO << "starting " << numThreads_ << " threads.";
-    threadPool_.start(numThreads_);
-
-    // create dbthread here
-    threadPool_.run(boost::bind(&processDB));
-    server_.start();
-}
 
 
 UINT8 JacServer::getSendCmd()

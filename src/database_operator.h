@@ -1,7 +1,12 @@
 #ifndef DATABASE_OPERATOR_H
 #define DATABASE_OPERATOR_H
+
 #include <mysql++.h>
 #include <muduo/base/Mutex.h>
+#include "preDef.h"
+
+
+#define DATABASE_SERVER_IP "127.0.0.1"
 
 
 typedef struct 
@@ -14,9 +19,11 @@ typedef struct
 
 class DatabaseOperator
 {
+
 public:
-    DatabaseOperator();
-    ~DatabaseOperator();
+    
+    DatabaseOperator() {     }
+
 
     int Init();
 
@@ -24,13 +31,14 @@ public:
 private:
     mysqlpp::Connection conn_;
     
+
+
+public:
     typedef std::vector<DatabaseOperatorTask> DatabaseOperatorTaskList;
-    static DatabaseOperatorTaskList     tasks_;                // database task list
-    mutable MutexLock                       task_list_mutex_;                               //
+    DatabaseOperatorTaskList                        tasks_;                // database task list
+    mutable muduo::MutexLock                        task_list_mutex_;                               //
 
-private:
-    
 
-}
+};
 
 #endif
