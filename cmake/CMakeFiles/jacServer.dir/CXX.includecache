@@ -291,6 +291,12 @@ database_operator.h
 /home/admin/frankz/github/jacsys/src/database_operator.h
 mysql++.h
 -
+vector
+-
+muduo/base/StringPiece.h
+-
+muduo/base/Logging.h
+-
 muduo/base/Mutex.h
 -
 preDef.h
@@ -353,8 +359,6 @@ tools.h
 /home/admin/frankz/github/jacsys/src/tools.h
 gateway.h
 /home/admin/frankz/github/jacsys/src/gateway.h
-database_operator.h
-/home/admin/frankz/github/jacsys/src/database_operator.h
 
 /home/admin/frankz/github/jacsys/src/preDef.h
 

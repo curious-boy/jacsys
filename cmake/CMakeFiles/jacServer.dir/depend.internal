@@ -3,7 +3,13 @@
 
 CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o
  /home/admin/frankz/github/build/release-install/include/muduo/base/CurrentThread.h
+ /home/admin/frankz/github/build/release-install/include/muduo/base/LogStream.h
+ /home/admin/frankz/github/build/release-install/include/muduo/base/Logging.h
  /home/admin/frankz/github/build/release-install/include/muduo/base/Mutex.h
+ /home/admin/frankz/github/build/release-install/include/muduo/base/StringPiece.h
+ /home/admin/frankz/github/build/release-install/include/muduo/base/Timestamp.h
+ /home/admin/frankz/github/build/release-install/include/muduo/base/Types.h
+ /home/admin/frankz/github/build/release-install/include/muduo/base/copyable.h
  /home/admin/frankz/github/jacsys/src/database_operator.cc
  /home/admin/frankz/github/jacsys/src/database_operator.h
  /home/admin/frankz/github/jacsys/src/preDef.h

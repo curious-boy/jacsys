@@ -27,7 +27,7 @@
 #include "MsgTypeDef.h"
 #include "tools.h"
 #include "gateway.h"
-#include "database_operator.h"
+
 
 
 using namespace muduo;

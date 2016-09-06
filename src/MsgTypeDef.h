@@ -68,7 +68,7 @@
 #define CanDataSize 8
 #define MsgSize 512//
 #define HostAddr 0x2002//主机地址初始值，可变
-#define STRING_MAXLEN       128             //最大的字符串长度，暂定
+
 
 #pragma pack(1)    //设置1字节对齐
 

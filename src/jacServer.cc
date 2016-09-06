@@ -28,17 +28,14 @@ void JacServer::processDB()
             //DatabaseOperatorTask operatorTask = tasks_.back();
             //tasks_.pop_back();
 
-            LOG_INFO << "operatorTask... ";
+
+		LOG_INFO << "operatorTask... ";
 
         }
 
         usleep(500);
-
     }
-
 }
-
-
 
 UINT8 JacServer::getSendCmd()
 {
