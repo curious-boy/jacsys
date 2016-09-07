@@ -12,9 +12,31 @@ int DatabaseOperator::Init()
     else
     {
         LOG_ERROR <<"DB Connection failed: " << conn.error();
+        return -1;
     }
 
     return 0;
+}
+
+bool DatabaseOperator::ExecTask(DatabaseOperatorTask& task)
+{
+    UINT16 taskType = task.task_type;
+    UINT8  operatorType = task.operator_type;
+    switch(taskType){
+        case MSG_REPLY|MSG_GETPRODUCTION:
+        {
+            // add code here 
+            break;
+        }
+        case MSG_REPLY|MSG_GETFIRMWAREINFO:
+        {
+            //add code here
+           break;         
+        }
+
+        default:
+        break;
+    }
 }
 
 

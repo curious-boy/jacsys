@@ -38,6 +38,8 @@ public:
     bool UpdateNodesOfGateway(string ipaddr, string name);
     string GetNameOfGateWay(string ipaddr);
 
+    bool ExecTask(DatabaseOperatorTask& task);
+
 
 private:
     mysqlpp::Connection conn_;   

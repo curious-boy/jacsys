@@ -1,41 +1,51 @@
 #include "jacServer.h"
-
 #include "database_operator.h"
 
 
-DatabaseOperator        g_DatabaseOperator;
+DatabaseOperator g_DatabaseOperator;
+
+void JacServer::processDB()
+{
+    LOG_INFO << "... processDB ...";
+    DatabaseOperatorTask operatorTask;
+    while(true)
+    {
+        
+        if(g_DatabaseOperator.tasks_.size() > 0)
+        {
+            //MutexLockGuard    lock(task_list_mutex_);
+            operatorTask = tasks_.back();
+            tasks_.pop_back();
+
+            LOG_INFO << "operatorTask... ";
+
+        }
+
+        // process operator Task
+        // add code
+
+        usleep(10);
+
+    }
+
+}
 
 void JacServer::start()
 {
     LOG_INFO << "starting " << numThreads_ << " threads.";
     threadPool_.start(numThreads_);
 
-    g_DatabaseOperator.Init();
-
     // create dbthread here
+    if(g_DatabaseOperator.Init() < 0)
+    {
+        LOG_ERROR << "Database Init failed! ";
+        ASSERT(FALSE);
+    }
+
     threadPool_.run(boost::bind(&processDB));
     server_.start();
 }
 
-void JacServer::processDB()
-{
-    LOG_INFO << "... processDB ...";
-    while(true)
-    {
-        while(g_DatabaseOperator.tasks_.size() > 0)
-        {
-            //MutexLockGuard    lock(task_list_mutex_);
-            //DatabaseOperatorTask operatorTask = tasks_.back();
-            //tasks_.pop_back();
-
-
-		LOG_INFO << "operatorTask... ";
-
-        }
-
-        usleep(500);
-    }
-}
 
 UINT8 JacServer::getSendCmd()
 {
