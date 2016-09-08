@@ -3,10 +3,13 @@
 
 #include <mysql++.h>
 #include <vector>
-#include <muduo/base/StringPiece.h>
+#include <string>
+#include <iostream>
+
+//#include <muduo/base/StringPiece.h>
 #include <muduo/base/Logging.h>
 #include <muduo/base/Mutex.h>
-#include "preDef.h"
+#include "MsgTypeDef.h"
 
 
 #define DATABASE_SERVER_IP "127.0.0.1"
@@ -18,7 +21,7 @@ typedef struct
 {
     UINT16  task_type;                      //different task ,different select cause;
     UINT8    operator_type;             // insert ,select ,update ,and so on
-    char    content[STRING_MAXLEN] ;        // detailed content
+    std::string    content ;        // detailed content
 }DatabaseOperatorTask, *pDatabaseOperatorTask; 
 
 
@@ -32,11 +35,11 @@ public:
 
     int Init();
     
-    vector<UINT16> GetNodesOfGateway (string ipaddr );
-    bool DeleteNodeofGateway(string ipaddr, UINT16 node);
-    bool InsertNodeOfGateway(string ipaddr, UINT16 node);
-    bool UpdateNodesOfGateway(string ipaddr, string name);
-    string GetNameOfGateWay(string ipaddr);
+    vector<UINT16> GetNodesOfGateway (std::string ipaddr );
+    bool DeleteNodeofGateway(std::string ipaddr, UINT16 node);
+    bool InsertNodeOfGateway(std::string ipaddr, UINT16 node);
+    bool UpdateNodesOfGateway(std::string ipaddr, std::string name);
+    std::string GetNameOfGateWay(std::string ipaddr);
 
     bool ExecTask(DatabaseOperatorTask& task);
 

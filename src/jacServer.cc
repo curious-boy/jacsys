@@ -10,14 +10,16 @@ void JacServer::processDB()
     DatabaseOperatorTask operatorTask;
     while(true)
     {
-        
+
         if(g_DatabaseOperator.tasks_.size() > 0)
         {
             //MutexLockGuard    lock(task_list_mutex_);
-            operatorTask = tasks_.back();
-            tasks_.pop_back();
+            operatorTask = g_DatabaseOperator.tasks_.back();
+            g_DatabaseOperator.tasks_.pop_back();
 
-            LOG_INFO << "operatorTask... ";
+            g_DatabaseOperator.ExecTask(operatorTask);
+
+            LOG_INFO << "operatorTask";
 
         }
 
@@ -39,7 +41,7 @@ void JacServer::start()
     if(g_DatabaseOperator.Init() < 0)
     {
         LOG_ERROR << "Database Init failed! ";
-        ASSERT(FALSE);
+        exit(-1);
     }
 
     threadPool_.run(boost::bind(&processDB));
@@ -51,47 +53,31 @@ UINT8 JacServer::getSendCmd()
 {
     UINT16 iTmp = m_iSendNo % 11;
 
-    if (iTmp == 0)
-    {
-        return MSG_SETMACINFO;
-    }
-    else if(iTmp == 1)
-    {
-        return MSG_SETPATPARA;
-    }
-    else if(iTmp == 2)
-    {
-        return MSG_FIGUREFILE;
-    }
-    else if(iTmp == 3)
+    if(iTmp == 0)
     {
         return MSG_GETMACINFO;
     }
-    else if(iTmp == 4)
+    else if(iTmp == 1)
     {
         return MSG_GETTASKINFO;
     }
-    else if(iTmp == 5)
+    else if(iTmp == 2)
     {
         return MSG_GETPRODUCTION;
     }
-    else if(iTmp == 6)
+    else if(iTmp == 3)
     {
         return MSG_GETFIRMWAREINFO;
     }
-    else if(iTmp == 7)
-    {
-        return MSG_SETINTERVAL;
-    }
-    else if(iTmp == 8)
+    else if(iTmp == 4)
     {
         return MSG_SETTIME;
     }
-    else if(iTmp == 9)
+    else if(iTmp == 5)
     {
         return MSG_GETMACSTATE;
     }
-    else if(iTmp == 10)
+    else if(iTmp == 6)
     {
         return MSG_GETPATPARA;
     }
@@ -848,6 +834,8 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             LOG_DEBUG << "Production: " << Tranverse32(stuBody->Production);
             LOG_DEBUG << "AckCode: " << tmpAckCode;
 
+
+
             if (tmpAckCode != ACK_OK)
             {
                 LOG_WARN<< "exception: "<< tmpAckCode;
@@ -973,6 +961,8 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             LOG_DEBUG<< "MacState: " << (stuBody->MacState);
             LOG_DEBUG << "MacErr: " << (stuBody->MacErr);
             LOG_DEBUG << "StopTmLen: " << Tranverse32(stuBody->StopTmLen);
+
+            //string str_task = "in"
 
             if (tmpAckCode != ACK_OK)
             {

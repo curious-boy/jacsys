@@ -9,6 +9,7 @@ CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.c
 CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o: /home/admin/frankz/github/build/release-install/include/muduo/base/Timestamp.h
 CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o: /home/admin/frankz/github/build/release-install/include/muduo/base/Types.h
 CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o: /home/admin/frankz/github/build/release-install/include/muduo/base/copyable.h
+CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o: /home/admin/frankz/github/jacsys/src/MsgTypeDef.h
 CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o: /home/admin/frankz/github/jacsys/src/database_operator.cc
 CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o: /home/admin/frankz/github/jacsys/src/database_operator.h
 CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o: /home/admin/frankz/github/jacsys/src/preDef.h

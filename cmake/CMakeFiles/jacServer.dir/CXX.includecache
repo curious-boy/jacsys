@@ -287,20 +287,24 @@ preDef.h
 /home/admin/frankz/github/jacsys/src/database_operator.cc
 database_operator.h
 /home/admin/frankz/github/jacsys/src/database_operator.h
+sstream
+-
 
 /home/admin/frankz/github/jacsys/src/database_operator.h
 mysql++.h
 -
 vector
 -
-muduo/base/StringPiece.h
+string
+-
+iostream
 -
 muduo/base/Logging.h
 -
 muduo/base/Mutex.h
 -
-preDef.h
-/home/admin/frankz/github/jacsys/src/preDef.h
+MsgTypeDef.h
+/home/admin/frankz/github/jacsys/src/MsgTypeDef.h
 
 /home/admin/frankz/github/jacsys/src/gateway.h
 StuDef.h
