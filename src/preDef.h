@@ -10,7 +10,7 @@ typedef uint64_t		UINT64;
 
 #define MAX_SERIAL_NO  65535          // 最大命令序号，超过后重新排序
 #define MAX_UNREPLY_NUM 3           //节点未响应最大次数
-#define STRING_MAXLEN       128             //最大的字符串长度，暂定
+
 
 //淇敼缃戝叧鐨勭洰鏍囪妭鐐瑰湴鍧�搴旂瓟
 typedef struct

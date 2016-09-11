@@ -10,15 +10,15 @@ void JacServer::processDB()
     DatabaseOperatorTask operatorTask;
     while(true)
     {
-        
+
         if(g_DatabaseOperator.tasks_.size() > 0)
         {
             //MutexLockGuard    lock(task_list_mutex_);
             operatorTask = g_DatabaseOperator.tasks_.back();
             g_DatabaseOperator.tasks_.pop_back();
 
-		g_DatabaseOperator.ExecTask(operatorTask);
-		
+            g_DatabaseOperator.ExecTask(operatorTask);
+
             LOG_INFO << "operatorTask";
 
         }
@@ -35,16 +35,16 @@ void JacServer::processDB()
 void JacServer::start()
 {
     LOG_INFO << "starting " << numThreads_ << " threads.";
-    threadPool_.start(numThreads_);
+    //threadPool_.start(numThreads_);
 
     // create dbthread here
-    if(g_DatabaseOperator.Init() < 0)
-    {
-        LOG_ERROR << "Database Init failed! ";
-        exit(-1);
-    }
+    //if(g_DatabaseOperator.Init() < 0)
+    //{
+    //    LOG_ERROR << "Database Init failed! ";
+    //    exit(-1);
+    //}
 
-    threadPool_.run(boost::bind(&processDB));
+    //threadPool_.run(boost::bind(&processDB));
     server_.start();
 }
 
@@ -53,7 +53,7 @@ UINT8 JacServer::getSendCmd()
 {
     UINT16 iTmp = m_iSendNo % 11;
 
-if(iTmp == 0)
+    if(iTmp == 0)
     {
         return MSG_GETMACINFO;
     }
@@ -89,13 +89,17 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
              << conn->localAddress().toIpPort() << " is "
              << (conn->connected() ? "UP" : "DOWN");
 
-    if (conn->connected()  && connections_.size() > 0)
+    if( conn->connected())
     {
-        conn->shutdown();       //one server process , one gateway
-    }
-    else if( conn->connected())
-    {
-        connections_.erase(conn);
+        if(connections_.size() >= 1)
+        {
+            LOG_WARNING << "only one gateway supperted.";
+            conn->shutdown();
+        }
+        else
+        {
+            connections_.insert(conn);
+        }
     }
     else
     {
@@ -386,7 +390,10 @@ void JacServer::onTimer()
 
 void JacServer::sendAll(Buffer* buf)
 {
-    LOG_DEBUG << "round buf size = " << buf->readableBytes();
+	if(connections_.size() != 1)
+		{
+		LOG_WARN << "showld be only one connection !!!!,please check!!!";
+		}
 
     int i=0;
     for (ConnectionList::iterator it = connections_.begin();
@@ -611,6 +618,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
         if (tHeader->MsgType == MSG_LOGIN)
         {
             LOG_INFO << "===========MSG_LOGIN++++++++";
+            LOG_DEBUG << "size of buf->readableBytes() :=" << buf->readableBytes();
+            LOG_DEBUG << "sizeof(MSG_Login) := " << sizeof(MSG_Login);
+
             if(buf->readableBytes() < sizeof(MSG_Login))
             {
                 sendReplyAck(get_pointer(conn),tHeader,ACK_DATALOSS);
@@ -833,14 +843,14 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             LOG_DEBUG<< "######### Speed: " << Tranverse16(stuBody->Speed);
             LOG_DEBUG << "Production: " << Tranverse32(stuBody->Production);
             LOG_DEBUG << "AckCode: " << tmpAckCode;
-			
-		
+
+
 
             if (tmpAckCode != ACK_OK)
             {
                 LOG_WARN<< "exception: "<< tmpAckCode;
             }
-	
+
             // sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
         }
         else if (tHeader->MsgType == (MSG_REPLY|MSG_GETFIRMWAREINFO))
@@ -962,7 +972,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             LOG_DEBUG << "MacErr: " << (stuBody->MacErr);
             LOG_DEBUG << "StopTmLen: " << Tranverse32(stuBody->StopTmLen);
 
-		//string str_task = "in"
+            //string str_task = "in"
 
             if (tmpAckCode != ACK_OK)
             {
@@ -1167,7 +1177,8 @@ void setLogging(const char* argv0)
 
 int main(int argc, char* argv[])
 {
-    Logger::setLogLevel(Logger::INFO);
+    //setLogging(argv[0]);
+    Logger::setLogLevel(Logger::DEBUG);
 
     LOG_INFO << "pid = " << getpid() << ", tid = " << CurrentThread::tid();
     EventLoop loop;

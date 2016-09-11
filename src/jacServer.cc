@@ -89,13 +89,17 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
              << conn->localAddress().toIpPort() << " is "
              << (conn->connected() ? "UP" : "DOWN");
 
-    if (conn->connected()  && connections_.size() > 0)
+    if( conn->connected())
     {
-        conn->shutdown();       //one server process , one gateway
-    }
-    else if( conn->connected())
-    {
-        connections_.erase(conn);
+        if(connections_.size() >= 1)
+        {
+            LOG_WARN << "!!!!!!!!!!!!!! only one gateway supperted. ";
+            conn->shutdown();
+        }
+        else
+        {
+            connections_.insert(conn);
+        }
     }
     else
     {
@@ -386,7 +390,10 @@ void JacServer::onTimer()
 
 void JacServer::sendAll(Buffer* buf)
 {
-    LOG_DEBUG << "round buf size = " << buf->readableBytes();
+    if(connections_.size() != 1)
+    {
+        LOG_WARN << "!!!!!!!!!!!showld be only one connection !!!!,please check!!!";
+    }
 
     int i=0;
     for (ConnectionList::iterator it = connections_.begin();
@@ -611,6 +618,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
         if (tHeader->MsgType == MSG_LOGIN)
         {
             LOG_INFO << "===========MSG_LOGIN++++++++";
+            LOG_DEBUG << "size of buf->readableBytes() :=" << buf->readableBytes();
+            LOG_DEBUG << "sizeof(MSG_Login) := " << sizeof(MSG_Login);
+
             if(buf->readableBytes() < sizeof(MSG_Login))
             {
                 sendReplyAck(get_pointer(conn),tHeader,ACK_DATALOSS);
@@ -1167,7 +1177,8 @@ void setLogging(const char* argv0)
 
 int main(int argc, char* argv[])
 {
-    Logger::setLogLevel(Logger::INFO);
+    //setLogging(argv[0]);
+    Logger::setLogLevel(Logger::DEBUG);
 
     LOG_INFO << "pid = " << getpid() << ", tid = " << CurrentThread::tid();
     EventLoop loop;
