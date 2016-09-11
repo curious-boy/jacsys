@@ -8,6 +8,7 @@
 #include <muduo/base/Logging.h>
 // using namespace std;
 
+using namespace muduo;
 
 typedef enum
 {
@@ -17,6 +18,8 @@ typedef enum
     SEND_MESSAGE
 
 } OperatorType;
+
+
 
 class Gateway
 {
@@ -28,12 +31,11 @@ public:
 public:
     pINFO_Node         getNodeByAddr(UINT16 addr);         // get nodeinfo by addr
     void                    insertNode(pINFO_Node pNode);           // insert nodeinfo ，将节点数据临时存放
-    void                    insertNodeFinished();                        // 调用后，将节点插入到节点列表中
     UINT16              getNodeSize();                      // get size of node
     void                    removeAllNodes();                   // remove all nodes
     void                    deleteNodeByAddr(UINT16 addr);      //
-    std::string             getName();
-    void                    setName(std::string name);
+    string              getName();
+    void                    setName(string name);
     pINFO_Node      getCurNode();
     pINFO_Node      getNextNode();
     void                setCurNode(UINT16 curAddr);
@@ -43,12 +45,14 @@ public:
     void                setCurOperatorType(OperatorType oType);
     OperatorType    getCurOperatorType();
     bool                isExistNode(UINT16 addr);
-    
+    void                 setIp(string ip);
+    string         getIp();
+
 
 private:
     std::vector<pINFO_Node> m_vNodesInfo;
-    std::string         m_strName;
-    std::string         m_strIP;        // ip address
+    string         m_strName;
+    string         m_strIP;        // ip address
     UINT16              m_curNodeAddr;
     OperatorType        m_CurOperatortype;
     int                     m_curIndex;
@@ -76,6 +80,16 @@ bool Gateway::isExistNode(UINT16 addr)
         }
     }
     return false;
+}
+
+void Gateway::setIp(string ip)
+{
+    m_strIP = ip;
+}
+
+string Gateway::getIp()
+{
+    return m_strIP;
 }
 
 OperatorType Gateway::getCurOperatorType()
@@ -190,12 +204,12 @@ void Gateway::deleteNodeByAddr(UINT16 addr)
     }
 }
 
-std::string Gateway::getName()
+string Gateway::getName()
 {
     return m_strName;
 }
 
-void Gateway::setName(std::string name)
+void Gateway::setName(string name)
 {
     m_strName = name;
 }

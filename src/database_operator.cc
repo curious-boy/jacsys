@@ -8,24 +8,24 @@ int DatabaseOperator::Init()
 
     if(conn_.connect(DATABASE_NAME,DATABASE_SERVER_IP,"root","111111"))
     {
-        LOG_INFO <<"DB Connection success: ";
-        mysqlpp::Query query = conn_.query("select job_id,name from employee_info");
-        if (mysqlpp::StoreQueryResult res = query.store())
-        {
-            LOG_INFO << "We have:" ;
-            mysqlpp::StoreQueryResult::const_iterator it;
-            for (it = res.begin(); it != res.end(); ++it)
-            {
-                mysqlpp::Row row = *it;
-                //LOG_INFO << row[0] << " | " << row[1] ;
-		cout << '\t' << row[0] << '\t' << row[1] << endl;
-            }
-        }
-        else
-        {
-            LOG_ERROR << "Failed to get item list: " << query.error() ;
+        //LOG_INFO <<"DB Connection success: ";
+        //mysqlpp::Query query = conn_.query("select job_id,name from employee_info");
+        //if (mysqlpp::StoreQueryResult res = query.store())
+        //{
+        //    LOG_INFO << "We have:" ;
+        //    mysqlpp::StoreQueryResult::const_iterator it;
+        //    for (it = res.begin(); it != res.end(); ++it)
+        //    {
+        //        mysqlpp::Row row = *it;
+        //        //LOG_INFO << row[0] << " | " << row[1] ;
+        //        cout << '\t' << row[0] << '\t' << row[1] << endl;
+        //    }
+        //}
+        //else
+        //{
+        //    LOG_ERROR << "Failed to get item list: " << query.error() ;
 
-        }
+        //}
     }
     else
     {
@@ -63,10 +63,13 @@ bool DatabaseOperator::ExecTask(DatabaseOperatorTask& task)
 }
 
 
-std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (std::string ipaddr )
+std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
 {
     std::vector<UINT16> tvNodes;
-    mysqlpp::Query query = conn_.query("select node from node_register_info");
+    string strsql = "select node from node_register_info where ip='" + ipaddr + "'";
+    LOG_DEBUG << "GetNodesOfGateway strsql, " << strsql;
+
+    mysqlpp::Query query = conn_.query(strsql.c_str());
     if (mysqlpp::StoreQueryResult res = query.store())
     {
 
@@ -74,7 +77,6 @@ std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (std::string ipaddr )
         for (it = res.begin(); it != res.end(); ++it)
         {
             mysqlpp::Row row = *it;
-            cout << "node addr = " << row[0] <<endl;;
             tvNodes.push_back(row[0]);
         }
     }
@@ -86,31 +88,45 @@ std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (std::string ipaddr )
     return tvNodes;
 }
 
-bool  DatabaseOperator::DeleteNodeofGateway(std::string ipaddr, UINT16 node)
+bool  DatabaseOperator::DeleteNodeOfGateway(string ipaddr, UINT16 node)
 {
     std::vector<UINT16> tvNodes;
 
-    ostringstream ostrsql;
+    std::ostringstream ostrsql;
     if(node == 0)
     {
-        ostrsql << "delete from node_register_info where ip=" << ipaddr;
+        ostrsql << "delete from node_register_info where ip='" << ipaddr << "'";
     }
     else
     {
-        ostrsql << "delete from node_register_info where ip=" << ipaddr<< " and node=" << node;
+        ostrsql << "delete from node_register_info where ip='" << ipaddr<< "' and node=" << node;
     }
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
 
     return true;
 }
 
-bool  DatabaseOperator::InsertNodeOfGateway(std::string ipaddr, UINT16 node)
+bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)
 {
-	std::vector<UINT16> tvNodes;
-	ostringstream ostrsql;
-	ostrsql << "select node from node_register_info where ip=" << ipaddr << " and node=" << node;
+    std::vector<UINT16> tvNodes;
+
+    std::ostringstream ostrsql;
+
+    ostrsql << "delete from node_register_info where ip='" << ipaddr<<"'";
+
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
-	
+
+    return true;
+}
+
+bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 node)
+{
+    std::vector<UINT16> tvNodes;
+    std::ostringstream ostrsql;
+    ostrsql << "insert into node_register_info (gateway, ip,node) VALUES ('','" << ipaddr << "' ," << node << ")";
+    mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
+	LOG_DEBUG<< "InsertNodeOfGateway, sql: " << ostrsql.str().c_str();
+
     if (mysqlpp::StoreQueryResult res = query.store())
     {
 
@@ -118,7 +134,7 @@ bool  DatabaseOperator::InsertNodeOfGateway(std::string ipaddr, UINT16 node)
         for (it = res.begin(); it != res.end(); ++it)
         {
             mysqlpp::Row row = *it;
-            cout << "node addr = " << row[0] <<endl;;
+            //LOG_INFO << "node addr = " << row[0] ;
             tvNodes.push_back(row[0]);
         }
     }

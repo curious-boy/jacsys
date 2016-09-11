@@ -28,7 +28,6 @@ public:
 public:
     pINFO_Node         getNodeByAddr(UINT16 addr);         // get nodeinfo by addr
     void                    insertNode(pINFO_Node pNode);           // insert nodeinfo ，将节点数据临时存放
-    void                    insertNodeFinished();                        // 调用后，将节点插入到节点列表中
     UINT16              getNodeSize();                      // get size of node
     void                    removeAllNodes();                   // remove all nodes
     void                    deleteNodeByAddr(UINT16 addr);      //
@@ -43,6 +42,9 @@ public:
     void                setCurOperatorType(OperatorType oType);
     OperatorType    getCurOperatorType();
     bool                isExistNode(UINT16 addr);
+    void                 setIp(std::string ip);
+    std::string         getIp();
+    
 
 private:
     std::vector<pINFO_Node> m_vNodesInfo;
@@ -76,6 +78,15 @@ bool Gateway::isExistNode(UINT16 addr)
     }
     return false;
 }
+
+    void                 Gateway::setIp(std::string ip)
+        {
+        m_strIP = ip;
+        }
+    std::string         Gateway::getIp()
+        {
+        return m_strIP;
+        }
 
 OperatorType Gateway::getCurOperatorType()
 {
@@ -157,14 +168,13 @@ pINFO_Node Gateway:: getNodeByAddr(UINT16 addr)
 void Gateway::insertNode(pINFO_Node pNode)
 {
     if(!isExistNode(pNode->addr) )
-        {
- if(pNode != NULL )
     {
-        m_vNodesInfo.push_back(pNode);
-        LOG_INFO << " pNode->addr: " <<  pNode->addr;
-    }       
+        if(pNode != NULL )
+        {
+            m_vNodesInfo.push_back(pNode);
+            LOG_INFO << " pNode->addr: " <<  pNode->addr;
         }
-    
+    }
 }
 
 UINT16 Gateway::getNodeSize()

@@ -293,6 +293,8 @@ string
 -
 iostream
 -
+muduo/base/AsyncLogging.h
+-
 muduo/base/Logging.h
 -
 muduo/base/Mutex.h

@@ -7,6 +7,7 @@
 #include <iostream>
 
 //#include <muduo/base/StringPiece.h>
+#include <muduo/base/AsyncLogging.h>
 #include <muduo/base/Logging.h>
 #include <muduo/base/Mutex.h>
 #include "MsgTypeDef.h"
@@ -15,13 +16,14 @@
 #define DATABASE_SERVER_IP "127.0.0.1"
 #define DATABASE_NAME  "jacdb"
 
-using namespace std;
+//using namespace std;
+using namespace muduo;
 
 typedef struct 
 {
     UINT16  task_type;                      //different task ,different select cause;
     UINT8    operator_type;             // insert ,select ,update ,and so on
-    std::string    content ;        // detailed content
+    string    content ;        // detailed content
 }DatabaseOperatorTask, *pDatabaseOperatorTask; 
 
 
@@ -35,11 +37,14 @@ public:
 
     int Init();
     
-    vector<UINT16> GetNodesOfGateway (std::string ipaddr );
-    bool DeleteNodeofGateway(std::string ipaddr, UINT16 node);
-    bool InsertNodeOfGateway(std::string ipaddr, UINT16 node);
-    bool UpdateNodesOfGateway(std::string ipaddr, std::string name);
-    std::string GetNameOfGateWay(std::string ipaddr);
+    std::vector<UINT16> GetNodesOfGateway (string ipaddr );
+    bool DeleteNodeOfGateway(string ipaddr, UINT16 node);
+    bool DeleteNodesOfGateway(string ipaddr);
+
+
+    bool InsertNodeOfGateway(string ipaddr, UINT16 node);
+    bool UpdateNodesOfGateway(string ipaddr, string name);
+    string GetNameOfGateWay(string ipaddr);
 
     bool ExecTask(DatabaseOperatorTask& task);
 
@@ -51,7 +56,7 @@ private:
 public:
     typedef std::vector<DatabaseOperatorTask> DatabaseOperatorTaskList;
     DatabaseOperatorTaskList                        tasks_;                // database task list
-    mutable muduo::MutexLock                        task_list_mutex_;                               //
+    mutable MutexLock                        task_list_mutex_;                               //
     
 
 

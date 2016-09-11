@@ -98,7 +98,33 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
         }
         else
         {
+            if (m_curGateway == NULL)
+            {
+                m_curGateway = new Gateway();
+                LOG_DEBUG << "onConnection,currentip :=" << conn->localAddress().toIp();
+                m_curGateway->setIp(conn->localAddress().toIp());
+
+            }
+
             connections_.insert(conn);
+            std::vector<UINT16> vnodes;
+            string strip =conn->localAddress().toIp();
+            vnodes = g_DatabaseOperator.GetNodesOfGateway(strip );
+
+            if(vnodes.size() > 0)
+            {
+                //将节点信息添加到网关信息列表
+
+                for(int i=0; i<vnodes.size(); i++)
+                {
+                    pINFO_Node tmpNode = new INFO_Node();
+                    tmpNode->addr = vnodes[i];
+                    tmpNode->unReplyNum = 0;
+                    m_curGateway->insertNode(tmpNode);
+                }
+
+                m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
+            }
         }
     }
     else
@@ -142,10 +168,14 @@ void JacServer::onTimer()
 
         if(m_curGateway->getUnReplyNum() > MAX_UNREPLY_NUM)
         {
-            LOG_INFO << "----- node, addr= "
-                     << m_curGateway->getCurNode()->addr << " was removed!";
+            pINFO_Node tnode = m_curGateway->getCurNode();
+
+            LOG_INFO << "----- node, addr= "<< tnode->addr << " was removed!";
             LOG_INFO << ">>>>>>before deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
-            m_curGateway->deleteNodeByAddr(m_curGateway->getCurNode()->addr);
+
+            m_curGateway->deleteNodeByAddr(tnode->addr);
+            g_DatabaseOperator.DeleteNodeOfGateway( m_curGateway->getIp(), tnode->addr);
+
             LOG_INFO << ">>>>>>after deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
 
             if(m_curGateway->getNodeSize() == 0)
@@ -478,6 +508,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     tmpNode->unReplyNum = 0;
                     m_curGateway->insertNode(tmpNode);
 
+                    //将节点信息插入到数据库中
+                    g_DatabaseOperator.InsertNodeOfGateway( m_curGateway->getIp(), tmpNode->addr);
+
                     m_curGateway->setCurOperatorType(REGISTER_FINISH);
 
                     if (m_destAddr == 0)
@@ -493,7 +526,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                         sleep(1);
                         modifyDestAddr(m_curGateway->getCurNode()->addr);
                     }
-                    LOG_INFO << "RRRRRRRRRRRRRR---register final success----";
+                    LOG_INFO << "---register final success----";
                     m_curGateway->setCurOperatorType(SEND_MESSAGE);
 
                     m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
@@ -675,6 +708,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             {
                 m_curGateway = new Gateway();
                 m_curGateway->setName(stuBody->gatewayId);
+
             }
 
             //
