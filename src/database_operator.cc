@@ -36,32 +36,63 @@ int DatabaseOperator::Init()
     return 0;
 }
 
-bool DatabaseOperator::ExecTask(DatabaseOperatorTask& task)
+bool DatabaseOperator::ExecTasks()
 {
-    UINT16 taskType = task.task_type;
-    UINT8  operatorType = task.operator_type;
-    LOG_DEBUG << "task content: " << task.content;
-
-    switch(taskType)
+    if(GetTaskList()==false)
     {
-        case MSG_REPLY|MSG_GETPRODUCTION:
-        {
-            // add code here
-
-
-            break;
-        }
-        case MSG_REPLY|MSG_GETFIRMWAREINFO:
-        {
-            //add code here
-            break;
-        }
-
-        default:
-            break;
+        return false;
     }
+
+    int ilen=tasks_beExec_.size();
+    UINT16 taskType;
+    UINT8  operatorType;
+
+    for(int i=0; i<ilen; i++)
+    {
+        taskType = tasks_beExec_[i].task_type;
+        operatorType = tasks_beExec_[i].operator_type;
+        LOG_DEBUG << "task content: " << tasks_beExec_[i].content;
+
+        switch(taskType)
+        {
+            case MSG_REPLY|MSG_GETPRODUCTION:
+            {
+                // add code here
+
+
+                break;
+            }
+            case MSG_REPLY|MSG_GETFIRMWAREINFO:
+            {
+                //add code here
+                break;
+            }
+
+            default:
+                break;
+        }
+    }
+
 }
 
+bool DatabaseOperator::GetTaskList()
+{
+    MutexLockGuard lock(task_list_mutex_);
+    if(tasks_.size() == 0)
+    {
+        return false;
+    }
+    tasks_beExec_.insert(tasks_beExec_.begin(),tasks_.begin(),tasks_.end());
+    tasks_.clear();
+    return true;
+
+}
+
+void DatabaseOperator::AddTask(DatabaseOperatorTask task)
+{
+    MutexLockGuard lock(task_list_mutex_);
+    tasks_.push_back(task);
+}
 
 std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
 {
@@ -101,7 +132,9 @@ bool  DatabaseOperator::DeleteNodeOfGateway(string ipaddr, UINT16 node)
     {
         ostrsql << "delete from node_register_info where ip='" << ipaddr<< "' and node=" << node;
     }
+	std::cout<<"DeleteNodeOfGateway: "<< ostrsql.str()<<std::endl;
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
+	query.exec();
 
     return true;
 }
@@ -115,6 +148,7 @@ bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)
     ostrsql << "delete from node_register_info where ip='" << ipaddr<<"'";
 
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
+	query.exec();
 
     return true;
 }
@@ -125,7 +159,7 @@ bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 node)
     std::ostringstream ostrsql;
     ostrsql << "insert into node_register_info (gateway, ip,node) VALUES ('','" << ipaddr << "' ," << node << ")";
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
-	LOG_DEBUG<< "InsertNodeOfGateway, sql: " << ostrsql.str().c_str();
+    LOG_DEBUG<< "InsertNodeOfGateway, sql: " << ostrsql.str().c_str();
 
     if (mysqlpp::StoreQueryResult res = query.store())
     {

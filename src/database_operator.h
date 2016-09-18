@@ -46,17 +46,21 @@ public:
     bool UpdateNodesOfGateway(string ipaddr, string name);
     string GetNameOfGateWay(string ipaddr);
 
-    bool ExecTask(DatabaseOperatorTask& task);
+    bool ExecTasks();
+    void AddTask(DatabaseOperatorTask task);
+
+    private:
+        bool GetTaskList();
+        
 
 
 private:
     mysqlpp::Connection conn_;   
 
-
-public:
     typedef std::vector<DatabaseOperatorTask> DatabaseOperatorTaskList;
     DatabaseOperatorTaskList                        tasks_;                // database task list
-    mutable MutexLock                        task_list_mutex_;                               //
+    DatabaseOperatorTaskList                        tasks_beExec_;                // database task list will be execed
+    mutable MutexLock                                   task_list_mutex_;                               //
     
 
 

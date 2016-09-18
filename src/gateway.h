@@ -66,7 +66,7 @@ Gateway::Gateway()
     // m_pConn = NULL;
     m_strName = "";
     m_strIP = "";
-    m_CurOperatortype = REGISTER_NODE;
+    m_CurOperatortype = SEND_MESSAGE;
     m_curIndex = 0;
 }
 

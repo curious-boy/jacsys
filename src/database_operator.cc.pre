@@ -36,13 +36,24 @@ int DatabaseOperator::Init()
     return 0;
 }
 
-bool DatabaseOperator::ExecTask(DatabaseOperatorTask& task)
+bool DatabaseOperator::ExecTasks()
 {
-    UINT16 taskType = task.task_type;
-    UINT8  operatorType = task.operator_type;
-    LOG_DEBUG << "task content: " << task.content;
+    if(GetTaskList()==false)
+    {
+        return false;
+    }
 
-    switch(taskType)
+	int ilen=tasks_beExec_.size();
+	UINT16 taskType;
+    UINT8  operatorType;
+	 
+	for(int i=0;i<ilen;i++)
+		{
+		taskType = task.task_type;
+		operatorType = task.operator_type;
+		LOG_DEBUG << "task content: " << task.content;
+		
+		    switch(taskType)
     {
         case MSG_REPLY|MSG_GETPRODUCTION:
         {
@@ -60,8 +71,35 @@ bool DatabaseOperator::ExecTask(DatabaseOperatorTask& task)
         default:
             break;
     }
+		}
+	
+
+
+
+    
+   
+
+
 }
 
+bool DatabaseOperator::GetTaskList()
+{
+    MutexLockGuard lock(task_list_mutex_);
+    if(tasks_.size() == 0)
+    {
+        return false;
+    }
+    tasks_beExec_.insert(tasks_beExec_.begin(),tasks_.begin(),tasks_.end());
+    tasks_.clear();
+    return true;
+
+}
+
+void DatabaseOperator::AddTask(DatabaseOperatorTask task)
+{
+    MutexLockGuard lock(task_list_mutex_);
+    tasks_.push_back(task);
+}
 
 std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
 {
@@ -88,7 +126,7 @@ std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
     return tvNodes;
 }
 
-bool  DatabaseOperator::DeleteNodeofGateway(string ipaddr, UINT16 node)
+bool  DatabaseOperator::DeleteNodeOfGateway(string ipaddr, UINT16 node)
 {
     std::vector<UINT16> tvNodes;
 
@@ -106,7 +144,7 @@ bool  DatabaseOperator::DeleteNodeofGateway(string ipaddr, UINT16 node)
     return true;
 }
 
-bool  DatabaseOperator::DeleteNodesofGateway(string ipaddr)
+bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)
 {
     std::vector<UINT16> tvNodes;
 
@@ -123,8 +161,9 @@ bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 node)
 {
     std::vector<UINT16> tvNodes;
     std::ostringstream ostrsql;
-    ostrsql << "select node from node_register_info where ip='" << ipaddr << "' and node=" << node;
+    ostrsql << "insert into node_register_info (gateway, ip,node) VALUES ('','" << ipaddr << "' ," << node << ")";
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
+    LOG_DEBUG<< "InsertNodeOfGateway, sql: " << ostrsql.str().c_str();
 
     if (mysqlpp::StoreQueryResult res = query.store())
     {
@@ -133,7 +172,7 @@ bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 node)
         for (it = res.begin(); it != res.end(); ++it)
         {
             mysqlpp::Row row = *it;
-			LOG_INFO << "node addr = " << row[0] ;
+            //LOG_INFO << "node addr = " << row[0] ;
             tvNodes.push_back(row[0]);
         }
     }

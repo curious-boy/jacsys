@@ -7,27 +7,12 @@ DatabaseOperator g_DatabaseOperator;
 void JacServer::processDB()
 {
     LOG_INFO << "... processDB ...";
-    DatabaseOperatorTask operatorTask;
+
     while(true)
     {
+        g_DatabaseOperator.ExecTasks();
 
-        if(g_DatabaseOperator.tasks_.size() > 0)
-        {
-            //MutexLockGuard    lock(task_list_mutex_);
-            operatorTask = g_DatabaseOperator.tasks_.back();
-            g_DatabaseOperator.tasks_.pop_back();
-
-            g_DatabaseOperator.ExecTask(operatorTask);
-
-            LOG_INFO << "operatorTask";
-
-        }
-
-        // process operator Task
-        // add code
-
-        usleep(10);
-
+        usleep(50);
     }
 
 }
@@ -98,15 +83,15 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
         }
         else
         {
+            connections_.insert(conn);
+
             if (m_curGateway == NULL)
             {
                 m_curGateway = new Gateway();
                 LOG_DEBUG << "onConnection,currentip :=" << conn->localAddress().toIp();
                 m_curGateway->setIp(conn->localAddress().toIp());
-
             }
 
-            connections_.insert(conn);
             std::vector<UINT16> vnodes;
             string strip =conn->localAddress().toIp();
             vnodes = g_DatabaseOperator.GetNodesOfGateway(strip );
@@ -120,10 +105,14 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
                     pINFO_Node tmpNode = new INFO_Node();
                     tmpNode->addr = vnodes[i];
                     tmpNode->unReplyNum = 0;
+                    LOG_DEBUG<<">>>>>t node by db";
                     m_curGateway->insertNode(tmpNode);
                 }
-
                 m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
+            }
+            else
+            {
+                LOG_DEBUG<<"There are no node of getway "<<strip<<" be registered!!!";
             }
         }
     }
@@ -173,8 +162,8 @@ void JacServer::onTimer()
             LOG_INFO << "----- node, addr= "<< tnode->addr << " was removed!";
             LOG_INFO << ">>>>>>before deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
 
-            m_curGateway->deleteNodeByAddr(tnode->addr);
             g_DatabaseOperator.DeleteNodeOfGateway( m_curGateway->getIp(), tnode->addr);
+            m_curGateway->deleteNodeByAddr(tnode->addr);
 
             LOG_INFO << ">>>>>>after deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
 
