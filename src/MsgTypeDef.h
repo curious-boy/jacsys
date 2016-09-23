@@ -2,7 +2,15 @@
 日期：20160722
 起草：Gordon
 修改记录：
-1、
+//---------------------------------------------------------------------
+20160914 
+1、重新调整一下消息结构体，增加机器类型等
+MSG_MacInfo-> char macType[3];//例如：A01 A02 B03 C04     电脑提花机、普通提花机、绳机
+
+//---------------------------------------------------------------------
+20160920
+1、重新调整一下消息结构体，1：注册消息包含机器的固定配置，2：轮询消息缩减为两条
+
 *************************************************/
 ////////////////////////////////////////////////////////报文定义开始///////////////////////////////////////////////////////////////////////////
 /*
@@ -15,7 +23,6 @@
 #ifndef MSG_TYPE_DEF_H
 #define MSG_TYPE_DEF_H
 #include "preDef.h"
-
 //node TO server
 #define MSG_LOGIN        0X01//注册
 #define MSG_LOGOUT       0X02//注销
@@ -28,17 +35,15 @@
 #define MSG_MAXNODEID    0X3F//节点到服务器最大消息ID 
 
 //server TO node
-#define MSG_SETMACINFO           0X40  //设置机器信息
-#define MSG_SETPATPARA           0X41  //下传花样信息
-#define MSG_FIGUREFILE        0X42  //送花样文件
-#define MSG_GETMACINFO        0X43  //获取机器信息
-#define MSG_GETTASKINFO       0X44  //获取生产任务
-#define MSG_GETPRODUCTION     0X45  //获取产量
-#define MSG_GETFIRMWAREINFO   0X46  //获取固件信息等
-#define MSG_SETINTERVAL       0X47  //设置节点定时消息时间间隔
-#define MSG_SETTIME			  		0X48  //设置节点时间
-#define MSG_GETMACSTATE			  0X49  //获取机器状态信息
-#define MSG_GETPATPARA		  	0X4A  //获取花样信息
+#define MSG_SETMACINFO        0X40  //设置机器信息 结构体：MSG_MacInfo
+#define MSG_SETPATPARA        0X41  //下传花样信息 结构体：MSG_PatPara
+#define MSG_FIGUREFILE        0X42  //送花样文件   结构体：MSG_PatFile
+#define MSG_SETINTERVAL       0X43  //设置节点定时消息时间间隔 结构体：MSG_Interval
+#define MSG_SETTIME			  		0X44  //设置节点时间 结构体：MSG_SetTime
+//
+#define MSG_GETMACSTATE       0X45  //获取机器状态
+#define MSG_GETPRODUCTION     0X46  //获取生产相关信息
+
 //双向通用
 #define MSG_COMACK		  0XF0  //通用ack
 
@@ -56,7 +61,7 @@
 #define ACK_NOT_SUPPORT_TYPE    0x06  //应答命令不支持
 #define ACK_OUTOFMEM    0x07  //存储空间不足
 #define ACK_FILEBREAK    0x08  //文件不完整
-
+#define ACK_TIMEOUT    0x09  		//超时
 
 //帧控制信息
 #define COM_FRM_HEAD 0xaa//串口帧固定帧第一字节为0xaa
@@ -68,7 +73,7 @@
 #define CanDataSize 8
 #define MsgSize 512//
 #define HostAddr 0x2002//主机地址初始值，可变
-
+#define STRING_MAXLEN 20
 
 #pragma pack(1)    //设置1字节对齐
 
@@ -87,17 +92,17 @@
 #define EVENT_Login				3		// 注册
 #define EVENT_PRODUCTION		4		// 报告产量
 #define EVENT_PARAREPORT		5//报告参数
-#define EVENT_HMI_RECCMD		6//HMI接收命令
-#define LASTEVENT				6		// 最后一个事件
+#define EVENT_HMI_RECCMD		6	//HMI接收命令超时
+#define EVENT_HMI_CHECK			7	//HMI启动查询
+#define EVENT_JAC_RECCMD		8	////JAC 接收后板命令超时
+#define EVENT_JAC_CHECK			9	////JAC 检查后板是否正常
+#define LASTEVENT				9		// 最后一个事件
 
-#define  PRODUCTION_TIMER 10                           //秒
-#define  LOGIN_TIMER  3                                     //秒
-#define  ROUND_INTERVAL_SECONDS  0.5             //轮询间隔时间
-#define  MAX_THREAD_NUM             6                   //最大线程数目 与支持的网关数有关
-#define STRING_MAXLEN               20             //最大的字符串长度，暂定
+#define  PRODUCTION_TIMER 10//秒
+#define  LOGIN_TIMER  3//秒
 
 
-//网关标识,可变
+//网关标识,由电控输入
 #define  GW_ID "HuiGuan-001"
 
 #define ProtocolVer  0
@@ -106,7 +111,6 @@
 #define TMR_START 1
 #define TMR_STOP  0
 #define TMR_OUT   0XFF
-
 typedef struct  
 {
 	UINT8 TimerFlg;//定时器标志0停止 1启动 0xff时间到
@@ -260,16 +264,64 @@ typedef struct
 }MSG_ACK,*pMSG_ACK;
 
 //-----------------------------------------------------------------------------
-//--注册包，节点到服务器，不带任何信息，下位机程序要通用
-//应答，结构体：MSG_ACK。
+//--注册包，节点到服务器，附带机器配置信息
 typedef struct 
 {
 	MSG_Header header;//消息头		
 	UINT16  protocolVersion;  //协议版本号, 这个版本固定为0
 	UINT16 StringLen;
 	char  gatewayId[STRING_MAXLEN];   //网关标识，零结束字符串 必须放在结构体最后
-	UINT8 Eof;
+	UINT8   Row; //行单条龙头数量
+	UINT8   Col;//列龙头条数量	
+	UINT16  Warp;//针数 经纱 Row*Col*8	
+	UINT8   Installation;//装造bit76：00左前 01左后 02右前 03右后 ; bbit5：0前后不翻转 1前后翻转 ; bit4；反色 ;bit3：HX
+	UINT8   CardSlot;//使用第几列，8列，1有效，0无效
+	char    macID[4];//机台编号 如：A01 A02 B20
+  char    macType[4];//机器类型 如：A01 A02 B03 C04     电脑提花机、普通提花机、绳机
+	
+	UINT8   McuVer; //MCU软件版本
+	UINT8   UiVer;  //界面版本
+  UINT8   Hw1Ver;  //硬件1版本
+	UINT8   Hw2Ver;  //硬件2版本
+	
+	UINT8 	Eof;
 }MSG_Login,*pMSG_Login;
+
+//--机器状态，由服务器请求（轮询模式 间隔1分钟）
+typedef struct 
+{
+	MSG_Header header;//消息头	
+	UINT16  Speed;//当前车速
+	UINT8   MacState;//机器状态，1开车、0停车
+	UINT8   MacErr;//机器故障信息，0x00无故障，0x01：断纱，0x02。。。。
+	UINT32  IdlTmLen;//停机时长 单位：秒
+  UINT8	  Eof;	
+}MSG_MacState,*pMSG_MacState;
+
+//--生产相关参数，由服务器请求（轮询模式）
+typedef struct 
+{
+	MSG_Header header;//消息头	
+
+	UINT32  RunTmLen;//开车时长 单位：秒
+	//计件使用
+	char   	Class;//班次 例如‘A’ ‘B’ ‘C’ 	
+	char  	WorkNum[6];//工号 例如 “A1234”	
+	UINT32  ClassTmLen;//当前工号开车时长
+	UINT32  ClassOut;//当前工号产量
+	//花样相关
+  UINT32  PatTask;//花样生产任务 米
+	UINT32  TotalOut;//已完成的总产量	
+	UINT32  RemainTm;//预计任务剩余完成时间	
+	UINT8   OutNum;//同时产出条数	
+	UINT16  WeftDensity;//纬密 原始数据 x100再传输
+	UINT16  OpeningDegree;//开度 原始数据 x100再传输
+	UINT16  TotalWeft;//循环总纬数
+	UINT16  StringLen;//文件名长度
+	char   	FileName[STRING_MAXLEN];//生产文件名，最大STRING_MAXLEN字节
+	
+	UINT8 	Eof;
+}MSG_Production,*pMSG_Production;
 
 //--节点主动退出网络，
 //应答，结构体：MSG_ACK。
@@ -281,81 +333,13 @@ typedef struct
 	UINT8 Eof;
 }MSG_Logout,*pMSG_Logout;
 
-//--节点心跳
-//不需要应答
-typedef struct 
-{
-	MSG_Header header;//消息头	
-	UINT8 Eof;
-}MSG_Heartbeat,*pMSG_Heartbeat;
-
-//--产量，定时时间为0时，由服务器请求（轮询模式）
-//不需要应答
-typedef struct 
-{
-	MSG_Header header;//消息头	
-	UINT16  Speed;
-	UINT32  Production;//产量
-	UINT8 	Eof;
-}MSG_Production,*pMSG_Production;
-
-//--班组任务信息，可能在本地被修改
-//应答，结构体：MSG_ACK。
-typedef struct 
-{
-	MSG_Header header;//消息头	
-	UINT16  WorkNum;//工号
-  UINT32  ProductTask;//生产任务
-	UINT8   Class;//班次  
-  UINT8 	Eof;
-}MSG_TaskInfo,*pMSG_TaskInfo;
-
-//--机器状态，定时时间为0时，由服务器请求（轮询模式）
-//应答，结构体：MSG_ACK。
-typedef struct 
-{
-	MSG_Header header;//消息头	
-	UINT8   MacState;//机器状态，1开车、0停车
-	UINT8   MacErr;//机器故障信息，0x00无故障，0x01：断纱，0x02。。。。
-	UINT32  StopTmLen;//停机时长 单位：秒
-  UINT8	  Eof;	
-}MSG_MacState,*pMSG_MacState;
-
-//-----------------------------------------------------------------------------
-//--机器信息
-//--应答，结构体：MSG_ACK。
-typedef struct 
-{
-	MSG_Header header;//消息头	
-	UINT8   Row; //行单条龙头数量
-	UINT8   Col;//列龙头条数量
-	UINT16   WeftDensity;//纬密 原始数据 x10再传输
-	UINT16   OpeningDegree;//开度 原始数据 x10再传输
-	UINT8   OutNum;//同时产出条数
-	UINT8   Installation;//装造bit76：00左前 01左后 02右前 03右后 ; bbit5：0前后不翻转 1前后翻转 ; bit4；反色 ;bit3：HX
-	UINT8   CardSlot;//使用第几列，8列，1有效，0无效
-  UINT8 	Eof;	
-}MSG_MacInfo,*pMSG_MacInfo;
-
-//--电控版本信息
-//--应答，结构体：MSG_ACK。
-typedef struct 
-{
-	MSG_Header header;//消息头	
-	UINT8   McuVer; //MCU软件版本
-	UINT8   UiVer;  //界面版本
-  UINT8   HwVer;  //硬件版本
-	UINT8 	Eof;
-}MSG_FirmWareInfo,*pMSG_FirmWareInfo;
-
 //--花样参数，下发文件前先下传此参数，节点收到此消息后，比对文件大小和
 //磁盘空间大小，如果超出磁盘空间则返回空间不足错误码
 //--应答，结构体：MSG_ACK。
 typedef struct 
 {
-	MSG_Header header;//消息头	
-	UINT16  TotalWeft;//循环总纬数
-	UINT16  Warp;//针数 经纱
+	MSG_Header header;//消息头		
+	UINT16  Warp;//针数 经纱 Row*Col*8
 	UINT16  FileSize;//文件长度 Byte
 	UINT16  StringLen;
   char   FileName[STRING_MAXLEN];//生产文件名，最大STRING_MAXLEN字节
@@ -374,37 +358,14 @@ typedef struct
 	UINT8 Eof;
 }MSG_PatFile,*pMSG_PatFile;
 
-//--获取机器信息，需应答
-//--应答，返回机器配置信息,结构体：MSG_MacInfo
-typedef struct 
-{
-	MSG_Header header;//消息头
-	UINT8 Eof;
-}MSG_GetMacInfo,*pMSG_GetMacInfo;
 
-//--获取生产任务信息，需应答
-//--应答，返回生产任务,结构体：MSG_TaskInfo
-typedef struct 
-{
-	MSG_Header header;//消息头
-	UINT8 Eof;
-}MSG_GetTaskInfo,*pMSG_GetTaskInfo;
-
-//--获取产量信息，需应答
+//--获取生产相关信息，需应答
 //--应答,返回产量,结构体：MSG_Production
 typedef struct 
 {
 	MSG_Header header;//消息头
 	UINT8 Eof;
 }MSG_GetProduction,*pMSG_GetProduction;
-
-//--获取版本信息，需应答
-//--应答,返回产量,结构体：MSG_FirmWareInfo
-typedef struct 
-{
-	MSG_Header header;//消息头
-	UINT8 Eof;
-}MSG_GetFirmWareInfo,*pMSG_GetFirmWareInfo;
 
 //--获取机器状态信息
 //--应答,结构体：MSG_MacState
@@ -413,14 +374,6 @@ typedef struct
 	MSG_Header header;//消息头
 	UINT8 Eof;
 }MSG_GetMacState,*pMSG_GetMacState;
-
-//--获取生产文件信息
-//--应答,结构体：MSG_PatPara
-typedef struct 
-{
-	MSG_Header header;//消息头
-	UINT8 Eof;
-}MSG_GetPatPara,*pMSG_GetPatPara;
 
 //--设置节点定时间隔
 //--应答，结构体：MSG_ACK。
@@ -449,5 +402,4 @@ typedef struct
 //////////////////////////////////////////////////////////报文定义结束/////////////////////////////////////////////////////////////////////////
 
 #endif
-
 

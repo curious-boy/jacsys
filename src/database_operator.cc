@@ -62,7 +62,7 @@ bool DatabaseOperator::ExecTasks()
 
                 break;
             }
-            case MSG_REPLY|MSG_GETFIRMWAREINFO:
+            case MSG_REPLY|MSG_GETMACSTATE:
             {
                 //add code here
                 break;
@@ -132,9 +132,9 @@ bool  DatabaseOperator::DeleteNodeOfGateway(string ipaddr, UINT16 node)
     {
         ostrsql << "delete from node_register_info where ip='" << ipaddr<< "' and node=" << node;
     }
-	std::cout<<"DeleteNodeOfGateway: "<< ostrsql.str()<<std::endl;
+    std::cout<<"DeleteNodeOfGateway: "<< ostrsql.str()<<std::endl;
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
-	query.exec();
+    query.exec();
 
     return true;
 }
@@ -148,7 +148,7 @@ bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)
     ostrsql << "delete from node_register_info where ip='" << ipaddr<<"'";
 
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
-	query.exec();
+    query.exec();
 
     return true;
 }

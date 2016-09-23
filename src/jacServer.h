@@ -52,6 +52,8 @@ public:
         m_curGateway = NULL;
         m_delayBuf = NULL;
         m_pTmpHeader = NULL;
+        time_sync_ = NULL;
+        times_get_mac_state_=0;
     }
 
     void start();
@@ -69,10 +71,11 @@ private:
 
     UINT16 getMsgSerialNo();
 
-    UINT8  getSendCmd();
-
     void    modifyDestAddr(UINT16 addr);
     void    modifyDestAddr();
+
+    void    setNodeTime(UINT16 addr);
+    void    updateTime();
 
     static void processDB();
 
@@ -99,6 +102,10 @@ private:
 
     Buffer*       m_delayBuf;         //缓存延迟处理的数据
     Buffer          m_sendBuf;
+
+    tm*    time_sync_;         //当前时间
+
+    int         times_get_mac_state_;       //获取节点状态命令次数，每轮询十次，轮询一次节点产量信息
     
 
 };
