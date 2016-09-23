@@ -22,6 +22,7 @@ void JacServer::start()
     LOG_INFO << "starting " << numThreads_ << " threads.";
     threadPool_.start(numThreads_);
 
+#if USE_DATABASE
     // create dbthread here
     if(g_DatabaseOperator.Init() < 0)
     {
@@ -30,42 +31,9 @@ void JacServer::start()
     }
 
     threadPool_.run(boost::bind(&processDB));
+#endif
+
     server_.start();
-}
-
-
-UINT8 JacServer::getSendCmd()
-{
-    UINT16 iTmp = m_iSendNo % 11;
-
-    if(iTmp == 0)
-    {
-        return MSG_GETMACINFO;
-    }
-    else if(iTmp == 1)
-    {
-        return MSG_GETTASKINFO;
-    }
-    else if(iTmp == 2)
-    {
-        return MSG_GETPRODUCTION;
-    }
-    else if(iTmp == 3)
-    {
-        return MSG_GETFIRMWAREINFO;
-    }
-    else if(iTmp == 4)
-    {
-        return MSG_SETTIME;
-    }
-    else if(iTmp == 5)
-    {
-        return MSG_GETMACSTATE;
-    }
-    else if(iTmp == 6)
-    {
-        return MSG_GETPATPARA;
-    }
 }
 
 void JacServer::onConnection(const TcpConnectionPtr& conn)
@@ -92,6 +60,7 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
                 m_curGateway->setIp(conn->localAddress().toIp());
             }
 
+#if USE_DATABASE
             std::vector<UINT16> vnodes;
             string strip =conn->localAddress().toIp();
             vnodes = g_DatabaseOperator.GetNodesOfGateway(strip );
@@ -114,6 +83,7 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
             {
                 LOG_DEBUG<<"There are no node of getway "<<strip<<" be registered!!!";
             }
+#endif
         }
     }
     else
@@ -162,7 +132,9 @@ void JacServer::onTimer()
             LOG_INFO << "----- node, addr= "<< tnode->addr << " was removed!";
             LOG_INFO << ">>>>>>before deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
 
+#if USE_DATABASE
             g_DatabaseOperator.DeleteNodeOfGateway( m_curGateway->getIp(), tnode->addr);
+#endif
             m_curGateway->deleteNodeByAddr(tnode->addr);
 
             LOG_INFO << ">>>>>>after deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
@@ -181,9 +153,7 @@ void JacServer::onTimer()
         }
 
         UINT16 tmpCrc=0;
-        UINT8  tmpCmd = getSendCmd();
         UINT16 tmpNo = getMsgSerialNo();
-        LOG_INFO << "onTimer: cmd="<< tmpCmd;
         LOG_INFO << "onTimer: tmpNo=" <<tmpNo;
 
 
@@ -207,10 +177,10 @@ void JacServer::onTimer()
             stuGetMacState->header.crc16 = Tranverse16(tmpCrc);
 
             m_sendBuf.append(stuGetMacState, msgLen);
-		times_get_mac_state_++;
+            times_get_mac_state_++;
         }
-		
-        else 
+
+        else
         {
             msgLen = sizeof(MSG_GetProduction);
             MSG_GetProduction* stuGetProduction = (MSG_GetProduction*)new char[msgLen];
@@ -229,11 +199,11 @@ void JacServer::onTimer()
             stuGetProduction->header.crc16 = Tranverse16(tmpCrc);
 
             m_sendBuf.append(stuGetProduction, msgLen);
-			times_get_mac_state_ =0;
+            times_get_mac_state_ =0;
         }
 
 
-        //m_curGateway->setCurOperatorType(MODIFY_DEST_NODE);   // for change operation type
+        m_curGateway->setCurOperatorType(MODIFY_DEST_NODE);   // for change operation type
 
         m_curGateway->increaseUnReplyNum();
         sendAll(&m_sendBuf);
@@ -336,7 +306,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     m_curGateway->insertNode(tmpNode);
 
                     //将节点信息插入到数据库中
+                   #if USE_DATABASE
                     g_DatabaseOperator.InsertNodeOfGateway( m_curGateway->getIp(), tmpNode->addr);
+				   #endif
 
                     m_curGateway->setCurOperatorType(REGISTER_FINISH);
 
@@ -782,54 +754,6 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             }
 
             // sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
-        }
-        else if (tHeader->MsgType == (MSG_REPLY|MSG_GETMACINFO))
-        {
-            if(buf->readableBytes() < sizeof(MSG_MacInfo))
-            {
-                buf->retrieve(buf->readableBytes());
-                LOG_INFO << "-------- ACK_DATALOSS ";
-                return;
-            }
-            //MSG_MacInfo,*pMSG_MacInfo;
-
-            MSG_MacInfo* stuBody = (MSG_MacInfo*)const_cast<char*>(buf->peek());
-
-
-            LOG_INFO << "＃＃＃＃＃＃cmd type: " << stuBody->header.MsgType;
-
-            //报文合法性校验
-            if(Tranverse16(stuBody->header.length) != sizeof(MSG_MacInfo))
-            {
-                tmpAckCode = ACK_OUTOFMEM;
-            }
-
-            if ((stuBody->header.Sof != COM_FRM_HEAD) || (stuBody->Eof != COM_FRM_END))
-            {
-                tmpAckCode = ACK_DATALOSS;
-            }
-
-            if (stuBody->header.destAddr != m_localAddr)
-            {
-                tmpAckCode = ACK_MSG_ERROR;
-            }
-
-            buf->retrieve(sizeof(MSG_MacInfo));
-
-            LOG_DEBUG << "Row: " << (stuBody->Row);
-            LOG_DEBUG << "Col: " << (stuBody->Col);
-            LOG_DEBUG << "WeftDensity: " << Tranverse16(stuBody->WeftDensity);
-            LOG_DEBUG << "OpeningDegree: " << Tranverse16(stuBody->OpeningDegree);
-            LOG_DEBUG << "OutNum: " << (stuBody->OutNum);
-            LOG_DEBUG << "Installation: " << (stuBody->Installation);
-            LOG_DEBUG << "CardSlot: " << (stuBody->CardSlot);
-
-            if (tmpAckCode != ACK_OK)
-            {
-                // sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
-                LOG_INFO << "exception: "<< tmpAckCode;
-            }
-
         }
         else
         {

@@ -22,6 +22,7 @@ void JacServer::start()
     LOG_INFO << "starting " << numThreads_ << " threads.";
     threadPool_.start(numThreads_);
 
+#if USE_DATABASE
     // create dbthread here
     if(g_DatabaseOperator.Init() < 0)
     {
@@ -30,6 +31,8 @@ void JacServer::start()
     }
 
     threadPool_.run(boost::bind(&processDB));
+#endif
+
     server_.start();
 }
 
@@ -57,6 +60,7 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
                 m_curGateway->setIp(conn->localAddress().toIp());
             }
 
+#if USE_DATABASE
             std::vector<UINT16> vnodes;
             string strip =conn->localAddress().toIp();
             vnodes = g_DatabaseOperator.GetNodesOfGateway(strip );
@@ -79,6 +83,7 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
             {
                 LOG_DEBUG<<"There are no node of getway "<<strip<<" be registered!!!";
             }
+#endif
         }
     }
     else
@@ -127,7 +132,9 @@ void JacServer::onTimer()
             LOG_INFO << "----- node, addr= "<< tnode->addr << " was removed!";
             LOG_INFO << ">>>>>>before deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
 
+#if USE_DATABASE
             g_DatabaseOperator.DeleteNodeOfGateway( m_curGateway->getIp(), tnode->addr);
+#endif
             m_curGateway->deleteNodeByAddr(tnode->addr);
 
             LOG_INFO << ">>>>>>after deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
@@ -299,7 +306,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     m_curGateway->insertNode(tmpNode);
 
                     //将节点信息插入到数据库中
+#if USE_DATABASE
                     g_DatabaseOperator.InsertNodeOfGateway( m_curGateway->getIp(), tmpNode->addr);
+#endif
 
                     m_curGateway->setCurOperatorType(REGISTER_FINISH);
 
@@ -745,7 +754,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             }
 
             // sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
-        }        
+        }
         else
         {
             LOG_INFO << "###############---------unknown cmd----################";
