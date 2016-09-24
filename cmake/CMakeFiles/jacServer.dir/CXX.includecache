@@ -283,11 +283,7 @@ preDef.h
 /home/admin/frankz/github/jacsys/src/StuDef.h
 preDef.h
 /home/admin/frankz/github/jacsys/src/preDef.h
-
-/home/admin/frankz/github/jacsys/src/database_operator.cc
-database_operator.h
-/home/admin/frankz/github/jacsys/src/database_operator.h
-sstream
+string
 -
 
 /home/admin/frankz/github/jacsys/src/database_operator.h
