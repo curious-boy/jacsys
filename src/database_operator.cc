@@ -155,6 +155,7 @@ bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)
 
 bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 node)
 {
+	//插入之前查询是否有相同节点存在
     std::vector<UINT16> tvNodes;
     std::ostringstream ostrsql;
     ostrsql << "insert into node_register_info (gateway, ip,node) VALUES ('','" << ipaddr << "' ," << node << ")";

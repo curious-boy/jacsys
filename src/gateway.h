@@ -41,7 +41,7 @@ public:
     void                setCurNode(UINT16 curAddr);
     void                increaseUnReplyNum(int inum=1);             //增加当前节点未返回的请求数
     int                 getUnReplyNum();                                        //返回当前节点未返回的请求数
-    void                resetUnReplyNum();                                  //重置当前节点的未返回的请求数
+    void                resetUnReplyNum(UINT16 addr=0);                                  //重置当前节点的未返回的请求数
     void                setCurOperatorType(OperatorType oType);
     OperatorType    getCurOperatorType();
     bool                isExistNode(UINT16 addr);
@@ -113,14 +113,29 @@ int Gateway::getUnReplyNum()
     return m_vNodesInfo[m_curIndex]->unReplyNum;
 }
 
-void Gateway::resetUnReplyNum()
+void Gateway::resetUnReplyNum(UINT16 addr=0)
 {
-    if(m_vNodesInfo.size()==0)
+    LOG_INFO<<"resetUnReplyNum, addr:="<< addr;
+    if(addr==0)
     {
-        return;
+        if(m_vNodesInfo.size()==0)
+        {
+            return;
+        }
+        m_vNodesInfo[m_curIndex]->unReplyNum =0;
     }
-    m_vNodesInfo[m_curIndex]->unReplyNum =0;
+
+    int len=m_vNodesInfo.size();
+    for(int i=0; i<len; i++)
+    {
+        if(m_vNodesInfo[i]->addr==addr)
+        {
+            m_vNodesInfo[i]->unReplyNum=0;
+        }
+    }
 }
+
+
 
 pINFO_Node Gateway::getCurNode()
 {

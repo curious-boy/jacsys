@@ -8,6 +8,7 @@
 #include <muduo/base/Logging.h>
 // using namespace std;
 
+using namespace muduo;
 
 typedef enum
 {
@@ -17,6 +18,8 @@ typedef enum
     SEND_MESSAGE
 
 } OperatorType;
+
+
 
 class Gateway
 {
@@ -31,25 +34,25 @@ public:
     UINT16              getNodeSize();                      // get size of node
     void                    removeAllNodes();                   // remove all nodes
     void                    deleteNodeByAddr(UINT16 addr);      //
-    std::string             getName();
-    void                    setName(std::string name);
+    string              getName();
+    void                    setName(string name);
     pINFO_Node      getCurNode();
     pINFO_Node      getNextNode();
     void                setCurNode(UINT16 curAddr);
     void                increaseUnReplyNum(int inum=1);             //增加当前节点未返回的请求数
     int                 getUnReplyNum();                                        //返回当前节点未返回的请求数
-    void                resetUnReplyNum();                                  //重置当前节点的未返回的请求数
+    void                resetUnReplyNum(UINT16 addr=0);                                  //重置当前节点的未返回的请求数
     void                setCurOperatorType(OperatorType oType);
     OperatorType    getCurOperatorType();
     bool                isExistNode(UINT16 addr);
-    void                 setIp(std::string ip);
-    std::string         getIp();
-    
+    void                 setIp(string ip);
+    string         getIp();
+
 
 private:
     std::vector<pINFO_Node> m_vNodesInfo;
-    std::string         m_strName;
-    std::string         m_strIP;        // ip address
+    string         m_strName;
+    string         m_strIP;        // ip address
     UINT16              m_curNodeAddr;
     OperatorType        m_CurOperatortype;
     int                     m_curIndex;
@@ -63,7 +66,7 @@ Gateway::Gateway()
     // m_pConn = NULL;
     m_strName = "";
     m_strIP = "";
-    m_CurOperatortype = REGISTER_NODE;
+    m_CurOperatortype = SEND_MESSAGE;
     m_curIndex = 0;
 }
 
@@ -79,14 +82,15 @@ bool Gateway::isExistNode(UINT16 addr)
     return false;
 }
 
-    void                 Gateway::setIp(std::string ip)
-        {
-        m_strIP = ip;
-        }
-    std::string         Gateway::getIp()
-        {
-        return m_strIP;
-        }
+void Gateway::setIp(string ip)
+{
+    m_strIP = ip;
+}
+
+string Gateway::getIp()
+{
+    return m_strIP;
+}
 
 OperatorType Gateway::getCurOperatorType()
 {
@@ -109,14 +113,28 @@ int Gateway::getUnReplyNum()
     return m_vNodesInfo[m_curIndex]->unReplyNum;
 }
 
-void Gateway::resetUnReplyNum()
+void Gateway::resetUnReplyNum(UINT16 addr=0)
 {
-    if(m_vNodesInfo.size()==0)
+    if(addr==0)
     {
-        return;
+        if(m_vNodesInfo.size()==0)
+        {
+            return;
+        }
+        m_vNodesInfo[m_curIndex]->unReplyNum =0;
     }
-    m_vNodesInfo[m_curIndex]->unReplyNum =0;
+
+    int len=m_vNodesInfo.size();
+    for(int i=0;i<len;i++)
+        {
+        if(m_vNodesInfo[i].addr==addr)
+            {
+            m_vNodesInfo[i]->unReplyNum=0;
+            }
+        }
 }
+
+
 
 pINFO_Node Gateway::getCurNode()
 {
@@ -200,12 +218,12 @@ void Gateway::deleteNodeByAddr(UINT16 addr)
     }
 }
 
-std::string Gateway::getName()
+string Gateway::getName()
 {
     return m_strName;
 }
 
-void Gateway::setName(std::string name)
+void Gateway::setName(string name)
 {
     m_strName = name;
 }

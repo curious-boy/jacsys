@@ -29,7 +29,7 @@
 #include "gateway.h"
 
 
-#define USE_DATABASE 0
+#define USE_DATABASE 1
 
 using namespace muduo;
 using namespace muduo::net;

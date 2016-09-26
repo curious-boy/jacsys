@@ -3,6 +3,7 @@
 #define PREDEF_H
 #include "preDef.h"
 
+#include <string>
 
 // info of Gateway
 // typedef struct 
@@ -17,8 +18,10 @@
 typedef struct 
 {
 	UINT16 addr;
+       std::string  macId;
 	UINT8  unReplyNum;
 	UINT16 curMsgSerialNo;
+    
 	UINT8  state;
 }INFO_Node,*pINFO_Node;
 

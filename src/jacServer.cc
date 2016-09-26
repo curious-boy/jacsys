@@ -402,51 +402,11 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
         }
     }
 
-//如果当前为节点注册或注销，缓存数据
-    //int iLen = buf->readableBytes();
-    //LOG_INFO << "data_len: " << iLen;
-    //for (int i = 0; i < iLen; ++i)
-    //{
-    //    printf("%02X ", buf->peek()[i]);
-    //}
-    //printf("\n");
-
-    //if(m_curGateway != NULL )
-    //{
-
-    //    if(m_curGateway->getCurOperatorType() == REGISTER_NODE)
-    //    {
-
-    //        LOG_INFO << "@@@@@@@@@@@@@@@@@findCRLF: " << buf->findCRLF(0x7E);
-    //        LOG_INFO << "findCRLF: " << buf->findCRLF();
-    //        LOG_INFO << "findEOL: " << buf->findEOL();
-
-    //        //包数据合法性检测
-    //        // 1 找包头 2 找包尾 3 把中间数据缓存
-
-    //        //     char RSP_HEADER[] = new char[4];
-    //        //     RSP_HEADER[0] = 0xDE;
-    //        //     RSP_HEADER[1] = 0xDF;
-    //        //     RSP_HEADER[2] = 0xEF;
-    //        //     RSP_HEADER[3] = 0xD2;
-
-    //        // //  m_delayBuf->append(const char * data, size_t len);
-    //        //    //buf->findCRLF( RSP_HEADER );
-    //        //char* cacheData = const_cast<char*>(buf->peek());
-
-
-
-    //    }
-    //}
-
 /////////////////////////////////////////////////////////////////////////
     if (buf->readableBytes() >= sizeof(MSG_Header))
     {
         /* code */
         tHeader = (MSG_Header*)const_cast<char*>(buf->peek());
-
-        LOG_INFO << "onMessage, msgType: " << tHeader->MsgType;
-        //cout << "msgtype:" <<hex<<tHeader<<endl;
 
         if (tHeader->MsgType == MSG_LOGIN)
         {
@@ -521,6 +481,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             {
                 m_curGateway = new Gateway();
                 m_curGateway->setName(stuBody->gatewayId);
+                LOG_INFO<<"gatewayId: "<<stuBody->gatewayId;
 
             }
 
@@ -530,6 +491,8 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 if (m_curGateway->isExistNode(stuBody->header.srcAddr))
                 {
                     LOG_INFO << "-----------The node have been registed!!!!";
+                    m_curGateway->deleteNodeByAddr(stuBody->header.srcAddr);
+                    g_DatabaseOperator.DeleteNodeOfGateway(m_curGateway->getIp(), stuBody->header.srcAddr);
                 }
             }
             else
@@ -559,6 +522,8 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
         }
         else if (tHeader->MsgType == MSG_LOGOUT)
         {
+            LOG_INFO << "===========ONMSG:   MSG_LOGOUT++++++++";
+            //节点注销，修改节点状态
             if(buf->readableBytes() < sizeof(MSG_Logout))
             {
                 sendReplyAck(get_pointer(conn),tHeader,ACK_DATALOSS);
@@ -624,6 +589,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
         {
             //common ack
             // MSG_ACK
+            LOG_INFO << "===========ONMSG:   MSG_COMACK++++++++";
             if(buf->readableBytes() < sizeof(MSG_ACK))
             {
                 // sendReplyAck(get_pointer(conn),tHeader,ACK_DATALOSS);
@@ -654,18 +620,21 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             }
 
 
-            LOG_DEBUG << "common ack, errCode = " << tmpAckCode;
+            LOG_ERROR << "common ack, errCode = " << tmpAckCode;
+            m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
 
             buf->retrieve(sizeof(MSG_ACK));
         }
         else if (tHeader->MsgType == (MSG_REPLY|MSG_GETMACSTATE))
         {
+            LOG_INFO << "===========ONMSG:   MSG_GETMACSTATE++++++++";
             if(buf->readableBytes() < sizeof(MSG_MacState))
             {
                 buf->retrieve(buf->readableBytes());
                 LOG_INFO << "-------- ACK_DATALOSS ";
                 return;
             }
+
 
             MSG_MacState* stuBody = (MSG_MacState*)const_cast<char*>(buf->peek());
 
@@ -692,17 +661,17 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             LOG_DEBUG << "MacErr: " << (stuBody->MacErr);
             LOG_DEBUG << "IdlTmLen: " << Tranverse32(stuBody->IdlTmLen);
 
-            //string str_task = "in"
-
             if (tmpAckCode != ACK_OK)
             {
                 LOG_INFO << "exception: "<< tmpAckCode;
             }
+            m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
+
         }
         else if (tHeader->MsgType == (MSG_REPLY|MSG_GETPRODUCTION))
         {
             // get Production
-
+            LOG_INFO << "===========ONMSG:   MSG_GETPRODUCTION++++++++";
             if(buf->readableBytes() < sizeof(MSG_Production))
             {
                 buf->retrieve(buf->readableBytes());
@@ -752,8 +721,8 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             {
                 LOG_WARN<< "exception: "<< tmpAckCode;
             }
+            m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
 
-            // sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
         }
         else
         {
@@ -771,7 +740,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             buf->retrieve(buf->readableBytes());
         }
 
-        m_curGateway->resetUnReplyNum();
+
         return;
     }
 
@@ -906,15 +875,30 @@ void setLogging(const char* argv0)
     g_asyncLog->start();
 }
 
+#define LISTEN_PORT 2007
+
 int main(int argc, char* argv[])
 {
     //setLogging(argv[0]);
-    Logger::setLogLevel(Logger::DEBUG);
+    int iport=LISTEN_PORT;
+
+    char *p;
+    long ltmp;
+    if(argc>1 )
+    {
+        ltmp = strtol(argv[1], &p, 10);
+        if(ltmp>2000 && ltmp<5000)
+        {
+            iport=ltmp;
+        }
+    }
+
+    Logger::setLogLevel(Logger::INFO);
 
     LOG_INFO << "pid = " << getpid() << ", tid = " << CurrentThread::tid();
     EventLoop loop;
 
-    InetAddress listenAddr(2007);
+    InetAddress listenAddr(iport);
     LOG_INFO << "Listening at: " << listenAddr.toPort();
     JacServer server(&loop, listenAddr,2);
 

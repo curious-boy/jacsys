@@ -3,7 +3,7 @@
 起草：Gordon
 修改记录：
 //---------------------------------------------------------------------
-20160914 
+20160914
 1、重新调整一下消息结构体，增加机器类型等
 MSG_MacInfo-> char macType[3];//例如：A01 A02 B03 C04     电脑提花机、普通提花机、绳机
 
@@ -39,13 +39,13 @@ MSG_MacInfo-> char macType[3];//例如：A01 A02 B03 C04     电脑提花机、普通提花机
 #define MSG_SETPATPARA        0X41  //下传花样信息 结构体：MSG_PatPara
 #define MSG_FIGUREFILE        0X42  //送花样文件   结构体：MSG_PatFile
 #define MSG_SETINTERVAL       0X43  //设置节点定时消息时间间隔 结构体：MSG_Interval
-#define MSG_SETTIME			  		0X44  //设置节点时间 结构体：MSG_SetTime
+#define MSG_SETTIME                 0X44  //设置节点时间 结构体：MSG_SetTime
 //
 #define MSG_GETMACSTATE       0X45  //获取机器状态
 #define MSG_GETPRODUCTION     0X46  //获取生产相关信息
 
 //双向通用
-#define MSG_COMACK		  0XF0  //通用ack
+#define MSG_COMACK        0XF0  //通用ack
 
 //消息类型bit7定义
 #define MSG_REQUEST (0<<7)
@@ -61,7 +61,7 @@ MSG_MacInfo-> char macType[3];//例如：A01 A02 B03 C04     电脑提花机、普通提花机
 #define ACK_NOT_SUPPORT_TYPE    0x06  //应答命令不支持
 #define ACK_OUTOFMEM    0x07  //存储空间不足
 #define ACK_FILEBREAK    0x08  //文件不完整
-#define ACK_TIMEOUT    0x09  		//超时
+#define ACK_TIMEOUT    0x09         //超时
 
 //帧控制信息
 #define COM_FRM_HEAD 0xaa//串口帧固定帧第一字节为0xaa
@@ -85,18 +85,18 @@ MSG_MacInfo-> char macType[3];//例如：A01 A02 B03 C04     电脑提花机、普通提花机
 (((UINT32)(X) & 0x000000ff) << 24))
 
 //--通讯定时事件
-#define FIRSTEVENT				0		// 第一个事件
-#define EVENT_SendMsg			0		// 发送消息等待应答
-#define EVENT_CanFrm		    1		// 一个完整的can帧
-#define EVENT_Packet			2		// 应用报文接收完整性
-#define EVENT_Login				3		// 注册
-#define EVENT_PRODUCTION		4		// 报告产量
-#define EVENT_PARAREPORT		5//报告参数
-#define EVENT_HMI_RECCMD		6	//HMI接收命令超时
-#define EVENT_HMI_CHECK			7	//HMI启动查询
-#define EVENT_JAC_RECCMD		8	////JAC 接收后板命令超时
-#define EVENT_JAC_CHECK			9	////JAC 检查后板是否正常
-#define LASTEVENT				9		// 最后一个事件
+#define FIRSTEVENT              0       // 第一个事件
+#define EVENT_SendMsg           0       // 发送消息等待应答
+#define EVENT_CanFrm            1       // 一个完整的can帧
+#define EVENT_Packet            2       // 应用报文接收完整性
+#define EVENT_Login             3       // 注册
+#define EVENT_PRODUCTION        4       // 报告产量
+#define EVENT_PARAREPORT        5//报告参数
+#define EVENT_HMI_RECCMD        6   //HMI接收命令超时
+#define EVENT_HMI_CHECK         7   //HMI启动查询
+#define EVENT_JAC_RECCMD        8   ////JAC 接收后板命令超时
+#define EVENT_JAC_CHECK         9   ////JAC 检查后板是否正常
+#define LASTEVENT               9       // 最后一个事件
 
 #define  PRODUCTION_TIMER 10//秒
 #define  LOGIN_TIMER  3//秒
@@ -111,292 +111,301 @@ MSG_MacInfo-> char macType[3];//例如：A01 A02 B03 C04     电脑提花机、普通提花机
 #define TMR_START 1
 #define TMR_STOP  0
 #define TMR_OUT   0XFF
-typedef struct  
+typedef struct
 {
-	UINT8 TimerFlg;//定时器标志0停止 1启动 0xff时间到
-	UINT16 TimerCnt;//计时器
-}TimeEvent,*pTimeEvent;
+    UINT8 TimerFlg;//定时器标志0停止 1启动 0xff时间到
+    UINT16 TimerCnt;//计时器
+} TimeEvent,*pTimeEvent;
 
 //--can网络接口
-typedef struct  
+typedef struct
 {
-	UINT8 Saddr;//can源地址
-	UINT8 Daddr;//can目标地址，最后一次连接的地址
-	UINT8 LinkState;//当前链接状态 0未入网 1注册成功 
-	UINT8 SendingMsg;//正在发送的消息，等ACK
-	UINT8 ReceiveMsgACK;//接收到的ACK
-	UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
-	UINT16 replyNo;	//应答序号，只出现在应答消息中，用于匹配请求消息	
-}CanNetif,*pCanNetif;
+    UINT8 Saddr;//can源地址
+    UINT8 Daddr;//can目标地址，最后一次连接的地址
+    UINT8 LinkState;//当前链接状态 0未入网 1注册成功
+    UINT8 SendingMsg;//正在发送的消息，等ACK
+    UINT8 ReceiveMsgACK;//接收到的ACK
+    UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
+    UINT16 replyNo; //应答序号，只出现在应答消息中，用于匹配请求消息
+} CanNetif,*pCanNetif;
 
 //--ZigBee网络接口
-typedef struct  
+typedef struct
 {
-	UINT16 IdLen;
-	char gwID[STRING_MAXLEN];
-	UINT8 chan;             /**< \brief 通道号        */
-  UINT16 panid;         /**< \brief PanID         */
-	UINT16 Saddr;//can源地址
-	UINT16 Daddr;//can目标地址，最后一次连接的地址
-	UINT8 LinkState;//当前链接状态 0未入网 1注册成功 
-	UINT8 SendingMsg;//正在发送的消息，等ACK
-	UINT8 ReceiveMsgACK;//接收到的ACK
-	UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
-	UINT16 replyNo;	//应答序号，只出现在应答消息中，用于匹配请求消息	
-	UINT8   Interval;//主动上传间隔
-}ZigNetif,*pZigNetif;
+    UINT16 IdLen;
+    char gwID[STRING_MAXLEN];
+    UINT8 chan;             /**< \brief 通道号        */
+    UINT16 panid;         /**< \brief PanID         */
+    UINT16 Saddr;//can源地址
+    UINT16 Daddr;//can目标地址，最后一次连接的地址
+    UINT8 LinkState;//当前链接状态 0未入网 1注册成功
+    UINT8 SendingMsg;//正在发送的消息，等ACK
+    UINT8 ReceiveMsgACK;//接收到的ACK
+    UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
+    UINT16 replyNo; //应答序号，只出现在应答消息中，用于匹配请求消息
+    UINT8   Interval;//主动上传间隔
+} ZigNetif,*pZigNetif;
 
-typedef struct  
-{	
-	UINT8 SendingMsg;//正在发送的消息，等ACK	
-	UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。	
-}SendmsgQ,*pSendmsgQ;
+typedef struct
+{
+    UINT8 SendingMsg;//正在发送的消息，等ACK
+    UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
+} SendmsgQ,*pSendmsgQ;
 
 
 //---------------------------------------------------------------------------------------
 // can底层消息格式定义，使用can转uart模块
 //---------------------------------------------------------------------------------------
 //--单个can帧定义
-typedef struct  
+typedef struct
 {
-	UINT8 Flg;//can帧信息，bit7标准帧、扩展帧,bit6数据帧、远程帧,bit3:bit0有效数据长度
-	union{
-	UINT8 Pcnt;//can帧计数器，bit4：bit0表示第几帧
-	struct{
-		UINT8 FrmCnt:5;//帧计数器		
-		UINT8 bit75:3;
-	}str;
-	}uni;
-	UINT8 Msg;//消息类型，bit7=0表示请求，bit7=1表示应答
-	UINT8 Daddr;//can目标地址
-	UINT8 Saddr;//can源地址
-	UINT8 Data[8];//负载
-}CanFrame,*pCanFrame;
+    UINT8 Flg;//can帧信息，bit7标准帧、扩展帧,bit6数据帧、远程帧,bit3:bit0有效数据长度
+    union
+    {
+        UINT8 Pcnt;//can帧计数器，bit4：bit0表示第几帧
+        struct
+        {
+            UINT8 FrmCnt:5;//帧计数器
+            UINT8 bit75:3;
+        } str;
+    } uni;
+    UINT8 Msg;//消息类型，bit7=0表示请求，bit7=1表示应答
+    UINT8 Daddr;//can目标地址
+    UINT8 Saddr;//can源地址
+    UINT8 Data[8];//负载
+} CanFrame,*pCanFrame;
 
 //--单个串口帧格式
-typedef struct  
+typedef struct
 {
-	UINT8 Head;//固定为0xAA
-	UINT8 StdExtFlg;//标准帧、扩展帧、
-	UINT8 DatRmtFlg;//数据帧、远程帧
-	UINT8 DatLen;//有效数据长度 max=8
-	union{
-		UINT8 Pcnt;//can帧计数器，bit4：bit0表示第几帧，从0到31,理论最大包32*8=256byte
-		struct{
-			UINT8 FrmCnt:5;			
-			UINT8 bit75:3;//帧计数器
-		}str;
-	}uni0;
-	UINT8 Msg;//消息类型，bit7=0表示请求，bit7=1表示应答
-	UINT8 Daddr;//can目标地址
-	UINT8 Saddr;//can源地址
-	union{
-		UINT8 Data[8];//负载
-		struct  
-		{			
-			UINT16 length;//消息长度，包括消息头和消息体
-			UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
-			UINT16 replyNo;	//应答序号，只出现在应答消息中，用于匹配请求消息	
-			UINT16 crc16;//CRC校验 为0时做校验
-		}str;	
-	}uni1;	
-}ComFrame,*pComFrame;
+    UINT8 Head;//固定为0xAA
+    UINT8 StdExtFlg;//标准帧、扩展帧、
+    UINT8 DatRmtFlg;//数据帧、远程帧
+    UINT8 DatLen;//有效数据长度 max=8
+    union
+    {
+        UINT8 Pcnt;//can帧计数器，bit4：bit0表示第几帧，从0到31,理论最大包32*8=256byte
+        struct
+        {
+            UINT8 FrmCnt:5;
+            UINT8 bit75:3;//帧计数器
+        } str;
+    } uni0;
+    UINT8 Msg;//消息类型，bit7=0表示请求，bit7=1表示应答
+    UINT8 Daddr;//can目标地址
+    UINT8 Saddr;//can源地址
+    union
+    {
+        UINT8 Data[8];//负载
+        struct
+        {
+            UINT16 length;//消息长度，包括消息头和消息体
+            UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
+            UINT16 replyNo; //应答序号，只出现在应答消息中，用于匹配请求消息
+            UINT16 crc16;//CRC校验 为0时做校验
+        } str;
+    } uni1;
+} ComFrame,*pComFrame;
 
 //--CAN帧头
-typedef struct  
+typedef struct
 {
-	UINT8 Flg;//can帧信息，bit7标准帧、扩展帧,bit6数据帧、远程帧,bit3:bit0有效数据长度 为0时做校验
-	union{
-		UINT8 Pcnt;//can帧计数器 为0时做校验
-		struct{
-			UINT8 FrmCnt:5;//帧计数器 0到31 32*8=256字节CAN负载
-			UINT8 bit75:3;
-		}str;
-	}uni;
-	UINT8 MsgType;//消息类型，bit7=0表示请求，bit7=1表示应答
-	UINT8 destAddr;//can目标地址
-	UINT8 srcAddr;//can源地址			
-}MSG_CanHeader,*pMSG_CanHeader;
+    UINT8 Flg;//can帧信息，bit7标准帧、扩展帧,bit6数据帧、远程帧,bit3:bit0有效数据长度 为0时做校验
+    union
+    {
+        UINT8 Pcnt;//can帧计数器 为0时做校验
+        struct
+        {
+            UINT8 FrmCnt:5;//帧计数器 0到31 32*8=256字节CAN负载
+            UINT8 bit75:3;
+        } str;
+    } uni;
+    UINT8 MsgType;//消息类型，bit7=0表示请求，bit7=1表示应答
+    UINT8 destAddr;//can目标地址
+    UINT8 srcAddr;//can源地址
+} MSG_CanHeader,*pMSG_CanHeader;
 
 //--应用层消息头，一个CAN帧 13字节
-typedef struct  
+typedef struct
 {
-	UINT8 Flg;//can帧信息，bit7标准帧、扩展帧,bit6数据帧、远程帧,bit3:bit0有效数据长度 为0时做校验
-	union{
-		UINT8 Pcnt;//can帧计数器 为0时做校验
-		struct{
-			UINT8 FrmCnt:5;//帧计数器 0到31 32*8=256字节CAN负载
-			UINT8 bit75:3;
-		}str;
-	}uni;
-	UINT8 MsgType;//消息类型，bit7=0表示请求，bit7=1表示应答
-	UINT8 srcAddr;//can源地址
-	UINT8 destAddr;//can目标地址	
-	UINT16 length;//消息长度，包括消息头和消息体
-	UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
-	UINT16 replyNo;	//应答序号，只出现在应答消息中，用于匹配请求消息	
-	UINT16 crc16;//CRC校验 为0时做校验
-}MSG_Header1,*pMSG_Header1;
+    UINT8 Flg;//can帧信息，bit7标准帧、扩展帧,bit6数据帧、远程帧,bit3:bit0有效数据长度 为0时做校验
+    union
+    {
+        UINT8 Pcnt;//can帧计数器 为0时做校验
+        struct
+        {
+            UINT8 FrmCnt:5;//帧计数器 0到31 32*8=256字节CAN负载
+            UINT8 bit75:3;
+        } str;
+    } uni;
+    UINT8 MsgType;//消息类型，bit7=0表示请求，bit7=1表示应答
+    UINT8 srcAddr;//can源地址
+    UINT8 destAddr;//can目标地址
+    UINT16 length;//消息长度，包括消息头和消息体
+    UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
+    UINT16 replyNo; //应答序号，只出现在应答消息中，用于匹配请求消息
+    UINT16 crc16;//CRC校验 为0时做校验
+} MSG_Header1,*pMSG_Header1;
 
 //---------------------------------------------------------------------------------------
 //应用层消息定义
 //---------------------------------------------------------------------------------------
 //--应用层消息头
-typedef struct  
+typedef struct
 {
-	UINT8 Sof;
-	UINT8 MsgType;//消息类型，bit7=0表示请求，bit7=1表示应答
-	UINT16 srcAddr;//源地址
-	UINT16 destAddr;//目标地址
-	UINT16 length;//消息长度，包括消息头和消息体
-	UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
-	UINT16 replyNo;	//应答序号，只出现在应答消息中，应答时把请求消息的serialNo填充返回去，
-									//用于匹配请求消息	
-	UINT16 crc16;//CRC校验 为0时做校验
-}MSG_Header,*pMSG_Header;
+    UINT8 Sof;
+    UINT8 MsgType;//消息类型，bit7=0表示请求，bit7=1表示应答
+    UINT16 srcAddr;//源地址
+    UINT16 destAddr;//目标地址
+    UINT16 length;//消息长度，包括消息头和消息体
+    UINT16 serialNo;//消息序号，从0开始顺序增长，到最大值回到0。
+    UINT16 replyNo; //应答序号，只出现在应答消息中，应答时把请求消息的serialNo填充返回去，
+    //用于匹配请求消息
+    UINT16 crc16;//CRC校验 为0时做校验
+} MSG_Header,*pMSG_Header;
 
 //--通用应答帧
-typedef struct 
+typedef struct
 {
-	MSG_Header header;//消息头				
-	UINT16  AckCode;//应答返回码:看AckCode定义	
-	UINT8 Eof;
-}MSG_ACK,*pMSG_ACK;
+    MSG_Header header;//消息头
+    UINT16  AckCode;//应答返回码:看AckCode定义
+    UINT8 Eof;
+} MSG_ACK,*pMSG_ACK;
 
 //-----------------------------------------------------------------------------
 //--注册包，节点到服务器，附带机器配置信息
-typedef struct 
+typedef struct
 {
-	MSG_Header header;//消息头		
-	UINT16  protocolVersion;  //协议版本号, 这个版本固定为0
-	UINT16 StringLen;
-	char  gatewayId[STRING_MAXLEN];   //网关标识，零结束字符串 必须放在结构体最后
-	UINT8   Row; //行单条龙头数量
-	UINT8   Col;//列龙头条数量	
-	UINT16  Warp;//针数 经纱 Row*Col*8	
-	UINT8   Installation;//装造bit76：00左前 01左后 02右前 03右后 ; bbit5：0前后不翻转 1前后翻转 ; bit4；反色 ;bit3：HX
-	UINT8   CardSlot;//使用第几列，8列，1有效，0无效
-	char    macID[4];//机台编号 如：A01 A02 B20
-  char    macType[4];//机器类型 如：A01 A02 B03 C04     电脑提花机、普通提花机、绳机
-	
-	UINT8   McuVer; //MCU软件版本
-	UINT8   UiVer;  //界面版本
-  UINT8   Hw1Ver;  //硬件1版本
-	UINT8   Hw2Ver;  //硬件2版本
-	
-	UINT8 	Eof;
-}MSG_Login,*pMSG_Login;
+    MSG_Header header;//消息头
+    UINT16  protocolVersion;  //协议版本号, 这个版本固定为0
+    UINT16 StringLen;
+    char  gatewayId[STRING_MAXLEN];   //网关标识，零结束字符串 必须放在结构体最后
+    UINT8   Row; //行单条龙头数量
+    UINT8   Col;//列龙头条数量
+    UINT16  Warp;//针数 经纱 Row*Col*8
+    UINT8   Installation;//装造bit76：00左前 01左后 02右前 03右后 ; bbit5：0前后不翻转 1前后翻转 ; bit4；反色 ;bit3：HX
+    UINT8   CardSlot;//使用第几列，8列，1有效，0无效
+    char    macID[4];//机台编号 如：A01 A02 B20
+    char    macType[4];//机器类型 如：A01 A02 B03 C04     电脑提花机、普通提花机、绳机
+
+    UINT8   McuVer; //MCU软件版本
+    UINT8   UiVer;  //界面版本
+    UINT8   Hw1Ver;  //硬件1版本
+    UINT8   Hw2Ver;  //硬件2版本
+
+    UINT8   Eof;
+} MSG_Login,*pMSG_Login;
 
 //--机器状态，由服务器请求（轮询模式 间隔1分钟）
-typedef struct 
+typedef struct
 {
-	MSG_Header header;//消息头	
-	UINT16  Speed;//当前车速
-	UINT8   MacState;//机器状态，1开车、0停车
-	UINT8   MacErr;//机器故障信息，0x00无故障，0x01：断纱，0x02。。。。
-	UINT32  IdlTmLen;//停机时长 单位：秒
-  UINT8	  Eof;	
-}MSG_MacState,*pMSG_MacState;
+    MSG_Header header;//消息头
+    UINT16  Speed;//当前车速
+    UINT8   MacState;//机器状态，1开车、0停车
+    UINT8   MacErr;//机器故障信息，0x00无故障，0x01：断纱，0x02。。。。
+    UINT32  IdlTmLen;//停机时长 单位：秒
+    UINT8   Eof;
+} MSG_MacState,*pMSG_MacState;
 
 //--生产相关参数，由服务器请求（轮询模式）
-typedef struct 
+typedef struct
 {
-	MSG_Header header;//消息头	
+    MSG_Header header;//消息头
 
-	UINT32  RunTmLen;//开车时长 单位：秒
-	//计件使用
-	char   	Class;//班次 例如‘A’ ‘B’ ‘C’ 	
-	char  	WorkNum[6];//工号 例如 “A1234”	
-	UINT32  ClassTmLen;//当前工号开车时长
-	UINT32  ClassOut;//当前工号产量
-	//花样相关
-  UINT32  PatTask;//花样生产任务 米
-	UINT32  TotalOut;//已完成的总产量	
-	UINT32  RemainTm;//预计任务剩余完成时间	
-	UINT8   OutNum;//同时产出条数	
-	UINT16  WeftDensity;//纬密 原始数据 x100再传输
-	UINT16  OpeningDegree;//开度 原始数据 x100再传输
-	UINT16  TotalWeft;//循环总纬数
-	UINT16  StringLen;//文件名长度
-	char   	FileName[STRING_MAXLEN];//生产文件名，最大STRING_MAXLEN字节
-	
-	UINT8 	Eof;
-}MSG_Production,*pMSG_Production;
+    UINT32  RunTmLen;//开车时长 单位：秒
+    //计件使用
+    char    Class;//班次 例如‘A’ ‘B’ ‘C’
+    char    WorkNum[6];//工号 例如 “A1234”
+    UINT32  ClassTmLen;//当前工号开车时长
+    UINT32  ClassOut;//当前工号产量
+    //花样相关
+    UINT32  PatTask;//花样生产任务 米
+    UINT32  TotalOut;//已完成的总产量
+    UINT32  RemainTm;//预计任务剩余完成时间
+    UINT8   OutNum;//同时产出条数
+    UINT16  WeftDensity;//纬密 原始数据 x100再传输
+    UINT16  OpeningDegree;//开度 原始数据 x100再传输
+    UINT16  TotalWeft;//循环总纬数
+    UINT16  StringLen;//文件名长度
+    char    FileName[STRING_MAXLEN];//生产文件名，最大STRING_MAXLEN字节
 
-//--节点主动退出网络，
-//应答，结构体：MSG_ACK。
-typedef struct 
+    UINT8   Eof;
+} MSG_Production,*pMSG_Production;
+
+//--节点主动退出网络，//应答，结构体：MSG_ACK。
+typedef struct
 {
-	MSG_Header header;//消息头				
-	UINT16 StringLen;
-	char  gatewayId[STRING_MAXLEN];   //网关标识，零结束字符串 
-	UINT8 Eof;
-}MSG_Logout,*pMSG_Logout;
+    MSG_Header header;//消息头
+    UINT16 StringLen;
+    char  gatewayId[STRING_MAXLEN];   //网关标识，零结束字符串
+    char  macID[4];//机台编号 如：A01 A02 B20
+    UINT8 Eof;
+} MSG_Logout,*pMSG_Logout;
 
 //--花样参数，下发文件前先下传此参数，节点收到此消息后，比对文件大小和
 //磁盘空间大小，如果超出磁盘空间则返回空间不足错误码
 //--应答，结构体：MSG_ACK。
-typedef struct 
+typedef struct
 {
-	MSG_Header header;//消息头		
-	UINT16  Warp;//针数 经纱 Row*Col*8
-	UINT16  FileSize;//文件长度 Byte
-	UINT16  StringLen;
-  char   FileName[STRING_MAXLEN];//生产文件名，最大STRING_MAXLEN字节
-	UINT8 Eof;
-}MSG_PatPara,*pMSG_PatPara;
+    MSG_Header header;//消息头
+    UINT16  Warp;//针数 经纱 Row*Col*8
+    UINT16  FileSize;//文件长度 Byte
+    UINT16  StringLen;
+    char   FileName[STRING_MAXLEN];//生产文件名，最大STRING_MAXLEN字节
+    UINT8 Eof;
+} MSG_PatPara,*pMSG_PatPara;
 
 //--传送花样文件，服务器到节点，
 //--应答，结构体：MSG_ACK。
-typedef struct 
+typedef struct
 {
-	MSG_Header header;//消息头
-  UINT16 Totalpackets;//总包数
-  UINT16 packetCnt;//当前包序号
-  UINT8 Datasize;//当前包有效数据大小
-  UINT8  Data[256];//生产文件数据
-	UINT8 Eof;
-}MSG_PatFile,*pMSG_PatFile;
+    MSG_Header header;//消息头
+    UINT16 Totalpackets;//总包数
+    UINT16 packetCnt;//当前包序号
+    UINT8 Datasize;//当前包有效数据大小
+    UINT8  Data[256];//生产文件数据
+    UINT8 Eof;
+} MSG_PatFile,*pMSG_PatFile;
 
 
 //--获取生产相关信息，需应答
 //--应答,返回产量,结构体：MSG_Production
-typedef struct 
+typedef struct
 {
-	MSG_Header header;//消息头
-	UINT8 Eof;
-}MSG_GetProduction,*pMSG_GetProduction;
+    MSG_Header header;//消息头
+    UINT8 Eof;
+} MSG_GetProduction,*pMSG_GetProduction;
 
 //--获取机器状态信息
 //--应答,结构体：MSG_MacState
-typedef struct 
+typedef struct
 {
-	MSG_Header header;//消息头
-	UINT8 Eof;
-}MSG_GetMacState,*pMSG_GetMacState;
+    MSG_Header header;//消息头
+    UINT8 Eof;
+} MSG_GetMacState,*pMSG_GetMacState;
 
 //--设置节点定时间隔
 //--应答，结构体：MSG_ACK。
-typedef struct 
+typedef struct
 {
-	MSG_Header header;//消息头
-  UINT8   Interval;//单位分钟，为0时等待停止主动上传
-	UINT8 	Eof;
-}MSG_Interval,*pMSG_Interval;
+    MSG_Header header;//消息头
+    UINT8   Interval;//单位分钟，为0时等待停止主动上传
+    UINT8   Eof;
+} MSG_Interval,*pMSG_Interval;
 
 //--设置节点时间
 //--应答，结构体：MSG_ACK。
-typedef struct 
+typedef struct
 {
-	MSG_Header header;//消息头
-	UINT8 hour;//时
-	UINT8 minute;//分
-	UINT8 second;//秒
-	UINT8 date;//日
-	UINT8 month;//月
-	UINT16 year;//年  
-	UINT8 Eof;
-}MSG_SetTime,*pMSG_SetTime;
+    MSG_Header header;//消息头
+    UINT8 hour;//时
+    UINT8 minute;//分
+    UINT8 second;//秒
+    UINT8 date;//日
+    UINT8 month;//月
+    UINT16 year;//年
+    UINT8 Eof;
+} MSG_SetTime,*pMSG_SetTime;
 
 #pragma pack()    //设置１字节对齐
 //////////////////////////////////////////////////////////报文定义结束/////////////////////////////////////////////////////////////////////////
