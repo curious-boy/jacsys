@@ -428,6 +428,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             if (m_localAddr == 0)
             {
                 m_localAddr = (stuBody->header.destAddr);
+				 LOG_INFO << "---------destAddr: " << m_localAddr;
             }
 
             LOG_INFO << "-------------------srcAddr: " << (stuBody->header.srcAddr);
@@ -616,12 +617,15 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
             if (stuBody->header.destAddr != m_localAddr)
             {
+                LOG_WARN<<"stuBody->header.destAddr != m_localAddr";
+                LOG_WARN<<"stuBody->header.destAddr="<< stuBody->header.destAddr<<" | "
+                        <<"m_localAddr= "<<m_localAddr;
                 tmpAckCode = ACK_MSG_ERROR;
             }
 
 
             LOG_ERROR << "common ack, errCode = " << tmpAckCode;
-			 m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
+            m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
 
             buf->retrieve(sizeof(MSG_ACK));
         }
