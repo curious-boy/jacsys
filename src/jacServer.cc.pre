@@ -280,7 +280,6 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
     LOG_INFO << "readableBytes length = " << buf->readableBytes();
 
     MSG_Header* tHeader = (MSG_Header*) new char[sizeof(MSG_Header)];
-    UINT8 tmpAckCode=ACK_OK;
 
     if (buf->readableBytes() >= sizeof(RspAck))
     {
@@ -298,7 +297,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 m_loop->cancel( m_resendTimer );
                 if(m_curGateway->getCurOperatorType() == REGISTER_NODE)
                 {
-                    sendReplyAck(get_pointer(conn),m_pTmpHeader,tmpAckCode);
+                    sendReplyAck(get_pointer(conn),m_pTmpHeader,tmpAckCode_);
 
                     pINFO_Node tmpNode = new INFO_Node();
                     tmpNode->addr = m_pTmpHeader->srcAddr;
@@ -317,7 +316,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                         m_destAddr = Tranverse16(m_pTmpHeader->srcAddr);
                     }
                 }
-                if(m_curGateway->getCurOperatorType() == REGISTER_FINISH)
+                else if(m_curGateway->getCurOperatorType() == REGISTER_FINISH)
                 {
                     setNodeTime(m_destAddr);    //节点注册成功后，同步节点时间
 
@@ -331,13 +330,44 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
                     m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
                 }
-                if(m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
+                else if(m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
                 {
                     LOG_INFO << "---------modify dest node success!-------";
 
                     m_curGateway->setCurOperatorType(SEND_MESSAGE);
                     m_loop->cancel(m_roundTimer);
                     m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
+                }
+                else if(m_curGateway->getCurOperatorType() == LOGOUT_NODE)
+                {
+                    sendReplyAck(get_pointer(conn),m_pTmpHeader,tmpAckCode_);
+                    m_curGateway->setCurOperatorType(REGISTER_FINISH);
+                }
+                else if(m_curGateway->getCurOperatorType() == LOGOUT_FINISH)
+                {
+
+
+            // 判断是否存在连接的节点
+            if (m_curGateway->getNodeSize() > 0 )
+                    {
+                        m_curGateway->resetCurNode();
+                       
+                    }
+			else
+				{
+				return;
+				}
+
+            modifyDestAddr(m_curGateway->getCurNode()->addr);
+            m_loop->cancel(m_roundTimer);
+			LOG_INFO << "---logout finished----";
+                    m_curGateway->setCurOperatorType(SEND_MESSAGE);
+            m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
+
+                }
+                else
+                {
+                    LOG_ERROR<<"???????unknown OperatorType!!!!";
                 }
             }
             else
@@ -362,7 +392,6 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             buf->retrieve(sizeof(RspAck));
             return;
         }
-
     }
 
     if(m_curGateway != NULL)
@@ -422,13 +451,13 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             }
 
             // MSG_Login
-            tmpAckCode=ACK_OK;
+            tmpAckCode_=ACK_OK;
             MSG_Login* stuBody = (MSG_Login*)const_cast<char*>(buf->peek());
 
             if (m_localAddr == 0)
             {
                 m_localAddr = (stuBody->header.destAddr);
-				 LOG_INFO << "---------destAddr: " << m_localAddr;
+                LOG_INFO << "---------destAddr: " << m_localAddr;
             }
 
             LOG_INFO << "-------------------srcAddr: " << (stuBody->header.srcAddr);
@@ -459,19 +488,19 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             //报文合法性校验
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_Login))
             {
-                tmpAckCode = ACK_OUTOFMEM;
+                tmpAckCode_ = ACK_OUTOFMEM;
                 LOG_WARN<< "ACK_OUTOFMEM";
             }
 
             if ((stuBody->header.Sof != COM_FRM_HEAD) || (stuBody->Eof != COM_FRM_END))
             {
-                tmpAckCode = ACK_DATALOSS;
+                tmpAckCode_ = ACK_DATALOSS;
                 LOG_WARN<< "ACK_DATALOSS";
             }
 
             if (stuBody->header.destAddr != m_localAddr)
             {
-                tmpAckCode = ACK_MSG_ERROR;
+                tmpAckCode_ = ACK_MSG_ERROR;
                 LOG_WARN<< "ACK_MSG_ERROR";
             }
 
@@ -486,8 +515,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
             }
 
-            //
-            if (tmpAckCode == ACK_OK)
+            if (tmpAckCode_ == ACK_OK)
             {
                 if (m_curGateway->isExistNode(stuBody->header.srcAddr))
                 {
@@ -517,9 +545,6 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
             buf->retrieve(sizeof(MSG_Login));
 
-            //m_loop->cancel(m_roundTimer);
-            //m_roundTimer = m_loop->runAfter(9, boost::bind(&JacServer::onTimer, this));
-
         }
         else if (tHeader->MsgType == MSG_LOGOUT)
         {
@@ -537,29 +562,29 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             //报文合法性校验
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_Logout))
             {
-                tmpAckCode = ACK_OUTOFMEM;
+                tmpAckCode_ = ACK_OUTOFMEM;
             }
 
             if ((stuBody->header.Sof != COM_FRM_HEAD) || (stuBody->Eof != COM_FRM_END))
             {
-                tmpAckCode = ACK_DATALOSS;
+                tmpAckCode_ = ACK_DATALOSS;
             }
 
             if (stuBody->header.destAddr != m_localAddr)
             {
-                tmpAckCode = ACK_MSG_ERROR;
+                tmpAckCode_ = ACK_MSG_ERROR;
             }
 
             buf->retrieve(sizeof(MSG_Logout));
 
             // add code to process logout   remove node info in Gateway
-            // 节点注册成功
-            if (tmpAckCode == ACK_OK)
+            // 节点注销
+            if (tmpAckCode_ == ACK_OK)
             {
-
                 if (m_curGateway->isExistNode(stuBody->header.srcAddr))
                 {
                     m_curGateway->deleteNodeByAddr(stuBody->header.srcAddr);
+                    g_DatabaseOperator.DeleteNodeOfGateway(m_curGateway->getIp(), stuBody->header.srcAddr);
                 }
                 else
                 {
@@ -568,23 +593,21 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                              << " logout failed!";
                 }
             }
-            // ack
-            // sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
 
-            if (m_curGateway == NULL)
-            {
-                m_curGateway = new Gateway();
-                m_curGateway->setName(stuBody->gatewayId);
-            }
 
             m_loop->cancel(m_roundTimer);
             modifyDestAddr(stuBody->header.srcAddr);
-            usleep(30000);
-            sendReplyAck(get_pointer(conn),&stuBody->header,tmpAckCode);
-            // 需要修改
-            modifyDestAddr(m_curGateway->getCurNode()->addr);
-            m_loop->cancel(m_roundTimer);
-            m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS, boost::bind(&JacServer::onTimer, this));
+
+            if(m_pTmpHeader == NULL )
+            {
+                m_pTmpHeader = new MSG_Header();
+            }
+            m_pTmpHeader->destAddr= stuBody->header.destAddr;
+            m_pTmpHeader->srcAddr= stuBody->header.srcAddr;
+            m_pTmpHeader->serialNo = stuBody->header.serialNo;
+            m_pTmpHeader->replyNo = stuBody->header.replyNo;
+
+
         }
         else if (tHeader->MsgType == MSG_COMACK)
         {
@@ -607,12 +630,12 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             //报文合法性校验
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_ACK))
             {
-                tmpAckCode = ACK_OUTOFMEM;
+                tmpAckCode_ = ACK_OUTOFMEM;
             }
 
             if ((stuBody->header.Sof != COM_FRM_HEAD) || (stuBody->Eof != COM_FRM_END))
             {
-                tmpAckCode = ACK_DATALOSS;
+                tmpAckCode_ = ACK_DATALOSS;
             }
 
             if (stuBody->header.destAddr != m_localAddr)
@@ -620,11 +643,11 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 LOG_WARN<<"stuBody->header.destAddr != m_localAddr";
                 LOG_WARN<<"stuBody->header.destAddr="<< stuBody->header.destAddr<<" | "
                         <<"m_localAddr= "<<m_localAddr;
-                tmpAckCode = ACK_MSG_ERROR;
+                tmpAckCode_ = ACK_MSG_ERROR;
             }
 
 
-            LOG_ERROR << "common ack, errCode = " << tmpAckCode;
+            LOG_ERROR << "common ack, errCode = " << tmpAckCode_;
             m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
 
             buf->retrieve(sizeof(MSG_ACK));
@@ -645,17 +668,17 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             //报文合法性校验
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_MacState))
             {
-                tmpAckCode = ACK_OUTOFMEM;
+                tmpAckCode_ = ACK_OUTOFMEM;
             }
 
             if ((stuBody->header.Sof != COM_FRM_HEAD) || (stuBody->Eof != COM_FRM_END))
             {
-                tmpAckCode = ACK_DATALOSS;
+                tmpAckCode_ = ACK_DATALOSS;
             }
 
             if (stuBody->header.destAddr != m_localAddr)
             {
-                tmpAckCode = ACK_MSG_ERROR;
+                tmpAckCode_ = ACK_MSG_ERROR;
             }
 
             buf->retrieve(sizeof(MSG_MacState));
@@ -665,9 +688,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             LOG_DEBUG << "MacErr: " << (stuBody->MacErr);
             LOG_DEBUG << "IdlTmLen: " << Tranverse32(stuBody->IdlTmLen);
 
-            if (tmpAckCode != ACK_OK)
+            if (tmpAckCode_ != ACK_OK)
             {
-                LOG_INFO << "exception: "<< tmpAckCode;
+                LOG_INFO << "exception: "<< tmpAckCode_;
             }
             m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
 
@@ -688,15 +711,15 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             //报文合法性校验
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_Production))
             {
-                tmpAckCode = ACK_OUTOFMEM;
+                tmpAckCode_ = ACK_OUTOFMEM;
             }
             else if ((stuBody->header.Sof != COM_FRM_HEAD) || (stuBody->Eof != COM_FRM_END))
             {
-                tmpAckCode = ACK_DATALOSS;
+                tmpAckCode_ = ACK_DATALOSS;
             }
             else if (stuBody->header.destAddr != m_localAddr)
             {
-                tmpAckCode = ACK_MSG_ERROR;
+                tmpAckCode_ = ACK_MSG_ERROR;
             }
 
             buf->retrieve(sizeof(MSG_Production));
@@ -717,13 +740,13 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             LOG_DEBUG << "StringLen: " << Tranverse16(stuBody->StringLen);
             LOG_DEBUG << "FileName: " << stuBody->FileName;
 
-            LOG_DEBUG << "AckCode: " << tmpAckCode;
+            LOG_DEBUG << "AckCode: " << tmpAckCode_;
 
 
 
-            if (tmpAckCode != ACK_OK)
+            if (tmpAckCode_ != ACK_OK)
             {
-                LOG_WARN<< "exception: "<< tmpAckCode;
+                LOG_WARN<< "exception: "<< tmpAckCode_;
             }
             m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
 

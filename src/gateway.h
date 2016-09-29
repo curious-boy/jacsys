@@ -14,6 +14,8 @@ typedef enum
 {
     REGISTER_NODE,
     REGISTER_FINISH,
+    LOGOUT_NODE,
+    LOGOUT_FINISH,
     MODIFY_DEST_NODE,
     SEND_MESSAGE
 
@@ -32,6 +34,7 @@ public:
     pINFO_Node         getNodeByAddr(UINT16 addr);         // get nodeinfo by addr
     void                    insertNode(pINFO_Node pNode);           // insert nodeinfo ，将节点数据临时存放
     UINT16              getNodeSize();                      // get size of node
+    void                    resetCurNode();                         // reset m_curIndex to 0
     void                    removeAllNodes();                   // remove all nodes
     void                    deleteNodeByAddr(UINT16 addr);      //
     string              getName();
@@ -46,7 +49,8 @@ public:
     OperatorType    getCurOperatorType();
     bool                isExistNode(UINT16 addr);
     void                 setIp(string ip);
-    string         getIp();
+    string              getIp();
+
 
 
 private:
@@ -199,6 +203,11 @@ void Gateway::insertNode(pINFO_Node pNode)
 UINT16 Gateway::getNodeSize()
 {
     return (UINT16)m_vNodesInfo.size();
+}
+
+void Gateway::resetCurNode()
+{
+    m_curIndex=0;
 }
 
 void Gateway::removeAllNodes()

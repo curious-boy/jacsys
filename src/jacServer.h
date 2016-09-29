@@ -55,6 +55,7 @@ public:
         m_pTmpHeader = NULL;
         time_sync_ = NULL;
         times_get_mac_state_=0;
+        tmpAckCode_=ACK_OK;
     }
 
     void start();
@@ -93,6 +94,7 @@ private:
     //临时存放 目标地址
     UINT16  m_destAddr;
     UINT16  m_iSendNo;
+    UINT8 tmpAckCode_;
 
     pMSG_Header m_pTmpHeader;       //临时存放消息头，用于新节点注册时的交互
 
