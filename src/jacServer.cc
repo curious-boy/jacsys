@@ -39,7 +39,7 @@ void JacServer::start()
 void JacServer::onConnection(const TcpConnectionPtr& conn)
 {
     LOG_DEBUG<< conn->peerAddress().toIpPort() << " -> "
-             << conn->localAddress().toIpPort() << " is "
+             << conn->peerAddress().toIpPort() << " is "
              << (conn->connected() ? "UP" : "DOWN");
 
     if( conn->connected())
@@ -56,19 +56,19 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
             if (m_curGateway == NULL)
             {
                 m_curGateway = new Gateway();
-                LOG_DEBUG << "onConnection,currentip :=" << conn->localAddress().toIp();
-                LOG_DEBUG<<"onConnection,currentip. ipNetEndian:="<<conn->localAddress().ipNetEndian();
-                m_curGateway->setIp(conn->localAddress().toIp());
+                LOG_DEBUG << "onConnection,currentip :=" << conn->peerAddress().toIp();
+                
+                m_curGateway->setIp(conn->peerAddress().toIp());
             }
 
 #if USE_DATABASE
             std::vector<UINT16> vnodes;
-            string strip =conn->localAddress().toIp();
+            string strip =conn->peerAddress().toIp();
             vnodes = g_DatabaseOperator.GetNodesOfGateway(strip );
 
             if(vnodes.size() > 0)
             {
-                //½«½ÚµãÐÅÏ¢Ìí¼Óµ½Íø¹ØÐÅÏ¢ÁÐ±í
+                //ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½Ð±ï¿½
                 m_localAddr=g_DatabaseOperator.GetZigAddrOfGateway(strip);
                 if(m_localAddr == 0)
                 {
@@ -110,7 +110,7 @@ void JacServer::onTimer()
         return;
     }
 
-    //Ñ­»·ÉèÖÃÒÑ¾­×¢²áµÄ½Úµã
+    //Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½×¢ï¿½ï¿½ï¿½Ä½Úµï¿½
     if (m_curGateway->getNodeSize() == 0 )
     {
         LOG_INFO << "no node registed now!";
@@ -128,7 +128,7 @@ void JacServer::onTimer()
     }
     else
     {
-//Î´ÏìÓ¦µÄÃüÁîÊý³¬¹ý8Ê±£¬ÅÐ¶¨½ÚµãµôÏß£»´ÓÍø¹ØÐÅÏ¢ÖÐÉ¾³ý¸Ã½Úµã
+//Î´ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½8Ê±ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ã½Úµï¿½
         LOG_INFO << "+++++ getUnReplyNum , " << m_curGateway->getUnReplyNum();
 
         if(m_curGateway->getUnReplyNum() > MAX_UNREPLY_NUM)
@@ -150,7 +150,7 @@ void JacServer::onTimer()
                 return;
             }
 
-//ÂÖÑ¯ÏÂÒ»¸ö½ÚµãµÄµØÖ·
+//ï¿½ï¿½Ñ¯ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½ï¿½Äµï¿½Ö·
             m_destAddr= m_curGateway->getNextNode()->addr;
             modifyDestAddr(m_destAddr);
 
@@ -165,7 +165,7 @@ void JacServer::onTimer()
 
         if(times_get_mac_state_ < 10)
         {
-            // #define MSG_GETMACSTATE       0X49  //»ñÈ¡»úÆ÷×´Ì¬ÐÅÏ¢
+            // #define MSG_GETMACSTATE       0X49  //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½Ï¢
             msgLen = sizeof(MSG_GetMacState);
             MSG_GetMacState* stuGetMacState = (MSG_GetMacState*)new char[sizeof(MSG_GetMacState)];
 
@@ -297,7 +297,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             && (tmpAck->protocolTag3 == 0xEF)
             && (tmpAck->funcCode == 0xD2 ) )
         {
-            //´¦ÀíÐÞ¸ÄÄ¿±ê½ÚµãÃüÁî·´À¡
+            //ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½Ä¿ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½î·´ï¿½ï¿½
             if (tmpAck->ackCode == 0x00)
             {
                 m_loop->cancel( m_resendTimer );
@@ -310,7 +310,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     tmpNode->unReplyNum = 0;
                     m_curGateway->insertNode(tmpNode);
 
-                    //½«½ÚµãÐÅÏ¢²åÈëµ½Êý¾Ý¿âÖÐ
+                    //ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ëµ½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½
 #if USE_DATABASE
                     g_DatabaseOperator.InsertNodeOfGateway( m_curGateway->getIp(),m_pTmpHeader->destAddr,tmpNode->addr);
 #endif
@@ -323,7 +323,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     }
                     LOG_DEBUG<<"------REGISTER_NODE";
 
-                    setNodeTime(m_destAddr);    //½Úµã×¢²á³É¹¦ºó£¬Í¬²½½ÚµãÊ±¼ä
+                    setNodeTime(m_destAddr);    //ï¿½Úµï¿½×¢ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½Úµï¿½Ê±ï¿½ï¿½
 
                     if (m_curGateway->getNodeSize() > 0 )
                     {
@@ -339,7 +339,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 else if(m_curGateway->getCurOperatorType() == REGISTER_FINISH)
                 {
                     LOG_DEBUG<<"------REGISTER_FINISH";
-                    setNodeTime(m_destAddr);    //½Úµã×¢²á³É¹¦ºó£¬Í¬²½½ÚµãÊ±¼ä
+                    setNodeTime(m_destAddr);    //ï¿½Úµï¿½×¢ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½Úµï¿½Ê±ï¿½ï¿½
 
                     if (m_curGateway->getNodeSize() > 0 )
                     {
@@ -365,7 +365,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     LOG_DEBUG << "---------LOGOUT_NODE ACK!-------";
                     sendReplyAck(get_pointer(conn),m_pTmpHeader,tmpAckCode_);
 
-                    // ÅÐ¶ÏÊÇ·ñ´æÔÚÁ¬½ÓµÄ½Úµã
+                    // ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÓµÄ½Úµï¿½
                     if (m_curGateway->getNodeSize() > 0 )
                     {
                         m_curGateway->resetCurNode();
@@ -386,7 +386,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 else if(m_curGateway->getCurOperatorType() == LOGOUT_FINISH)
                 {
                     LOG_DEBUG << "---------LOGOUT_FINISH ACK!-------";
-                    // ÅÐ¶ÏÊÇ·ñ´æÔÚÁ¬½ÓµÄ½Úµã
+                    // ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÓµÄ½Úµï¿½
                     if (m_curGateway->getNodeSize() > 0 )
                     {
                         m_curGateway->resetCurNode();
@@ -521,7 +521,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             LOG_DEBUG << "Hw2Ver: " << (stuBody->Hw2Ver);
 
 
-            //±¨ÎÄºÏ·¨ÐÔÐ£Ñé
+            //ï¿½ï¿½ï¿½ÄºÏ·ï¿½ï¿½ï¿½Ð£ï¿½ï¿½
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_Login))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
@@ -540,9 +540,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 LOG_WARN<< "ACK_MSG_ERROR";
             }
 
-            // 1 ÔÝÊ±È¡ÏûÂÖÑ¯¶¨Ê±
-            // 2 ÉèÖÃÍø¹ØÄ¿±ê½ÚµãµØÖ·Îªµ±Ç°×¢²á½ÚµãµØÖ·£¬²¢·¢ËÍ×¢²á³É¹¦Ó¦´ð
-            // 3 »Ö¸´Ô­ÂÖÑ¯×´Ì¬£¬¼ÌÐøÂÖÑ¯£»
+            // 1 ï¿½ï¿½Ê±È¡ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½Ê±
+            // 2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½Ö·Îªï¿½ï¿½Ç°×¢ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½É¹ï¿½Ó¦ï¿½ï¿½
+            // 3 ï¿½Ö¸ï¿½Ô­ï¿½ï¿½Ñ¯×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½
             if (m_curGateway == NULL)
             {
                 m_curGateway = new Gateway();
@@ -586,7 +586,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
         else if (tHeader->MsgType == MSG_LOGOUT)
         {
             LOG_INFO << "===========ONMSG:   MSG_LOGOUT++++++++";
-            //½Úµã×¢Ïú£¬ÐÞ¸Ä½Úµã×´Ì¬
+            //ï¿½Úµï¿½×¢ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸Ä½Úµï¿½×´Ì¬
             if(buf->readableBytes() < sizeof(MSG_Logout))
             {
                 sendReplyAck(get_pointer(conn),tHeader,ACK_DATALOSS);
@@ -596,7 +596,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             //MSG_Logout* stuBody = (MSG_Logout*) new char[sizeof(MSG_Logout)];
             MSG_Logout* stuBody = (MSG_Logout*)const_cast<char*>(buf->peek());
 
-            //±¨ÎÄºÏ·¨ÐÔÐ£Ñé
+            //ï¿½ï¿½ï¿½ÄºÏ·ï¿½ï¿½ï¿½Ð£ï¿½ï¿½
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_Logout))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
@@ -615,7 +615,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             buf->retrieve(sizeof(MSG_Logout));
 
             // add code to process logout   remove node info in Gateway
-            // ½Úµã×¢Ïú
+            // ï¿½Úµï¿½×¢ï¿½ï¿½
             if (tmpAckCode_ == ACK_OK)
             {
                 if (m_curGateway->isExistNode(stuBody->header.srcAddr))
@@ -661,10 +661,10 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             //MSG_Logout* stuBody = (MSG_Logout*) new char[sizeof(MSG_Logout)];
             MSG_ACK* stuBody = (MSG_ACK*)const_cast<char*>(buf->peek());
 
-            LOG_INFO << "£­£­£­£­£­£­£­common ack,serialNo = " << stuBody->header.serialNo << " | "
+            LOG_INFO << "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½common ack,serialNo = " << stuBody->header.serialNo << " | "
                      << "replyNo = " << stuBody->header.replyNo;
 
-            //±¨ÎÄºÏ·¨ÐÔÐ£Ñé
+            //ï¿½ï¿½ï¿½ÄºÏ·ï¿½ï¿½ï¿½Ð£ï¿½ï¿½
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_ACK))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
@@ -702,7 +702,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
             MSG_MacState* stuBody = (MSG_MacState*)const_cast<char*>(buf->peek());
 
-            //±¨ÎÄºÏ·¨ÐÔÐ£Ñé
+            //ï¿½ï¿½ï¿½ÄºÏ·ï¿½ï¿½ï¿½Ð£ï¿½ï¿½
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_MacState))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
@@ -745,7 +745,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
             MSG_Production* stuBody = (MSG_Production*)const_cast<char*>(buf->peek());
 
-            //±¨ÎÄºÏ·¨ÐÔÐ£Ñé
+            //ï¿½ï¿½ï¿½ÄºÏ·ï¿½ï¿½ï¿½Ð£ï¿½ï¿½
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_Production))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
@@ -839,7 +839,7 @@ void JacServer::modifyDestAddr(UINT16 addr)
     stuModifyGateWayDestAddr->funcCode = 0xD2;
 
     //LOG_INFO << "modifyDestAddr, test01";
-    // UINT16 destAddr = m_curGateway->getNextNode()->addr;    // getNextNode²»ÒªÖØ¸´µ÷ÓÃ
+    // UINT16 destAddr = m_curGateway->getNextNode()->addr;    // getNextNodeï¿½ï¿½Òªï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½
     LOG_INFO << "^^^^^^^^^^^^^^^^^^ send modify dest node, addr = " << addr;
     stuModifyGateWayDestAddr->addr = addr;
 
@@ -876,7 +876,7 @@ void JacServer::modifyDestAddr()
 
 void    JacServer::setNodeTime(UINT16 addr)
 {
-    // #define MSG_SETTIME           0X44  //ÉèÖÃ½ÚµãÊ±¼ä
+    // #define MSG_SETTIME           0X44  //ï¿½ï¿½ï¿½Ã½Úµï¿½Ê±ï¿½ï¿½
     UINT16 tmpCrc=0;
 
     UINT16 tmpNo = getMsgSerialNo();
