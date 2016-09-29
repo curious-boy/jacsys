@@ -97,7 +97,7 @@ void DatabaseOperator::AddTask(DatabaseOperatorTask task)
 std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
 {
     std::vector<UINT16> tvNodes;
-    string strsql = "select node from node_register_info where ip='" + ipaddr + "'";
+    string strsql = "select node_zig_addr from node_register_info where gateway_ip='" + ipaddr + "'";
     LOG_DEBUG << "GetNodesOfGateway strsql, " << strsql;
 
     mysqlpp::Query query = conn_.query(strsql.c_str());
@@ -119,6 +119,33 @@ std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
     return tvNodes;
 }
 
+UINT16 DatabaseOperator::GetZigAddrOfGateway(string ipaddr)
+{
+    UINT16 zigAddr;
+    string strsql = "select gateway_zig_addr from node_register_info where gateway_ip='" + ipaddr + "'";
+    LOG_DEBUG << "GetZigAddrOfGateway strsql, " << strsql;
+
+    mysqlpp::Query query = conn_.query(strsql.c_str());
+    if (mysqlpp::StoreQueryResult res = query.store())
+    {
+
+        mysqlpp::StoreQueryResult::const_iterator it;
+        for (it = res.begin(); it != res.end(); ++it)
+        {
+            mysqlpp::Row row = *it;
+
+            zigAddr = row[0];
+            return zigAddr;
+        }
+    }
+    else
+    {
+        LOG_DEBUG << "There is no node of  ipaddr. " ;        
+    }
+
+    return 0;
+}
+
 bool  DatabaseOperator::DeleteNodeOfGateway(string ipaddr, UINT16 node)
 {
     std::vector<UINT16> tvNodes;
@@ -126,11 +153,11 @@ bool  DatabaseOperator::DeleteNodeOfGateway(string ipaddr, UINT16 node)
     std::ostringstream ostrsql;
     if(node == 0)
     {
-        ostrsql << "delete from node_register_info where ip='" << ipaddr << "'";
+        ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr << "'";
     }
     else
     {
-        ostrsql << "delete from node_register_info where ip='" << ipaddr<< "' and node=" << node;
+        ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr<< "' and node_zig_addr=" << node;
     }
     std::cout<<"DeleteNodeOfGateway: "<< ostrsql.str()<<std::endl;
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
@@ -145,7 +172,7 @@ bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)
 
     std::ostringstream ostrsql;
 
-    ostrsql << "delete from node_register_info where ip='" << ipaddr<<"'";
+    ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr<<"'";
 
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
     query.exec();
@@ -153,12 +180,14 @@ bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)
     return true;
 }
 
-bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 node)
+bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 g_zig, UINT16 node)
 {
-	//插入之前查询是否有相同节点存在
+    //插入之前查询是否有相同节点存在
     std::vector<UINT16> tvNodes;
     std::ostringstream ostrsql;
-    ostrsql << "insert into node_register_info (gateway, ip,node) VALUES ('','" << ipaddr << "' ," << node << ")";
+    ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr) VALUES ('','"
+            << ipaddr << "' ,"<< g_zig << ","  << node << ")";
+
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
     LOG_DEBUG<< "InsertNodeOfGateway, sql: " << ostrsql.str().c_str();
 

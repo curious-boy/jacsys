@@ -56,6 +56,7 @@ public:
         time_sync_ = NULL;
         times_get_mac_state_=0;
         tmpAckCode_=ACK_OK;
+        m_localAddr=0;
     }
 
     void start();

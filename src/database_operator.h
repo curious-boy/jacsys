@@ -38,11 +38,13 @@ public:
     int Init();
     
     std::vector<UINT16> GetNodesOfGateway (string ipaddr );
+    UINT16 GetZigAddrOfGateway(string ipaddr);
     bool DeleteNodeOfGateway(string ipaddr, UINT16 node);
     bool DeleteNodesOfGateway(string ipaddr);
 
 
-    bool InsertNodeOfGateway(string ipaddr, UINT16 node);
+    bool InsertNodeOfGateway(string ipaddr,UINT16 g_zig, UINT16 node);
+    
     bool UpdateNodesOfGateway(string ipaddr, string name);
     string GetNameOfGateWay(string ipaddr);
 
