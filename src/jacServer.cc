@@ -917,7 +917,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    Logger::setLogLevel(Logger::INFO);
+    Logger::setLogLevel(Logger::DEBUG);
 
     LOG_INFO << "pid = " << getpid() << ", tid = " << CurrentThread::tid();
     EventLoop loop;

@@ -1,6 +1,6 @@
 FILE(REMOVE_RECURSE
-  "CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o"
-  "CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o"
+  "CMakeFiles/jacServer.dir/root/github/jacsys/src/jacServer.cc.o"
+  "CMakeFiles/jacServer.dir/root/github/jacsys/src/database_operator.cc.o"
   "bin/jacServer.pdb"
   "bin/jacServer"
 )

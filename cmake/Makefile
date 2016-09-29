@@ -42,10 +42,10 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/admin/frankz/github/jacsys/cmake
+CMAKE_SOURCE_DIR = /root/github/jacsys/cmake
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/admin/frankz/github/jacsys/cmake
+CMAKE_BINARY_DIR = /root/github/jacsys/cmake
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -72,9 +72,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/frankz/github/jacsys/cmake/CMakeFiles /home/admin/frankz/github/jacsys/cmake/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/github/jacsys/cmake/CMakeFiles /root/github/jacsys/cmake/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/frankz/github/jacsys/cmake/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/github/jacsys/cmake/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -114,53 +114,53 @@ jacServer/fast:
 	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/build
 .PHONY : jacServer/fast
 
-home/admin/frankz/github/jacsys/src/database_operator.o: home/admin/frankz/github/jacsys/src/database_operator.cc.o
-.PHONY : home/admin/frankz/github/jacsys/src/database_operator.o
+root/github/jacsys/src/database_operator.o: root/github/jacsys/src/database_operator.cc.o
+.PHONY : root/github/jacsys/src/database_operator.o
 
 # target to build an object file
-home/admin/frankz/github/jacsys/src/database_operator.cc.o:
-	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.o
-.PHONY : home/admin/frankz/github/jacsys/src/database_operator.cc.o
+root/github/jacsys/src/database_operator.cc.o:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/root/github/jacsys/src/database_operator.cc.o
+.PHONY : root/github/jacsys/src/database_operator.cc.o
 
-home/admin/frankz/github/jacsys/src/database_operator.i: home/admin/frankz/github/jacsys/src/database_operator.cc.i
-.PHONY : home/admin/frankz/github/jacsys/src/database_operator.i
+root/github/jacsys/src/database_operator.i: root/github/jacsys/src/database_operator.cc.i
+.PHONY : root/github/jacsys/src/database_operator.i
 
 # target to preprocess a source file
-home/admin/frankz/github/jacsys/src/database_operator.cc.i:
-	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.i
-.PHONY : home/admin/frankz/github/jacsys/src/database_operator.cc.i
+root/github/jacsys/src/database_operator.cc.i:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/root/github/jacsys/src/database_operator.cc.i
+.PHONY : root/github/jacsys/src/database_operator.cc.i
 
-home/admin/frankz/github/jacsys/src/database_operator.s: home/admin/frankz/github/jacsys/src/database_operator.cc.s
-.PHONY : home/admin/frankz/github/jacsys/src/database_operator.s
+root/github/jacsys/src/database_operator.s: root/github/jacsys/src/database_operator.cc.s
+.PHONY : root/github/jacsys/src/database_operator.s
 
 # target to generate assembly for a file
-home/admin/frankz/github/jacsys/src/database_operator.cc.s:
-	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/database_operator.cc.s
-.PHONY : home/admin/frankz/github/jacsys/src/database_operator.cc.s
+root/github/jacsys/src/database_operator.cc.s:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/root/github/jacsys/src/database_operator.cc.s
+.PHONY : root/github/jacsys/src/database_operator.cc.s
 
-home/admin/frankz/github/jacsys/src/jacServer.o: home/admin/frankz/github/jacsys/src/jacServer.cc.o
-.PHONY : home/admin/frankz/github/jacsys/src/jacServer.o
+root/github/jacsys/src/jacServer.o: root/github/jacsys/src/jacServer.cc.o
+.PHONY : root/github/jacsys/src/jacServer.o
 
 # target to build an object file
-home/admin/frankz/github/jacsys/src/jacServer.cc.o:
-	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.o
-.PHONY : home/admin/frankz/github/jacsys/src/jacServer.cc.o
+root/github/jacsys/src/jacServer.cc.o:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/root/github/jacsys/src/jacServer.cc.o
+.PHONY : root/github/jacsys/src/jacServer.cc.o
 
-home/admin/frankz/github/jacsys/src/jacServer.i: home/admin/frankz/github/jacsys/src/jacServer.cc.i
-.PHONY : home/admin/frankz/github/jacsys/src/jacServer.i
+root/github/jacsys/src/jacServer.i: root/github/jacsys/src/jacServer.cc.i
+.PHONY : root/github/jacsys/src/jacServer.i
 
 # target to preprocess a source file
-home/admin/frankz/github/jacsys/src/jacServer.cc.i:
-	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.i
-.PHONY : home/admin/frankz/github/jacsys/src/jacServer.cc.i
+root/github/jacsys/src/jacServer.cc.i:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/root/github/jacsys/src/jacServer.cc.i
+.PHONY : root/github/jacsys/src/jacServer.cc.i
 
-home/admin/frankz/github/jacsys/src/jacServer.s: home/admin/frankz/github/jacsys/src/jacServer.cc.s
-.PHONY : home/admin/frankz/github/jacsys/src/jacServer.s
+root/github/jacsys/src/jacServer.s: root/github/jacsys/src/jacServer.cc.s
+.PHONY : root/github/jacsys/src/jacServer.s
 
 # target to generate assembly for a file
-home/admin/frankz/github/jacsys/src/jacServer.cc.s:
-	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/home/admin/frankz/github/jacsys/src/jacServer.cc.s
-.PHONY : home/admin/frankz/github/jacsys/src/jacServer.cc.s
+root/github/jacsys/src/jacServer.cc.s:
+	$(MAKE) -f CMakeFiles/jacServer.dir/build.make CMakeFiles/jacServer.dir/root/github/jacsys/src/jacServer.cc.s
+.PHONY : root/github/jacsys/src/jacServer.cc.s
 
 # Help Target
 help:
@@ -171,12 +171,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... jacServer"
 	@echo "... rebuild_cache"
-	@echo "... home/admin/frankz/github/jacsys/src/database_operator.o"
-	@echo "... home/admin/frankz/github/jacsys/src/database_operator.i"
-	@echo "... home/admin/frankz/github/jacsys/src/database_operator.s"
-	@echo "... home/admin/frankz/github/jacsys/src/jacServer.o"
-	@echo "... home/admin/frankz/github/jacsys/src/jacServer.i"
-	@echo "... home/admin/frankz/github/jacsys/src/jacServer.s"
+	@echo "... root/github/jacsys/src/database_operator.o"
+	@echo "... root/github/jacsys/src/database_operator.i"
+	@echo "... root/github/jacsys/src/database_operator.s"
+	@echo "... root/github/jacsys/src/jacServer.o"
+	@echo "... root/github/jacsys/src/jacServer.i"
+	@echo "... root/github/jacsys/src/jacServer.s"
 .PHONY : help
 
 

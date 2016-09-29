@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/AsyncLogging.h
+/root/build/release-install/include/muduo/base/AsyncLogging.h
 muduo/base/BlockingQueue.h
 -
 muduo/base/BoundedBlockingQueue.h
@@ -28,13 +28,13 @@ boost/scoped_ptr.hpp
 boost/ptr_container/ptr_vector.hpp
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/Atomic.h
+/root/build/release-install/include/muduo/base/Atomic.h
 boost/noncopyable.hpp
 -
 stdint.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/BlockingQueue.h
+/root/build/release-install/include/muduo/base/BlockingQueue.h
 muduo/base/Condition.h
 -
 muduo/base/Mutex.h
@@ -46,7 +46,7 @@ deque
 assert.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/BoundedBlockingQueue.h
+/root/build/release-install/include/muduo/base/BoundedBlockingQueue.h
 muduo/base/Condition.h
 -
 muduo/base/Mutex.h
@@ -58,7 +58,7 @@ boost/noncopyable.hpp
 assert.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/Condition.h
+/root/build/release-install/include/muduo/base/Condition.h
 muduo/base/Mutex.h
 -
 boost/noncopyable.hpp
@@ -66,7 +66,7 @@ boost/noncopyable.hpp
 pthread.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/CountDownLatch.h
+/root/build/release-install/include/muduo/base/CountDownLatch.h
 muduo/base/Condition.h
 -
 muduo/base/Mutex.h
@@ -74,11 +74,11 @@ muduo/base/Mutex.h
 boost/noncopyable.hpp
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/CurrentThread.h
+/root/build/release-install/include/muduo/base/CurrentThread.h
 stdint.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/LogStream.h
+/root/build/release-install/include/muduo/base/LogStream.h
 muduo/base/StringPiece.h
 -
 muduo/base/Types.h
@@ -92,13 +92,13 @@ string
 boost/noncopyable.hpp
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/Logging.h
+/root/build/release-install/include/muduo/base/Logging.h
 muduo/base/LogStream.h
 -
 muduo/base/Timestamp.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/Mutex.h
+/root/build/release-install/include/muduo/base/Mutex.h
 muduo/base/CurrentThread.h
 -
 boost/noncopyable.hpp
@@ -108,7 +108,7 @@ assert.h
 pthread.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/StringPiece.h
+/root/build/release-install/include/muduo/base/StringPiece.h
 string.h
 -
 iosfwd
@@ -118,7 +118,7 @@ muduo/base/Types.h
 string
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/Thread.h
+/root/build/release-install/include/muduo/base/Thread.h
 muduo/base/Atomic.h
 -
 muduo/base/Types.h
@@ -132,7 +132,7 @@ boost/shared_ptr.hpp
 pthread.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/ThreadPool.h
+/root/build/release-install/include/muduo/base/ThreadPool.h
 muduo/base/Condition.h
 -
 muduo/base/Mutex.h
@@ -150,7 +150,7 @@ boost/ptr_container/ptr_vector.hpp
 deque
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/Timestamp.h
+/root/build/release-install/include/muduo/base/Timestamp.h
 muduo/base/copyable.h
 -
 muduo/base/Types.h
@@ -158,7 +158,7 @@ muduo/base/Types.h
 boost/operators.hpp
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/Types.h
+/root/build/release-install/include/muduo/base/Types.h
 stdint.h
 -
 string
@@ -170,9 +170,9 @@ ext/vstring_fwd.h
 assert.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/base/copyable.h
+/root/build/release-install/include/muduo/base/copyable.h
 
-/home/admin/frankz/github/build/release-install/include/muduo/net/Buffer.h
+/root/build/release-install/include/muduo/net/Buffer.h
 muduo/base/copyable.h
 -
 muduo/base/StringPiece.h
@@ -190,7 +190,7 @@ assert.h
 string.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/net/Callbacks.h
+/root/build/release-install/include/muduo/net/Callbacks.h
 boost/function.hpp
 -
 boost/shared_ptr.hpp
@@ -198,13 +198,13 @@ boost/shared_ptr.hpp
 muduo/base/Timestamp.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/net/Endian.h
+/root/build/release-install/include/muduo/net/Endian.h
 stdint.h
 -
 endian.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/net/EventLoop.h
+/root/build/release-install/include/muduo/net/EventLoop.h
 vector
 -
 boost/any.hpp
@@ -226,7 +226,7 @@ muduo/net/Callbacks.h
 muduo/net/TimerId.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/net/InetAddress.h
+/root/build/release-install/include/muduo/net/InetAddress.h
 muduo/base/copyable.h
 -
 muduo/base/StringPiece.h
@@ -234,7 +234,7 @@ muduo/base/StringPiece.h
 netinet/in.h
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/net/TcpConnection.h
+/root/build/release-install/include/muduo/net/TcpConnection.h
 muduo/base/StringPiece.h
 -
 muduo/base/Types.h
@@ -256,7 +256,7 @@ boost/scoped_ptr.hpp
 boost/shared_ptr.hpp
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/net/TcpServer.h
+/root/build/release-install/include/muduo/net/TcpServer.h
 muduo/base/Atomic.h
 -
 muduo/base/Types.h
@@ -272,21 +272,21 @@ boost/scoped_ptr.hpp
 boost/shared_ptr.hpp
 -
 
-/home/admin/frankz/github/build/release-install/include/muduo/net/TimerId.h
+/root/build/release-install/include/muduo/net/TimerId.h
 muduo/base/copyable.h
 -
 
-/home/admin/frankz/github/jacsys/src/MsgTypeDef.h
+/root/github/jacsys/src/MsgTypeDef.h
 preDef.h
-/home/admin/frankz/github/jacsys/src/preDef.h
+/root/github/jacsys/src/preDef.h
 
-/home/admin/frankz/github/jacsys/src/StuDef.h
+/root/github/jacsys/src/StuDef.h
 preDef.h
-/home/admin/frankz/github/jacsys/src/preDef.h
+/root/github/jacsys/src/preDef.h
 string
 -
 
-/home/admin/frankz/github/jacsys/src/database_operator.h
+/root/github/jacsys/src/database_operator.h
 mysql++.h
 -
 vector
@@ -302,11 +302,11 @@ muduo/base/Logging.h
 muduo/base/Mutex.h
 -
 MsgTypeDef.h
-/home/admin/frankz/github/jacsys/src/MsgTypeDef.h
+/root/github/jacsys/src/MsgTypeDef.h
 
-/home/admin/frankz/github/jacsys/src/gateway.h
+/root/github/jacsys/src/gateway.h
 StuDef.h
-/home/admin/frankz/github/jacsys/src/StuDef.h
+/root/github/jacsys/src/StuDef.h
 string
 -
 muduo/base/AsyncLogging.h
@@ -314,13 +314,13 @@ muduo/base/AsyncLogging.h
 muduo/base/Logging.h
 -
 
-/home/admin/frankz/github/jacsys/src/jacServer.cc
+/root/github/jacsys/src/jacServer.cc
 jacServer.h
-/home/admin/frankz/github/jacsys/src/jacServer.h
+/root/github/jacsys/src/jacServer.h
 database_operator.h
-/home/admin/frankz/github/jacsys/src/database_operator.h
+/root/github/jacsys/src/database_operator.h
 
-/home/admin/frankz/github/jacsys/src/jacServer.h
+/root/github/jacsys/src/jacServer.h
 muduo/net/TcpServer.h
 -
 muduo/base/AsyncLogging.h
@@ -356,15 +356,15 @@ string
 sys/time.h
 -
 MsgTypeDef.h
-/home/admin/frankz/github/jacsys/src/MsgTypeDef.h
+/root/github/jacsys/src/MsgTypeDef.h
 tools.h
-/home/admin/frankz/github/jacsys/src/tools.h
+/root/github/jacsys/src/tools.h
 gateway.h
-/home/admin/frankz/github/jacsys/src/gateway.h
+/root/github/jacsys/src/gateway.h
 
-/home/admin/frankz/github/jacsys/src/preDef.h
+/root/github/jacsys/src/preDef.h
 
-/home/admin/frankz/github/jacsys/src/tools.h
+/root/github/jacsys/src/tools.h
 
 /usr/include/mysql/my_alloc.h
 
