@@ -273,10 +273,9 @@ void JacServer::sendReplyAck(TcpConnection* conn, pMSG_Header srcheader,UINT8 AC
     pheader->crc16=Tranverse16(tmpCrc);
 
     ackBuf.append(&stuAck, sizeof(MSG_ACK));
-
-    LOG_INFO <<"ack was send!";
+    
     conn->send(&ackBuf);
-    LOG_INFO <<"ack was sended!";
+    LOG_DEBUG <<"ack was sended!";
 }
 
 // process data/protocol
