@@ -364,6 +364,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 {
                     LOG_DEBUG << "---------LOGOUT_NODE ACK!-------";
                     sendReplyAck(get_pointer(conn),m_pTmpHeader,tmpAckCode_);
+                    LOG_DEBUG << "---------LOGOUT_NODE ACK,sendReplyAck finished!-------";
 
                     // �ж��Ƿ��������ӵĽڵ�
                     if (m_curGateway->getNodeSize() > 0 )
@@ -376,9 +377,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                         return;
                     }
 
-                    modifyDestAddr(m_curGateway->getCurNode()->addr);
-                    m_loop->cancel(m_roundTimer);
-
+                    modifyDestAddr(m_curGateway->getCurNode()->addr);                
                     m_curGateway->setCurOperatorType(SEND_MESSAGE);
                     m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
                     LOG_DEBUG << "---logout finished----";
@@ -970,4 +969,3 @@ int main(int argc, char* argv[])
 
     loop.loop();
 }
-
