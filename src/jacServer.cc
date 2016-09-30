@@ -335,22 +335,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
                     m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
 
-                }
-                else if(m_curGateway->getCurOperatorType() == REGISTER_FINISH)
-                {
-                    LOG_DEBUG<<"------REGISTER_FINISH";
-                    setNodeTime(m_destAddr);    //�ڵ�ע���ɹ�����ͬ���ڵ�ʱ��
-
-                    if (m_curGateway->getNodeSize() > 0 )
-                    {
-                        sleep(1);
-                        modifyDestAddr(m_curGateway->getCurNode()->addr);
-                    }
-                    LOG_DEBUG << "---register final success----";
-                    m_curGateway->setCurOperatorType(SEND_MESSAGE);
-
-                    m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
-                }
+                }               
                 else if(m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
                 {
                     LOG_DEBUG << "---------modify dest node success!-------";
