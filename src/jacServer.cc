@@ -1,6 +1,7 @@
 #include "jacServer.h"
 #include "database_operator.h"
 
+#include "muduo/base/TimeZone.h"
 
 DatabaseOperator g_DatabaseOperator;
 
@@ -57,7 +58,7 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
             {
                 m_curGateway = new Gateway();
                 LOG_DEBUG << "onConnection,currentip :=" << conn->peerAddress().toIp();
-                
+
                 m_curGateway->setIp(conn->peerAddress().toIp());
             }
 
@@ -273,7 +274,7 @@ void JacServer::sendReplyAck(TcpConnection* conn, pMSG_Header srcheader,UINT8 AC
     pheader->crc16=Tranverse16(tmpCrc);
 
     ackBuf.append(&stuAck, sizeof(MSG_ACK));
-    
+
     conn->send(&ackBuf);
     LOG_DEBUG <<"ack was sended!";
 }
@@ -334,7 +335,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
                     m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
 
-                }               
+                }
                 else if(m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
                 {
                     LOG_DEBUG << "---------modify dest node success!-------";
@@ -361,7 +362,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                         return;
                     }
 
-                    modifyDestAddr(m_curGateway->getCurNode()->addr);                
+                    modifyDestAddr(m_curGateway->getCurNode()->addr);
                     m_curGateway->setCurOperatorType(SEND_MESSAGE);
                     m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
                     LOG_DEBUG << "---logout finished----";
@@ -940,7 +941,10 @@ int main(int argc, char* argv[])
         }
     }
 
+    //set time config
     Logger::setLogLevel(Logger::INFO);
+    muduo::TimeZone beijing(8*3600,"CST");
+    Logger::setTimeZone(beijing);
 
     LOG_INFO << "pid = " << getpid() << ", tid = " << CurrentThread::tid();
     EventLoop loop;
