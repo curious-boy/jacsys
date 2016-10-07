@@ -53,22 +53,28 @@ bool DatabaseOperator::ExecTasks()
         operatorType = tasks_beExec_[i].operator_type;
         LOG_DEBUG << "task content: " << tasks_beExec_[i].content;
 
-        switch(taskType)
+        // 0 insert 1 update 2 other
+
+        switch(operatorType)
         {
-            case MSG_REPLY|MSG_GETPRODUCTION:
-            {
-                // add code here
+            case 0:
+                {
+                    mysqlpp::Query query = conn_.query(tasks_beExec_[i].content.c_str());
+                    query.exec();
 
-
+                }
                 break;
-            }
-            case MSG_REPLY|MSG_GETMACSTATE:
-            {
-                //add code here
-                break;
-            }
+            case 1:
+                {
+                    mysqlpp::Query query = conn_.query(tasks_beExec_[i].content.c_str());
+                    query.exec();
 
+                }
+                break;
             default:
+                {
+                    //WARN
+                }
                 break;
         }
     }
@@ -140,7 +146,7 @@ UINT16 DatabaseOperator::GetZigAddrOfGateway(string ipaddr)
     }
     else
     {
-        LOG_DEBUG << "There is no node of  ipaddr. " ;        
+        LOG_DEBUG << "There is no node of  ipaddr. " ;
     }
 
     return 0;

@@ -1,4 +1,4 @@
-// define struct of 
+// define struct of
 #ifndef PREDEF_H
 #define PREDEF_H
 #include "preDef.h"
@@ -6,7 +6,7 @@
 #include <string>
 
 // info of Gateway
-// typedef struct 
+// typedef struct
 // {
 // 	string gatewayId;
 // 	TcpConnectionPtr pConn;
@@ -14,11 +14,11 @@
 // }INFO_Gateway,*pINFO_Gateway;
 
 
-// info of node 
-typedef struct 
+// info of node
+typedef struct
 {
 	UINT16 addr;
-       std::string  macId;
+    std::string  macId;
 	UINT8  unReplyNum;
 	UINT16 curMsgSerialNo;
 
@@ -29,7 +29,7 @@ typedef struct
 	UINT32 total_run_time;				//开机时长 单位：秒
 
 	std::string figure_name;			//花样名称
-	UINT32 latitude;					
+	UINT32 latitude;
 	UINT32	opening;
 	UINT32 tasks_number;
 	UINT32 number_produced;
@@ -38,7 +38,7 @@ typedef struct
 	std::string operator_num;
 	UINT32  product_total_time;
 	UINT32  product_total_output;
-    
+
 	UINT8  state;
 }INFO_Node,*pINFO_Node;
 

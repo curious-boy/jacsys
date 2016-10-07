@@ -1,0 +1,438 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ACK_CRCERR	../src/MsgTypeDef.h	57;"	d
+ACK_DATALOSS	../src/MsgTypeDef.h	58;"	d
+ACK_FAIL	../src/MsgTypeDef.h	56;"	d
+ACK_FILEBREAK	../src/MsgTypeDef.h	63;"	d
+ACK_MSG_ERROR	../src/MsgTypeDef.h	60;"	d
+ACK_NOT_LOGIN	../src/MsgTypeDef.h	59;"	d
+ACK_NOT_SUPPORT_TYPE	../src/MsgTypeDef.h	61;"	d
+ACK_OK	../src/MsgTypeDef.h	55;"	d
+ACK_OUTOFMEM	../src/MsgTypeDef.h	62;"	d
+ACK_TIMEOUT	../src/MsgTypeDef.h	64;"	d
+AckCode	../src/MsgTypeDef.h	/^    UINT16  AckCode;\/\/Ó¦´ğ·µ»ØÂë:¿´AckCode¶¨Òå$/;"	m	struct:__anon20
+AddTask	../src/database_operator.cc	/^void DatabaseOperator::AddTask(DatabaseOperatorTask task)$/;"	f	class:DatabaseOperator
+COM_FRM_END	../src/MsgTypeDef.h	68;"	d
+COM_FRM_HEAD	../src/MsgTypeDef.h	67;"	d
+CalcCRC16	../src/tools.h	/^UINT16 CalcCRC16(UINT16 crc16,UINT8* pData,UINT32 uLen)$/;"	f
+CanDataSize	../src/MsgTypeDef.h	73;"	d
+CanFrame	../src/MsgTypeDef.h	/^} CanFrame,*pCanFrame;$/;"	t	typeref:struct:__anon5
+CanNetif	../src/MsgTypeDef.h	/^} CanNetif,*pCanNetif;$/;"	t	typeref:struct:__anon2
+CardSlot	../src/MsgTypeDef.h	/^    UINT8   CardSlot;\/\/Ê¹ÓÃµÚ¼¸ÁĞ£¬8ÁĞ£¬1ÓĞĞ§£¬0ÎŞĞ§$/;"	m	struct:__anon21
+Class	../src/MsgTypeDef.h	/^    char    Class;\/\/°à´Î ÀıÈç¡®A¡¯ ¡®B¡¯ ¡®C¡¯$/;"	m	struct:__anon23
+ClassOut	../src/MsgTypeDef.h	/^    UINT32  ClassOut;\/\/µ±Ç°¹¤ºÅ²úÁ¿$/;"	m	struct:__anon23
+ClassTmLen	../src/MsgTypeDef.h	/^    UINT32  ClassTmLen;\/\/µ±Ç°¹¤ºÅ¿ª³µÊ±³¤$/;"	m	struct:__anon23
+Col	../src/MsgTypeDef.h	/^    UINT8   Col;\/\/ÁĞÁúÍ·ÌõÊıÁ¿$/;"	m	struct:__anon21
+ComFrame	../src/MsgTypeDef.h	/^} ComFrame,*pComFrame;$/;"	t	typeref:struct:__anon8
+ComFrameLen	../src/MsgTypeDef.h	69;"	d
+ConnectionList	../src/jacServer.h	/^    typedef std::set<TcpConnectionPtr> ConnectionList;$/;"	t	class:JacServer
+DATABASE_NAME	../src/database_operator.h	17;"	d
+DATABASE_OPERATOR_H	../src/database_operator.h	2;"	d
+DATABASE_SERVER_IP	../src/database_operator.h	16;"	d
+Daddr	../src/MsgTypeDef.h	/^    UINT16 Daddr;\/\/canÄ¿±êµØÖ·£¬×îºóÒ»´ÎÁ¬½ÓµÄµØÖ·$/;"	m	struct:__anon3
+Daddr	../src/MsgTypeDef.h	/^    UINT8 Daddr;\/\/canÄ¿±êµØÖ·$/;"	m	struct:__anon5
+Daddr	../src/MsgTypeDef.h	/^    UINT8 Daddr;\/\/canÄ¿±êµØÖ·$/;"	m	struct:__anon8
+Daddr	../src/MsgTypeDef.h	/^    UINT8 Daddr;\/\/canÄ¿±êµØÖ·£¬×îºóÒ»´ÎÁ¬½ÓµÄµØÖ·$/;"	m	struct:__anon2
+DatLen	../src/MsgTypeDef.h	/^    UINT8 DatLen;\/\/ÓĞĞ§Êı¾İ³¤¶È max=8$/;"	m	struct:__anon8
+DatRmtFlg	../src/MsgTypeDef.h	/^    UINT8 DatRmtFlg;\/\/Êı¾İÖ¡¡¢Ô¶³ÌÖ¡$/;"	m	struct:__anon8
+Data	../src/MsgTypeDef.h	/^        UINT8 Data[8];\/\/¸ºÔØ$/;"	m	union:__anon8::__anon11
+Data	../src/MsgTypeDef.h	/^    UINT8  Data[256];\/\/Éú²úÎÄ¼şÊı¾İ$/;"	m	struct:__anon26
+Data	../src/MsgTypeDef.h	/^    UINT8 Data[8];\/\/¸ºÔØ$/;"	m	struct:__anon5
+DatabaseOperator	../src/database_operator.h	/^    DatabaseOperator():conn_(false) {     }$/;"	f	class:DatabaseOperator
+DatabaseOperator	../src/database_operator.h	/^class DatabaseOperator$/;"	c
+DatabaseOperatorTask	../src/database_operator.h	/^}DatabaseOperatorTask, *pDatabaseOperatorTask; $/;"	t	typeref:struct:__anon33
+DatabaseOperatorTaskList	../src/database_operator.h	/^    typedef std::vector<DatabaseOperatorTask> DatabaseOperatorTaskList;$/;"	t	class:DatabaseOperator
+Datasize	../src/MsgTypeDef.h	/^    UINT8 Datasize;\/\/µ±Ç°°üÓĞĞ§Êı¾İ´óĞ¡$/;"	m	struct:__anon26
+DeleteNodeOfGateway	../src/database_operator.cc	/^bool  DatabaseOperator::DeleteNodeOfGateway(string ipaddr, UINT16 node)$/;"	f	class:DatabaseOperator
+DeleteNodesOfGateway	../src/database_operator.cc	/^bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)$/;"	f	class:DatabaseOperator
+EVENT_CanFrm	../src/MsgTypeDef.h	90;"	d
+EVENT_HMI_CHECK	../src/MsgTypeDef.h	96;"	d
+EVENT_HMI_RECCMD	../src/MsgTypeDef.h	95;"	d
+EVENT_JAC_CHECK	../src/MsgTypeDef.h	98;"	d
+EVENT_JAC_RECCMD	../src/MsgTypeDef.h	97;"	d
+EVENT_Login	../src/MsgTypeDef.h	92;"	d
+EVENT_PARAREPORT	../src/MsgTypeDef.h	94;"	d
+EVENT_PRODUCTION	../src/MsgTypeDef.h	93;"	d
+EVENT_Packet	../src/MsgTypeDef.h	91;"	d
+EVENT_SendMsg	../src/MsgTypeDef.h	89;"	d
+Eof	../src/MsgTypeDef.h	/^    UINT8   Eof;$/;"	m	struct:__anon21
+Eof	../src/MsgTypeDef.h	/^    UINT8   Eof;$/;"	m	struct:__anon22
+Eof	../src/MsgTypeDef.h	/^    UINT8   Eof;$/;"	m	struct:__anon23
+Eof	../src/MsgTypeDef.h	/^    UINT8   Eof;$/;"	m	struct:__anon29
+Eof	../src/MsgTypeDef.h	/^    UINT8 Eof;$/;"	m	struct:__anon20
+Eof	../src/MsgTypeDef.h	/^    UINT8 Eof;$/;"	m	struct:__anon24
+Eof	../src/MsgTypeDef.h	/^    UINT8 Eof;$/;"	m	struct:__anon25
+Eof	../src/MsgTypeDef.h	/^    UINT8 Eof;$/;"	m	struct:__anon26
+Eof	../src/MsgTypeDef.h	/^    UINT8 Eof;$/;"	m	struct:__anon27
+Eof	../src/MsgTypeDef.h	/^    UINT8 Eof;$/;"	m	struct:__anon28
+Eof	../src/MsgTypeDef.h	/^    UINT8 Eof;$/;"	m	struct:__anon30
+ExecTasks	../src/database_operator.cc	/^bool DatabaseOperator::ExecTasks()$/;"	f	class:DatabaseOperator
+ExtFrm	../src/MsgTypeDef.h	70;"	d
+FIRSTEVENT	../src/MsgTypeDef.h	88;"	d
+FileName	../src/MsgTypeDef.h	/^    char    FileName[STRING_MAXLEN];\/\/Éú²úÎÄ¼şÃû£¬×î´óSTRING_MAXLEN×Ö½Ú$/;"	m	struct:__anon23
+FileName	../src/MsgTypeDef.h	/^    char   FileName[STRING_MAXLEN];\/\/Éú²úÎÄ¼şÃû£¬×î´óSTRING_MAXLEN×Ö½Ú$/;"	m	struct:__anon25
+FileSize	../src/MsgTypeDef.h	/^    UINT16  FileSize;\/\/ÎÄ¼ş³¤¶È Byte$/;"	m	struct:__anon25
+Flg	../src/MsgTypeDef.h	/^    UINT8 Flg;\/\/canÖ¡ĞÅÏ¢£¬bit7±ê×¼Ö¡¡¢À©Õ¹Ö¡,bit6Êı¾İÖ¡¡¢Ô¶³ÌÖ¡,bit3:bit0ÓĞĞ§Êı¾İ³¤¶È Îª0Ê±×öĞ£Ñé$/;"	m	struct:__anon13
+Flg	../src/MsgTypeDef.h	/^    UINT8 Flg;\/\/canÖ¡ĞÅÏ¢£¬bit7±ê×¼Ö¡¡¢À©Õ¹Ö¡,bit6Êı¾İÖ¡¡¢Ô¶³ÌÖ¡,bit3:bit0ÓĞĞ§Êı¾İ³¤¶È Îª0Ê±×öĞ£Ñé$/;"	m	struct:__anon16
+Flg	../src/MsgTypeDef.h	/^    UINT8 Flg;\/\/canÖ¡ĞÅÏ¢£¬bit7±ê×¼Ö¡¡¢À©Õ¹Ö¡,bit6Êı¾İÖ¡¡¢Ô¶³ÌÖ¡,bit3:bit0ÓĞĞ§Êı¾İ³¤¶È$/;"	m	struct:__anon5
+FrmCnt	../src/MsgTypeDef.h	/^            UINT8 FrmCnt:5;$/;"	m	struct:__anon8::__anon9::__anon10
+FrmCnt	../src/MsgTypeDef.h	/^            UINT8 FrmCnt:5;\/\/Ö¡¼ÆÊıÆ÷ 0µ½31 32*8=256×Ö½ÚCAN¸ºÔØ$/;"	m	struct:__anon13::__anon14::__anon15
+FrmCnt	../src/MsgTypeDef.h	/^            UINT8 FrmCnt:5;\/\/Ö¡¼ÆÊıÆ÷ 0µ½31 32*8=256×Ö½ÚCAN¸ºÔØ$/;"	m	struct:__anon16::__anon17::__anon18
+FrmCnt	../src/MsgTypeDef.h	/^            UINT8 FrmCnt:5;\/\/Ö¡¼ÆÊıÆ÷$/;"	m	struct:__anon5::__anon6::__anon7
+GATEWAY_H	../src/gateway.h	3;"	d
+GW_ID	../src/MsgTypeDef.h	106;"	d
+Gateway	../src/gateway.h	/^Gateway::Gateway()$/;"	f	class:Gateway
+Gateway	../src/gateway.h	/^class Gateway$/;"	c
+GetNameOfGateWay	../src/database_operator.cc	/^string  DatabaseOperator::GetNameOfGateWay(string ipaddr)$/;"	f	class:DatabaseOperator
+GetNodesOfGateway	../src/database_operator.cc	/^std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (string ipaddr )$/;"	f	class:DatabaseOperator
+GetTaskList	../src/database_operator.cc	/^bool DatabaseOperator::GetTaskList()$/;"	f	class:DatabaseOperator
+GetZigAddrOfGateway	../src/database_operator.cc	/^UINT16 DatabaseOperator::GetZigAddrOfGateway(string ipaddr)$/;"	f	class:DatabaseOperator
+Head	../src/MsgTypeDef.h	/^    UINT8 Head;\/\/¹Ì¶¨Îª0xAA$/;"	m	struct:__anon8
+HostAddr	../src/MsgTypeDef.h	75;"	d
+Hw1Ver	../src/MsgTypeDef.h	/^    UINT8   Hw1Ver;  \/\/Ó²¼ş1°æ±¾$/;"	m	struct:__anon21
+Hw2Ver	../src/MsgTypeDef.h	/^    UINT8   Hw2Ver;  \/\/Ó²¼ş2°æ±¾$/;"	m	struct:__anon21
+INFO_Node	../src/StuDef.h	/^}INFO_Node,*pINFO_Node;$/;"	t	typeref:struct:__anon35
+IdLen	../src/MsgTypeDef.h	/^    UINT16 IdLen;$/;"	m	struct:__anon3
+IdlTmLen	../src/MsgTypeDef.h	/^    UINT32  IdlTmLen;\/\/Í£»úÊ±³¤ µ¥Î»£ºÃë$/;"	m	struct:__anon22
+Init	../src/database_operator.cc	/^int DatabaseOperator::Init()$/;"	f	class:DatabaseOperator
+InsertNodeOfGateway	../src/database_operator.cc	/^bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 g_zig, UINT16 node)$/;"	f	class:DatabaseOperator
+Installation	../src/MsgTypeDef.h	/^    UINT8   Installation;\/\/×°Ôì£bbit76£º00×óÇ° 01×óºó 02ÓÒÇ° 03ÓÒºó ; bbit5£º0Ç°ºó²»·­×ª 1Ç°ºó·­×ª ; bit4£»·´É« ;bit3£ºHX$/;"	m	struct:__anon21
+Interval	../src/MsgTypeDef.h	/^    UINT8   Interval;\/\/µ¥Î»·ÖÖÓ£¬Îª0Ê±µÈ´ıÍ£Ö¹Ö÷¶¯ÉÏ´«$/;"	m	struct:__anon29
+Interval	../src/MsgTypeDef.h	/^    UINT8   Interval;\/\/Ö÷¶¯ÉÏ´«¼ä¸ô$/;"	m	struct:__anon3
+JAC_SERVER_H	../src/jacServer.h	2;"	d
+JacServer	../src/jacServer.h	/^    JacServer(EventLoop* loop, const InetAddress& listenAddr, int numThreads)$/;"	f	class:JacServer
+JacServer	../src/jacServer.h	/^class JacServer$/;"	c
+LASTEVENT	../src/MsgTypeDef.h	99;"	d
+LISTEN_PORT	../src/jacServer.cc	926;"	d	file:
+LOGIN_TIMER	../src/MsgTypeDef.h	102;"	d
+LOGOUT_FINISH	../src/gateway.h	/^    LOGOUT_FINISH,$/;"	e	enum:__anon34
+LOGOUT_NODE	../src/gateway.h	/^    LOGOUT_NODE,$/;"	e	enum:__anon34
+LinkState	../src/MsgTypeDef.h	/^    UINT8 LinkState;\/\/µ±Ç°Á´½Ó×´Ì¬ 0Î´ÈëÍø 1×¢²á³É¹¦$/;"	m	struct:__anon2
+LinkState	../src/MsgTypeDef.h	/^    UINT8 LinkState;\/\/µ±Ç°Á´½Ó×´Ì¬ 0Î´ÈëÍø 1×¢²á³É¹¦$/;"	m	struct:__anon3
+MAX_SERIAL_NO	../src/preDef.h	13;"	d
+MAX_THREAD_NUM	../src/preDef.h	16;"	d
+MAX_UNREPLY_NUM	../src/preDef.h	14;"	d
+MODIFY_DEST_NODE	../src/gateway.h	/^    MODIFY_DEST_NODE,$/;"	e	enum:__anon34
+MSG_ACK	../src/MsgTypeDef.h	/^} MSG_ACK,*pMSG_ACK;$/;"	t	typeref:struct:__anon20
+MSG_COMACK	../src/MsgTypeDef.h	48;"	d
+MSG_CanHeader	../src/MsgTypeDef.h	/^} MSG_CanHeader,*pMSG_CanHeader;$/;"	t	typeref:struct:__anon13
+MSG_FIGUREFILE	../src/MsgTypeDef.h	40;"	d
+MSG_GETMACSTATE	../src/MsgTypeDef.h	44;"	d
+MSG_GETPRODUCTION	../src/MsgTypeDef.h	45;"	d
+MSG_GetMacState	../src/MsgTypeDef.h	/^} MSG_GetMacState,*pMSG_GetMacState;$/;"	t	typeref:struct:__anon28
+MSG_GetProduction	../src/MsgTypeDef.h	/^} MSG_GetProduction,*pMSG_GetProduction;$/;"	t	typeref:struct:__anon27
+MSG_HEARTBEAT	../src/MsgTypeDef.h	29;"	d
+MSG_Header	../src/MsgTypeDef.h	/^} MSG_Header,*pMSG_Header;$/;"	t	typeref:struct:__anon19
+MSG_Header1	../src/MsgTypeDef.h	/^} MSG_Header1,*pMSG_Header1;$/;"	t	typeref:struct:__anon16
+MSG_Interval	../src/MsgTypeDef.h	/^} MSG_Interval,*pMSG_Interval;$/;"	t	typeref:struct:__anon29
+MSG_LOGIN	../src/MsgTypeDef.h	27;"	d
+MSG_LOGOUT	../src/MsgTypeDef.h	28;"	d
+MSG_Login	../src/MsgTypeDef.h	/^} MSG_Login,*pMSG_Login;$/;"	t	typeref:struct:__anon21
+MSG_Logout	../src/MsgTypeDef.h	/^} MSG_Logout,*pMSG_Logout;$/;"	t	typeref:struct:__anon24
+MSG_MACINFO_REPORT	../src/MsgTypeDef.h	34;"	d
+MSG_MACSTATE	../src/MsgTypeDef.h	32;"	d
+MSG_MAXNODEID	../src/MsgTypeDef.h	35;"	d
+MSG_MacState	../src/MsgTypeDef.h	/^} MSG_MacState,*pMSG_MacState;$/;"	t	typeref:struct:__anon22
+MSG_PATPARA_REPORT	../src/MsgTypeDef.h	33;"	d
+MSG_PRODUCTION	../src/MsgTypeDef.h	30;"	d
+MSG_PatFile	../src/MsgTypeDef.h	/^} MSG_PatFile,*pMSG_PatFile;$/;"	t	typeref:struct:__anon26
+MSG_PatPara	../src/MsgTypeDef.h	/^} MSG_PatPara,*pMSG_PatPara;$/;"	t	typeref:struct:__anon25
+MSG_Production	../src/MsgTypeDef.h	/^} MSG_Production,*pMSG_Production;$/;"	t	typeref:struct:__anon23
+MSG_REPLY	../src/MsgTypeDef.h	52;"	d
+MSG_REQUEST	../src/MsgTypeDef.h	51;"	d
+MSG_SETINTERVAL	../src/MsgTypeDef.h	41;"	d
+MSG_SETMACINFO	../src/MsgTypeDef.h	38;"	d
+MSG_SETPATPARA	../src/MsgTypeDef.h	39;"	d
+MSG_SETTIME	../src/MsgTypeDef.h	42;"	d
+MSG_SetTime	../src/MsgTypeDef.h	/^} MSG_SetTime,*pMSG_SetTime;$/;"	t	typeref:struct:__anon30
+MSG_TASKINFO	../src/MsgTypeDef.h	31;"	d
+MSG_TYPE_DEF_H	../src/MsgTypeDef.h	24;"	d
+MacErr	../src/MsgTypeDef.h	/^    UINT8   MacErr;\/\/»úÆ÷¹ÊÕÏĞÅÏ¢£¬0x00ÎŞ¹ÊÕÏ£¬0x01£º¶ÏÉ´£¬0x02¡£¡£¡£¡£$/;"	m	struct:__anon22
+MacState	../src/MsgTypeDef.h	/^    UINT8   MacState;\/\/»úÆ÷×´Ì¬£¬1¿ª³µ¡¢0Í£³µ$/;"	m	struct:__anon22
+McuVer	../src/MsgTypeDef.h	/^    UINT8   McuVer; \/\/MCUÈí¼ş°æ±¾$/;"	m	struct:__anon21
+ModifyGateWayDestAddr	../src/preDef.h	/^} ModifyGateWayDestAddr,*pModifyGateWayDestAddr;$/;"	t	typeref:struct:__anon32
+Msg	../src/MsgTypeDef.h	/^    UINT8 Msg;\/\/ÏûÏ¢ÀàĞÍ£¬bit7=0±íÊ¾ÇëÇó£¬bit7=1±íÊ¾Ó¦´ğ$/;"	m	struct:__anon5
+Msg	../src/MsgTypeDef.h	/^    UINT8 Msg;\/\/ÏûÏ¢ÀàĞÍ£¬bit7=0±íÊ¾ÇëÇó£¬bit7=1±íÊ¾Ó¦´ğ$/;"	m	struct:__anon8
+MsgSize	../src/MsgTypeDef.h	74;"	d
+MsgType	../src/MsgTypeDef.h	/^    UINT8 MsgType;\/\/ÏûÏ¢ÀàĞÍ£¬bit7=0±íÊ¾ÇëÇó£¬bit7=1±íÊ¾Ó¦´ğ$/;"	m	struct:__anon13
+MsgType	../src/MsgTypeDef.h	/^    UINT8 MsgType;\/\/ÏûÏ¢ÀàĞÍ£¬bit7=0±íÊ¾ÇëÇó£¬bit7=1±íÊ¾Ó¦´ğ$/;"	m	struct:__anon16
+MsgType	../src/MsgTypeDef.h	/^    UINT8 MsgType;\/\/ÏûÏ¢ÀàĞÍ£¬bit7=0±íÊ¾ÇëÇó£¬bit7=1±íÊ¾Ó¦´ğ$/;"	m	struct:__anon19
+NotRmtFrm	../src/MsgTypeDef.h	72;"	d
+OpeningDegree	../src/MsgTypeDef.h	/^    UINT16  OpeningDegree;\/\/¿ª¶È Ô­Ê¼Êı¾İ x100ÔÙ´«Êä$/;"	m	struct:__anon23
+OperatorType	../src/gateway.h	/^} OperatorType;$/;"	t	typeref:enum:__anon34
+OutNum	../src/MsgTypeDef.h	/^    UINT8   OutNum;\/\/Í¬Ê±²ú³öÌõÊı$/;"	m	struct:__anon23
+PREDEFINE_H	../src/preDef.h	3;"	d
+PREDEF_H	../src/StuDef.h	3;"	d
+PROCESS_H	../src/process.h	2;"	d
+PRODUCTION_TIMER	../src/MsgTypeDef.h	101;"	d
+PatTask	../src/MsgTypeDef.h	/^    UINT32  PatTask;\/\/»¨ÑùÉú²úÈÎÎñ Ã×$/;"	m	struct:__anon23
+Pcnt	../src/MsgTypeDef.h	/^        UINT8 Pcnt;\/\/canÖ¡¼ÆÊıÆ÷ Îª0Ê±×öĞ£Ñé$/;"	m	union:__anon13::__anon14
+Pcnt	../src/MsgTypeDef.h	/^        UINT8 Pcnt;\/\/canÖ¡¼ÆÊıÆ÷ Îª0Ê±×öĞ£Ñé$/;"	m	union:__anon16::__anon17
+Pcnt	../src/MsgTypeDef.h	/^        UINT8 Pcnt;\/\/canÖ¡¼ÆÊıÆ÷£¬bit4£ºbit0±íÊ¾µÚ¼¸Ö¡$/;"	m	union:__anon5::__anon6
+Pcnt	../src/MsgTypeDef.h	/^        UINT8 Pcnt;\/\/canÖ¡¼ÆÊıÆ÷£¬bit4£ºbit0±íÊ¾µÚ¼¸Ö¡£¬´Ó0µ½31,ÀíÂÛ×î´ó°ü32*8=256byte$/;"	m	union:__anon8::__anon9
+ProtocolVer	../src/MsgTypeDef.h	108;"	d
+REGISTER_FINISH	../src/gateway.h	/^    REGISTER_FINISH,$/;"	e	enum:__anon34
+REGISTER_NODE	../src/gateway.h	/^    REGISTER_NODE,$/;"	e	enum:__anon34
+ROUND_INTERVAL_SECONDS	../src/preDef.h	15;"	d
+ReceiveMsgACK	../src/MsgTypeDef.h	/^    UINT8 ReceiveMsgACK;\/\/½ÓÊÕµ½µÄACK$/;"	m	struct:__anon2
+ReceiveMsgACK	../src/MsgTypeDef.h	/^    UINT8 ReceiveMsgACK;\/\/½ÓÊÕµ½µÄACK$/;"	m	struct:__anon3
+RemainTm	../src/MsgTypeDef.h	/^    UINT32  RemainTm;\/\/Ô¤¼ÆÈÎÎñÊ£ÓàÍê³ÉÊ±¼ä$/;"	m	struct:__anon23
+Row	../src/MsgTypeDef.h	/^    UINT8   Row; \/\/ĞĞµ¥ÌõÁúÍ·ÊıÁ¿$/;"	m	struct:__anon21
+RspAck	../src/preDef.h	/^} RspAck,*pRspAck;$/;"	t	typeref:struct:__anon31
+RunTmLen	../src/MsgTypeDef.h	/^    UINT32  RunTmLen;\/\/¿ª³µÊ±³¤ µ¥Î»£ºÃë$/;"	m	struct:__anon23
+SEND_MESSAGE	../src/gateway.h	/^    SEND_MESSAGE$/;"	e	enum:__anon34
+SQLITECPP_H	../src/sqlitecpp.h	2;"	d
+STRING_MAXLEN	../src/MsgTypeDef.h	76;"	d
+STRING_MAXLEN	../src/preDef.h	17;"	d
+Saddr	../src/MsgTypeDef.h	/^    UINT16 Saddr;\/\/canÔ´µØÖ·$/;"	m	struct:__anon3
+Saddr	../src/MsgTypeDef.h	/^    UINT8 Saddr;\/\/canÔ´µØÖ·$/;"	m	struct:__anon2
+Saddr	../src/MsgTypeDef.h	/^    UINT8 Saddr;\/\/canÔ´µØÖ·$/;"	m	struct:__anon5
+Saddr	../src/MsgTypeDef.h	/^    UINT8 Saddr;\/\/canÔ´µØÖ·$/;"	m	struct:__anon8
+SendingMsg	../src/MsgTypeDef.h	/^    UINT8 SendingMsg;\/\/ÕıÔÚ·¢ËÍµÄÏûÏ¢£¬µÈACK$/;"	m	struct:__anon2
+SendingMsg	../src/MsgTypeDef.h	/^    UINT8 SendingMsg;\/\/ÕıÔÚ·¢ËÍµÄÏûÏ¢£¬µÈACK$/;"	m	struct:__anon3
+SendingMsg	../src/MsgTypeDef.h	/^    UINT8 SendingMsg;\/\/ÕıÔÚ·¢ËÍµÄÏûÏ¢£¬µÈACK$/;"	m	struct:__anon4
+SendmsgQ	../src/MsgTypeDef.h	/^} SendmsgQ,*pSendmsgQ;$/;"	t	typeref:struct:__anon4
+Sof	../src/MsgTypeDef.h	/^    UINT8 Sof;$/;"	m	struct:__anon19
+Speed	../src/MsgTypeDef.h	/^    UINT16  Speed;\/\/µ±Ç°³µËÙ$/;"	m	struct:__anon22
+StdExtFlg	../src/MsgTypeDef.h	/^    UINT8 StdExtFlg;\/\/±ê×¼Ö¡¡¢À©Õ¹Ö¡¡¢$/;"	m	struct:__anon8
+StdFrm	../src/MsgTypeDef.h	71;"	d
+StringLen	../src/MsgTypeDef.h	/^    UINT16  StringLen;$/;"	m	struct:__anon25
+StringLen	../src/MsgTypeDef.h	/^    UINT16  StringLen;\/\/ÎÄ¼şÃû³¤¶È$/;"	m	struct:__anon23
+StringLen	../src/MsgTypeDef.h	/^    UINT16 StringLen;$/;"	m	struct:__anon21
+StringLen	../src/MsgTypeDef.h	/^    UINT16 StringLen;$/;"	m	struct:__anon24
+StringMessageCallback	../src/process.h	/^                                muduo::Timestamp)> StringMessageCallback;$/;"	t	class:processCodec
+TMR_OUT	../src/MsgTypeDef.h	113;"	d
+TMR_START	../src/MsgTypeDef.h	111;"	d
+TMR_STOP	../src/MsgTypeDef.h	112;"	d
+TimeEvent	../src/MsgTypeDef.h	/^} TimeEvent,*pTimeEvent;$/;"	t	typeref:struct:__anon1
+TimerCnt	../src/MsgTypeDef.h	/^    UINT16 TimerCnt;\/\/¼ÆÊ±Æ÷$/;"	m	struct:__anon1
+TimerFlg	../src/MsgTypeDef.h	/^    UINT8 TimerFlg;\/\/¶¨Ê±Æ÷±êÖ¾0Í£Ö¹ 1Æô¶¯ 0xffÊ±¼äµ½$/;"	m	struct:__anon1
+TotalOut	../src/MsgTypeDef.h	/^    UINT32  TotalOut;\/\/ÒÑÍê³ÉµÄ×Ü²úÁ¿$/;"	m	struct:__anon23
+TotalWeft	../src/MsgTypeDef.h	/^    UINT16  TotalWeft;\/\/Ñ­»·×ÜÎ³Êı$/;"	m	struct:__anon23
+Totalpackets	../src/MsgTypeDef.h	/^    UINT16 Totalpackets;\/\/×Ü°üÊı$/;"	m	struct:__anon26
+Tranverse16	../src/MsgTypeDef.h	81;"	d
+Tranverse32	../src/MsgTypeDef.h	82;"	d
+UINT16	../src/preDef.h	/^typedef uint16_t        UINT16;$/;"	t
+UINT32	../src/preDef.h	/^typedef uint32_t        UINT32;$/;"	t
+UINT64	../src/preDef.h	/^typedef uint64_t        UINT64;$/;"	t
+UINT8	../src/preDef.h	/^typedef uint8_t         UINT8;$/;"	t
+USE_DATABASE	../src/jacServer.h	32;"	d
+UiVer	../src/MsgTypeDef.h	/^    UINT8   UiVer;  \/\/½çÃæ°æ±¾$/;"	m	struct:__anon21
+UpdateNodesOfGateway	../src/database_operator.cc	/^bool  DatabaseOperator::UpdateNodesOfGateway(string ipaddr, string name)$/;"	f	class:DatabaseOperator
+Warp	../src/MsgTypeDef.h	/^    UINT16  Warp;\/\/ÕëÊı ¾­É´ Row*Col*8$/;"	m	struct:__anon21
+Warp	../src/MsgTypeDef.h	/^    UINT16  Warp;\/\/ÕëÊı ¾­É´ Row*Col*8$/;"	m	struct:__anon25
+WeftDensity	../src/MsgTypeDef.h	/^    UINT16  WeftDensity;\/\/Î³ÃÜ Ô­Ê¼Êı¾İ x100ÔÙ´«Êä$/;"	m	struct:__anon23
+WorkNum	../src/MsgTypeDef.h	/^    char    WorkNum[6];\/\/¹¤ºÅ ÀıÈç ¡°A1234¡±$/;"	m	struct:__anon23
+ZigNetif	../src/MsgTypeDef.h	/^} ZigNetif,*pZigNetif;$/;"	t	typeref:struct:__anon3
+ackCode	../src/preDef.h	/^    UINT8 ackCode;$/;"	m	struct:__anon31
+addr	../src/StuDef.h	/^	UINT16 addr;$/;"	m	struct:__anon35
+addr	../src/preDef.h	/^    UINT16 addr;$/;"	m	struct:__anon32
+asyncOutput	../src/jacServer.cc	/^void asyncOutput(const char* msg, int len)$/;"	f
+bit75	../src/MsgTypeDef.h	/^            UINT8 bit75:3;$/;"	m	struct:__anon13::__anon14::__anon15
+bit75	../src/MsgTypeDef.h	/^            UINT8 bit75:3;$/;"	m	struct:__anon16::__anon17::__anon18
+bit75	../src/MsgTypeDef.h	/^            UINT8 bit75:3;$/;"	m	struct:__anon5::__anon6::__anon7
+bit75	../src/MsgTypeDef.h	/^            UINT8 bit75:3;\/\/Ö¡¼ÆÊıÆ÷$/;"	m	struct:__anon8::__anon9::__anon10
+broken_total_time	../src/StuDef.h	/^	UINT32 broken_total_time;		\/\/åœæœºæ—¶é•¿ï¼Œå•ä½ï¼šç§’$/;"	m	struct:__anon35
+chan	../src/MsgTypeDef.h	/^    UINT8 chan;             \/**< \\brief Í¨µÀºÅ        *\/$/;"	m	struct:__anon3
+client_	../src/jacClient.cc	/^  TcpClient client_;$/;"	m	class:jacClient	file:
+concurrent_produce_number	../src/StuDef.h	/^	UINT16	concurrent_produce_number;$/;"	m	struct:__anon35
+conn_	../src/database_operator.h	/^    mysqlpp::Connection conn_;   $/;"	m	class:DatabaseOperator
+connect	../src/jacClient.cc	/^  void connect()$/;"	f	class:jacClient
+connection_	../src/jacClient.cc	/^  TcpConnectionPtr connection_;$/;"	m	class:jacClient	file:
+connections_	../src/jacServer.h	/^    ConnectionList connections_;$/;"	m	class:JacServer
+content	../src/database_operator.h	/^    string    content ;        \/\/ detailed content$/;"	m	struct:__anon33
+crc16	../src/MsgTypeDef.h	/^            UINT16 crc16;\/\/CRCĞ£Ñé Îª0Ê±×öĞ£Ñé$/;"	m	struct:__anon8::__anon11::__anon12
+crc16	../src/MsgTypeDef.h	/^    UINT16 crc16;\/\/CRCĞ£Ñé Îª0Ê±×öĞ£Ñé$/;"	m	struct:__anon16
+crc16	../src/MsgTypeDef.h	/^    UINT16 crc16;\/\/CRCĞ£Ñé Îª0Ê±×öĞ£Ñé$/;"	m	struct:__anon19
+curMsgSerialNo	../src/StuDef.h	/^	UINT16 curMsgSerialNo;$/;"	m	struct:__anon35
+date	../src/MsgTypeDef.h	/^    UINT8 date;\/\/ÈÕ$/;"	m	struct:__anon30
+deleteNodeByAddr	../src/gateway.h	/^void Gateway::deleteNodeByAddr(UINT16 addr)$/;"	f	class:Gateway
+destAddr	../src/MsgTypeDef.h	/^    UINT16 destAddr;\/\/Ä¿±êµØÖ·$/;"	m	struct:__anon19
+destAddr	../src/MsgTypeDef.h	/^    UINT8 destAddr;\/\/canÄ¿±êµØÖ·$/;"	m	struct:__anon13
+destAddr	../src/MsgTypeDef.h	/^    UINT8 destAddr;\/\/canÄ¿±êµØÖ·$/;"	m	struct:__anon16
+disconnect	../src/jacClient.cc	/^  void disconnect()$/;"	f	class:jacClient
+figure_name	../src/StuDef.h	/^	std::string figure_name;			\/\/èŠ±æ ·åç§°$/;"	m	struct:__anon35
+funcCode	../src/preDef.h	/^    UINT8 funcCode;$/;"	m	struct:__anon31
+funcCode	../src/preDef.h	/^    UINT8 funcCode;$/;"	m	struct:__anon32
+g_DatabaseOperator	../src/jacServer.cc	/^DatabaseOperator g_DatabaseOperator;$/;"	v
+g_asyncLog	../src/jacServer.cc	/^boost::scoped_ptr<muduo::AsyncLogging> g_asyncLog;$/;"	v
+gatewayId	../src/MsgTypeDef.h	/^    char  gatewayId[STRING_MAXLEN];   \/\/Íø¹Ø±êÊ¶£¬Áã½áÊø×Ö·û´® ±ØĞë·ÅÔÚ½á¹¹Ìå×îºó$/;"	m	struct:__anon21
+gatewayId	../src/MsgTypeDef.h	/^    char  gatewayId[STRING_MAXLEN];   \/\/Íø¹Ø±êÊ¶£¬Áã½áÊø×Ö·û´®$/;"	m	struct:__anon24
+getCurNode	../src/gateway.h	/^pINFO_Node Gateway::getCurNode()$/;"	f	class:Gateway
+getCurOperatorType	../src/gateway.h	/^OperatorType Gateway::getCurOperatorType()$/;"	f	class:Gateway
+getIp	../src/gateway.h	/^string Gateway::getIp()$/;"	f	class:Gateway
+getMsgSerialNo	../src/jacServer.cc	/^UINT16 JacServer::getMsgSerialNo()$/;"	f	class:JacServer
+getName	../src/gateway.h	/^string Gateway::getName()$/;"	f	class:Gateway
+getNextNode	../src/gateway.h	/^pINFO_Node Gateway::getNextNode()$/;"	f	class:Gateway
+getNodeByAddr	../src/gateway.h	/^pINFO_Node Gateway:: getNodeByAddr(UINT16 addr)$/;"	f	class:Gateway
+getNodeSize	../src/gateway.h	/^UINT16 Gateway::getNodeSize()$/;"	f	class:Gateway
+getUnReplyNum	../src/gateway.h	/^int Gateway::getUnReplyNum()$/;"	f	class:Gateway
+gwID	../src/MsgTypeDef.h	/^    char gwID[STRING_MAXLEN];$/;"	m	struct:__anon3
+halting_reason	../src/StuDef.h	/^	UINT8  halting_reason;			\/\/æœºå™¨æ•…éšœä¿¡æ¯ 0x00 æ— æ•…éšœ 0x01 æ–­çº± 0x02 ã€‚ã€‚$/;"	m	struct:__anon35
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon20
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon21
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon22
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon23
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon24
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon25
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon26
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon27
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon28
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon29
+header	../src/MsgTypeDef.h	/^    MSG_Header header;\/\/ÏûÏ¢Í·$/;"	m	struct:__anon30
+hour	../src/MsgTypeDef.h	/^    UINT8 hour;\/\/Ê±$/;"	m	struct:__anon30
+how_long_to_finish	../src/StuDef.h	/^	UINT32	how_long_to_finish;$/;"	m	struct:__anon35
+i	../src/jacClient.cc	/^        int i;$/;"	m	struct:jacClient::teststu	file:
+increaseUnReplyNum	../src/gateway.h	/^void Gateway::increaseUnReplyNum(int inum = 1)$/;"	f	class:Gateway
+insertNode	../src/gateway.h	/^void Gateway::insertNode(pINFO_Node pNode)$/;"	f	class:Gateway
+isExistNode	../src/gateway.h	/^bool Gateway::isExistNode(UINT16 addr)$/;"	f	class:Gateway
+jacClient	../src/jacClient.cc	/^  jacClient(EventLoop* loop, const InetAddress& serverAddr)$/;"	f	class:jacClient
+jacClient	../src/jacClient.cc	/^class jacClient : boost::noncopyable$/;"	c	file:
+kHeaderLen	../src/process.h	/^  const static size_t kHeaderLen = sizeof(int32_t);$/;"	m	class:processCodec
+kRollSize	../src/jacServer.cc	/^int kRollSize = 500*1000*1000;$/;"	v
+latitude	../src/StuDef.h	/^	UINT32 latitude;					$/;"	m	struct:__anon35
+length	../src/MsgTypeDef.h	/^            UINT16 length;\/\/ÏûÏ¢³¤¶È£¬°üÀ¨ÏûÏ¢Í·ºÍÏûÏ¢Ìå$/;"	m	struct:__anon8::__anon11::__anon12
+length	../src/MsgTypeDef.h	/^    UINT16 length;\/\/ÏûÏ¢³¤¶È£¬°üÀ¨ÏûÏ¢Í·ºÍÏûÏ¢Ìå$/;"	m	struct:__anon16
+length	../src/MsgTypeDef.h	/^    UINT16 length;\/\/ÏûÏ¢³¤¶È£¬°üÀ¨ÏûÏ¢Í·ºÍÏûÏ¢Ìå$/;"	m	struct:__anon19
+m_CurOperatortype	../src/gateway.h	/^    OperatorType        m_CurOperatortype;$/;"	m	class:Gateway
+m_curGateway	../src/jacServer.h	/^    Gateway*  m_curGateway;       \/\/µ±Ç°Ïß³ÌËù´¦ÀíµÄÍø¹Ø£¬Ä¿Ç°Ö»Ö§³ÖÒ»¸öÏß³Ì£¬Ò»¸öÍø¹Ø$/;"	m	class:JacServer
+m_curIndex	../src/gateway.h	/^    int                     m_curIndex;$/;"	m	class:Gateway
+m_curMsgSerialNo	../src/jacServer.h	/^    UINT16 m_curMsgSerialNo;            \/\/µ±Ç°ÏûÏ¢ĞòºÅ$/;"	m	class:JacServer
+m_curNodeAddr	../src/gateway.h	/^    UINT16              m_curNodeAddr;$/;"	m	class:Gateway
+m_delayBuf	../src/jacServer.h	/^    Buffer*       m_delayBuf;         \/\/»º´æÑÓ³Ù´¦ÀíµÄÊı¾İ$/;"	m	class:JacServer
+m_destAddr	../src/jacServer.h	/^    UINT16  m_destAddr;$/;"	m	class:JacServer
+m_iSendNo	../src/jacServer.h	/^    UINT16  m_iSendNo;$/;"	m	class:JacServer
+m_localAddr	../src/jacServer.h	/^    UINT16 m_localAddr;                     \/\/±¾µØµÄµØÖ·$/;"	m	class:JacServer
+m_loop	../src/jacServer.h	/^    EventLoop* m_loop;$/;"	m	class:JacServer
+m_pTmpHeader	../src/jacServer.h	/^    pMSG_Header m_pTmpHeader;       \/\/ÁÙÊ±´æ·ÅÏûÏ¢Í·£¬ÓÃÓÚĞÂ½Úµã×¢²áÊ±µÄ½»»¥$/;"	m	class:JacServer
+m_resendTimer	../src/jacServer.h	/^    TimerId   m_resendTimer;        \/\/Ö¸ÁîÖØ·¢¶¨Ê±Æ÷  ĞŞ¸ÄÄ¿±ê½ÚµãµØÖ·$/;"	m	class:JacServer
+m_roundTimer	../src/jacServer.h	/^    TimerId   m_roundTimer;        \/\/ÂÖÑ¯¶¨Ê±Æ÷$/;"	m	class:JacServer
+m_sendBuf	../src/jacServer.h	/^    Buffer          m_sendBuf;$/;"	m	class:JacServer
+m_strIP	../src/gateway.h	/^    string         m_strIP;        \/\/ ip address$/;"	m	class:Gateway
+m_strName	../src/gateway.h	/^    string         m_strName;$/;"	m	class:Gateway
+m_vNodesInfo	../src/gateway.h	/^    std::vector<pINFO_Node> m_vNodesInfo;$/;"	m	class:Gateway
+macID	../src/MsgTypeDef.h	/^    char    macID[4];\/\/»úÌ¨±àºÅ Èç£ºA01 A02 B20$/;"	m	struct:__anon21
+macID	../src/MsgTypeDef.h	/^    char  macID[4];\/\/»úÌ¨±àºÅ Èç£ºA01 A02 B20$/;"	m	struct:__anon24
+macId	../src/StuDef.h	/^       std::string  macId;$/;"	m	struct:__anon35
+macType	../src/MsgTypeDef.h	/^    char    macType[4];\/\/»úÆ÷ÀàĞÍ Èç£ºA01 A02 B03 C04     µçÄÔÌá»¨»ú¡¢ÆÕÍ¨Ìá»¨»ú¡¢Éş»ú$/;"	m	struct:__anon21
+machine_state	../src/StuDef.h	/^	UINT8  machine_state;		\/\/æœºå™¨çŠ¶æ€ 1 å¼€è½¦ 0 åœè½¦$/;"	m	struct:__anon35
+main	../src/jacClient.cc	/^int main(int argc, char* argv[])$/;"	f
+main	../src/jacServer.cc	/^int main(int argc, char* argv[])$/;"	f
+main	../src/testClient.cc	/^int main(int argc, char *argv[])$/;"	f
+messageCallback_	../src/process.h	/^  StringMessageCallback messageCallback_;$/;"	m	class:processCodec
+minute	../src/MsgTypeDef.h	/^    UINT8 minute;\/\/·Ö$/;"	m	struct:__anon30
+modifyDestAddr	../src/jacServer.cc	/^void JacServer::modifyDestAddr()$/;"	f	class:JacServer
+modifyDestAddr	../src/jacServer.cc	/^void JacServer::modifyDestAddr(UINT16 addr)$/;"	f	class:JacServer
+month	../src/MsgTypeDef.h	/^    UINT8 month;\/\/ÔÂ$/;"	m	struct:__anon30
+mutex_	../src/jacClient.cc	/^  MutexLock mutex_;$/;"	m	class:jacClient	file:
+name	../src/jacClient.cc	/^        char name[2];$/;"	m	struct:jacClient::teststu	file:
+numThreads_	../src/jacServer.h	/^    int         numThreads_;                \/\/Ïß³ÌÊı 2$/;"	m	class:JacServer
+number_produced	../src/StuDef.h	/^	UINT32 number_produced;$/;"	m	struct:__anon35
+onConnection	../src/jacClient.cc	/^  void onConnection(const TcpConnectionPtr& conn)$/;"	f	class:jacClient	file:
+onConnection	../src/jacServer.cc	/^void JacServer::onConnection(const TcpConnectionPtr& conn)$/;"	f	class:JacServer
+onMessage	../src/jacClient.cc	/^  void onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time)$/;"	f	class:jacClient	file:
+onMessage	../src/jacServer.cc	/^void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time)$/;"	f	class:JacServer
+onMessage	../src/process.h	/^  void onMessage(const muduo::net::TcpConnectionPtr& conn,$/;"	f	class:processCodec
+onStringMessage	../src/jacClient.cc	/^  void onStringMessage(const TcpConnectionPtr&,$/;"	f	class:jacClient	file:
+onTimer	../src/jacServer.cc	/^void JacServer::onTimer()$/;"	f	class:JacServer
+opening	../src/StuDef.h	/^	UINT32	opening;$/;"	m	struct:__anon35
+operator_num	../src/StuDef.h	/^	std::string operator_num;$/;"	m	struct:__anon35
+operator_type	../src/database_operator.h	/^    UINT8    operator_type;             \/\/ insert ,select ,update ,and so on$/;"	m	struct:__anon33
+pCanFrame	../src/MsgTypeDef.h	/^} CanFrame,*pCanFrame;$/;"	t	typeref:struct:__anon5
+pCanNetif	../src/MsgTypeDef.h	/^} CanNetif,*pCanNetif;$/;"	t	typeref:struct:__anon2
+pComFrame	../src/MsgTypeDef.h	/^} ComFrame,*pComFrame;$/;"	t	typeref:struct:__anon8
+pDatabaseOperatorTask	../src/database_operator.h	/^}DatabaseOperatorTask, *pDatabaseOperatorTask; $/;"	t	typeref:struct:__anon33
+pINFO_Node	../src/StuDef.h	/^}INFO_Node,*pINFO_Node;$/;"	t	typeref:struct:__anon35
+pMSG_ACK	../src/MsgTypeDef.h	/^} MSG_ACK,*pMSG_ACK;$/;"	t	typeref:struct:__anon20
+pMSG_CanHeader	../src/MsgTypeDef.h	/^} MSG_CanHeader,*pMSG_CanHeader;$/;"	t	typeref:struct:__anon13
+pMSG_GetMacState	../src/MsgTypeDef.h	/^} MSG_GetMacState,*pMSG_GetMacState;$/;"	t	typeref:struct:__anon28
+pMSG_GetProduction	../src/MsgTypeDef.h	/^} MSG_GetProduction,*pMSG_GetProduction;$/;"	t	typeref:struct:__anon27
+pMSG_Header	../src/MsgTypeDef.h	/^} MSG_Header,*pMSG_Header;$/;"	t	typeref:struct:__anon19
+pMSG_Header1	../src/MsgTypeDef.h	/^} MSG_Header1,*pMSG_Header1;$/;"	t	typeref:struct:__anon16
+pMSG_Interval	../src/MsgTypeDef.h	/^} MSG_Interval,*pMSG_Interval;$/;"	t	typeref:struct:__anon29
+pMSG_Login	../src/MsgTypeDef.h	/^} MSG_Login,*pMSG_Login;$/;"	t	typeref:struct:__anon21
+pMSG_Logout	../src/MsgTypeDef.h	/^} MSG_Logout,*pMSG_Logout;$/;"	t	typeref:struct:__anon24
+pMSG_MacState	../src/MsgTypeDef.h	/^} MSG_MacState,*pMSG_MacState;$/;"	t	typeref:struct:__anon22
+pMSG_PatFile	../src/MsgTypeDef.h	/^} MSG_PatFile,*pMSG_PatFile;$/;"	t	typeref:struct:__anon26
+pMSG_PatPara	../src/MsgTypeDef.h	/^} MSG_PatPara,*pMSG_PatPara;$/;"	t	typeref:struct:__anon25
+pMSG_Production	../src/MsgTypeDef.h	/^} MSG_Production,*pMSG_Production;$/;"	t	typeref:struct:__anon23
+pMSG_SetTime	../src/MsgTypeDef.h	/^} MSG_SetTime,*pMSG_SetTime;$/;"	t	typeref:struct:__anon30
+pModifyGateWayDestAddr	../src/preDef.h	/^} ModifyGateWayDestAddr,*pModifyGateWayDestAddr;$/;"	t	typeref:struct:__anon32
+pRspAck	../src/preDef.h	/^} RspAck,*pRspAck;$/;"	t	typeref:struct:__anon31
+pSendmsgQ	../src/MsgTypeDef.h	/^} SendmsgQ,*pSendmsgQ;$/;"	t	typeref:struct:__anon4
+pTimeEvent	../src/MsgTypeDef.h	/^} TimeEvent,*pTimeEvent;$/;"	t	typeref:struct:__anon1
+pZigNetif	../src/MsgTypeDef.h	/^} ZigNetif,*pZigNetif;$/;"	t	typeref:struct:__anon3
+packetCnt	../src/MsgTypeDef.h	/^    UINT16 packetCnt;\/\/µ±Ç°°üĞòºÅ$/;"	m	struct:__anon26
+panid	../src/MsgTypeDef.h	/^    UINT16 panid;         \/**< \\brief PanID         *\/$/;"	m	struct:__anon3
+processCodec	../src/process.h	/^  explicit processCodec(const StringMessageCallback& cb)$/;"	f	class:processCodec
+processCodec	../src/process.h	/^class processCodec : boost::noncopyable$/;"	c
+processDB	../src/jacServer.cc	/^void JacServer::processDB()$/;"	f	class:JacServer
+product_total_output	../src/StuDef.h	/^	UINT32  product_total_output;$/;"	m	struct:__anon35
+product_total_time	../src/StuDef.h	/^	UINT32  product_total_time;$/;"	m	struct:__anon35
+protocolTag1	../src/preDef.h	/^    UINT8 protocolTag1;$/;"	m	struct:__anon31
+protocolTag1	../src/preDef.h	/^    UINT8 protocolTag1;$/;"	m	struct:__anon32
+protocolTag2	../src/preDef.h	/^    UINT8 protocolTag2;$/;"	m	struct:__anon31
+protocolTag2	../src/preDef.h	/^    UINT8 protocolTag2;$/;"	m	struct:__anon32
+protocolTag3	../src/preDef.h	/^    UINT8 protocolTag3;$/;"	m	struct:__anon31
+protocolTag3	../src/preDef.h	/^    UINT8 protocolTag3;$/;"	m	struct:__anon32
+protocolVersion	../src/MsgTypeDef.h	/^    UINT16  protocolVersion;  \/\/Ğ­Òé°æ±¾ºÅ, Õâ¸ö°æ±¾¹Ì¶¨Îª0$/;"	m	struct:__anon21
+pteststu	../src/jacClient.cc	/^      }pteststu;$/;"	m	class:jacClient	typeref:struct:jacClient::teststu	file:
+removeAllNodes	../src/gateway.h	/^void Gateway::removeAllNodes()$/;"	f	class:Gateway
+replyNo	../src/MsgTypeDef.h	/^            UINT16 replyNo; \/\/Ó¦´ğĞòºÅ£¬Ö»³öÏÖÔÚÓ¦´ğÏûÏ¢ÖĞ£¬ÓÃÓÚÆ¥ÅäÇëÇóÏûÏ¢$/;"	m	struct:__anon8::__anon11::__anon12
+replyNo	../src/MsgTypeDef.h	/^    UINT16 replyNo; \/\/Ó¦´ğĞòºÅ£¬Ö»³öÏÖÔÚÓ¦´ğÏûÏ¢ÖĞ£¬Ó¦´ğÊ±°ÑÇëÇóÏûÏ¢µÄserialNoÌî³ä·µ»ØÈ¥£¬$/;"	m	struct:__anon19
+replyNo	../src/MsgTypeDef.h	/^    UINT16 replyNo; \/\/Ó¦´ğĞòºÅ£¬Ö»³öÏÖÔÚÓ¦´ğÏûÏ¢ÖĞ£¬ÓÃÓÚÆ¥ÅäÇëÇóÏûÏ¢$/;"	m	struct:__anon16
+replyNo	../src/MsgTypeDef.h	/^    UINT16 replyNo; \/\/Ó¦´ğĞòºÅ£¬Ö»³öÏÖÔÚÓ¦´ğÏûÏ¢ÖĞ£¬ÓÃÓÚÆ¥ÅäÇëÇóÏûÏ¢$/;"	m	struct:__anon2
+replyNo	../src/MsgTypeDef.h	/^    UINT16 replyNo; \/\/Ó¦´ğĞòºÅ£¬Ö»³öÏÖÔÚÓ¦´ğÏûÏ¢ÖĞ£¬ÓÃÓÚÆ¥ÅäÇëÇóÏûÏ¢$/;"	m	struct:__anon3
+resetCurNode	../src/gateway.h	/^void Gateway::resetCurNode()$/;"	f	class:Gateway
+resetUnReplyNum	../src/gateway.h	/^void Gateway::resetUnReplyNum(UINT16 addr=0)$/;"	f	class:Gateway
+second	../src/MsgTypeDef.h	/^    UINT8 second;\/\/Ãë$/;"	m	struct:__anon30
+send	../src/process.h	/^  void send(muduo::net::TcpConnection* conn,$/;"	f	class:processCodec
+sendAll	../src/jacServer.cc	/^void JacServer::sendAll(Buffer* buf)$/;"	f	class:JacServer
+sendReplyAck	../src/jacServer.cc	/^void JacServer::sendReplyAck(TcpConnection* conn, pMSG_Header srcheader,UINT8 ACK_code)$/;"	f	class:JacServer
+serialNo	../src/MsgTypeDef.h	/^            UINT16 serialNo;\/\/ÏûÏ¢ĞòºÅ£¬´Ó0¿ªÊ¼Ë³ĞòÔö³¤£¬µ½×î´óÖµ»Øµ½0¡£$/;"	m	struct:__anon8::__anon11::__anon12
+serialNo	../src/MsgTypeDef.h	/^    UINT16 serialNo;\/\/ÏûÏ¢ĞòºÅ£¬´Ó0¿ªÊ¼Ë³ĞòÔö³¤£¬µ½×î´óÖµ»Øµ½0¡£$/;"	m	struct:__anon16
+serialNo	../src/MsgTypeDef.h	/^    UINT16 serialNo;\/\/ÏûÏ¢ĞòºÅ£¬´Ó0¿ªÊ¼Ë³ĞòÔö³¤£¬µ½×î´óÖµ»Øµ½0¡£$/;"	m	struct:__anon19
+serialNo	../src/MsgTypeDef.h	/^    UINT16 serialNo;\/\/ÏûÏ¢ĞòºÅ£¬´Ó0¿ªÊ¼Ë³ĞòÔö³¤£¬µ½×î´óÖµ»Øµ½0¡£$/;"	m	struct:__anon2
+serialNo	../src/MsgTypeDef.h	/^    UINT16 serialNo;\/\/ÏûÏ¢ĞòºÅ£¬´Ó0¿ªÊ¼Ë³ĞòÔö³¤£¬µ½×î´óÖµ»Øµ½0¡£$/;"	m	struct:__anon3
+serialNo	../src/MsgTypeDef.h	/^    UINT16 serialNo;\/\/ÏûÏ¢ĞòºÅ£¬´Ó0¿ªÊ¼Ë³ĞòÔö³¤£¬µ½×î´óÖµ»Øµ½0¡£$/;"	m	struct:__anon4
+server_	../src/jacServer.h	/^    TcpServer server_;$/;"	m	class:JacServer
+setCurNode	../src/gateway.h	/^void Gateway::setCurNode(UINT16 curAddr)$/;"	f	class:Gateway
+setCurOperatorType	../src/gateway.h	/^void Gateway::setCurOperatorType(OperatorType oType)$/;"	f	class:Gateway
+setIp	../src/gateway.h	/^void Gateway::setIp(string ip)$/;"	f	class:Gateway
+setLogging	../src/jacServer.cc	/^void setLogging(const char* argv0)$/;"	f
+setName	../src/gateway.h	/^void Gateway::setName(string name)$/;"	f	class:Gateway
+setNodeTime	../src/jacServer.cc	/^void    JacServer::setNodeTime(UINT16 addr)$/;"	f	class:JacServer
+srcAddr	../src/MsgTypeDef.h	/^    UINT16 srcAddr;\/\/Ô´µØÖ·$/;"	m	struct:__anon19
+srcAddr	../src/MsgTypeDef.h	/^    UINT8 srcAddr;\/\/canÔ´µØÖ·$/;"	m	struct:__anon13
+srcAddr	../src/MsgTypeDef.h	/^    UINT8 srcAddr;\/\/canÔ´µØÖ·$/;"	m	struct:__anon16
+start	../src/jacServer.cc	/^void JacServer::start()$/;"	f	class:JacServer
+state	../src/StuDef.h	/^	UINT8  state;$/;"	m	struct:__anon35
+str	../src/MsgTypeDef.h	/^        } str;$/;"	m	union:__anon13::__anon14	typeref:struct:__anon13::__anon14::__anon15
+str	../src/MsgTypeDef.h	/^        } str;$/;"	m	union:__anon16::__anon17	typeref:struct:__anon16::__anon17::__anon18
+str	../src/MsgTypeDef.h	/^        } str;$/;"	m	union:__anon5::__anon6	typeref:struct:__anon5::__anon6::__anon7
+str	../src/MsgTypeDef.h	/^        } str;$/;"	m	union:__anon8::__anon11	typeref:struct:__anon8::__anon11::__anon12
+str	../src/MsgTypeDef.h	/^        } str;$/;"	m	union:__anon8::__anon9	typeref:struct:__anon8::__anon9::__anon10
+task_list_mutex_	../src/database_operator.h	/^    mutable MutexLock                                   task_list_mutex_;                               \/\/$/;"	m	class:DatabaseOperator
+task_type	../src/database_operator.h	/^    UINT16  task_type;                      \/\/different task ,different select cause;$/;"	m	struct:__anon33
+tasks_	../src/database_operator.h	/^    DatabaseOperatorTaskList                        tasks_;                \/\/ database task list$/;"	m	class:DatabaseOperator
+tasks_beExec_	../src/database_operator.h	/^    DatabaseOperatorTaskList                        tasks_beExec_;                \/\/ database task list will be execed$/;"	m	class:DatabaseOperator
+tasks_number	../src/StuDef.h	/^	UINT32 tasks_number;$/;"	m	struct:__anon35
+teststu	../src/jacClient.cc	/^struct teststu{$/;"	s	class:jacClient	file:
+threadPool_	../src/jacServer.h	/^    ThreadPool threadPool_;             \/\/ Ïß³Ì³Ø ÉèÖÃÎªÁ½¸öÏß³Ì Ö÷Ïß³Ì´¦ÀíÍøÂçio£¬Êı¾İ¿âÏß³Ì´¦ÀíÊı¾İ$/;"	m	class:JacServer
+time_sync_	../src/jacServer.h	/^    tm*    time_sync_;         \/\/µ±Ç°Ê±¼ä$/;"	m	class:JacServer
+times_get_mac_state_	../src/jacServer.h	/^    int         times_get_mac_state_;       \/\/»ñÈ¡½Úµã×´Ì¬ÃüÁî´ÎÊı£¬Ã¿ÂÖÑ¯Ê®´Î£¬ÂÖÑ¯Ò»´Î½Úµã²úÁ¿ĞÅÏ¢$/;"	m	class:JacServer
+tmpAckCode_	../src/jacServer.h	/^    UINT8 tmpAckCode_;$/;"	m	class:JacServer
+total_run_time	../src/StuDef.h	/^	UINT32 total_run_time;				\/\/å¼€æœºæ—¶é•¿ å•ä½ï¼šç§’$/;"	m	struct:__anon35
+unReplyNum	../src/StuDef.h	/^	UINT8  unReplyNum;$/;"	m	struct:__anon35
+uni	../src/MsgTypeDef.h	/^    } uni;$/;"	m	struct:__anon13	typeref:union:__anon13::__anon14
+uni	../src/MsgTypeDef.h	/^    } uni;$/;"	m	struct:__anon16	typeref:union:__anon16::__anon17
+uni	../src/MsgTypeDef.h	/^    } uni;$/;"	m	struct:__anon5	typeref:union:__anon5::__anon6
+uni0	../src/MsgTypeDef.h	/^    } uni0;$/;"	m	struct:__anon8	typeref:union:__anon8::__anon9
+uni1	../src/MsgTypeDef.h	/^    } uni1;$/;"	m	struct:__anon8	typeref:union:__anon8::__anon11
+updateTime	../src/jacServer.cc	/^void   JacServer::updateTime()$/;"	f	class:JacServer
+write	../src/jacClient.cc	/^  void write(const StringPiece& message)$/;"	f	class:jacClient
+year	../src/MsgTypeDef.h	/^    UINT16 year;\/\/Äê$/;"	m	struct:__anon30

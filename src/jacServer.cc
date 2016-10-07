@@ -312,7 +312,33 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
                     //���ڵ���Ϣ���뵽���ݿ���
 #if USE_DATABASE
-                    g_DatabaseOperator.InsertNodeOfGateway( m_curGateway->getIp(),m_pTmpHeader->destAddr,tmpNode->addr);
+
+                    std::ostringstream ostrsql;
+                    ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr) VALUES ('','"
+                        << m_curGateway->getIp() << "' ,"<< m_pTmpHeader->destAddr << ","  << tmpNode->addr << ")";
+
+                    LOG_DEBUG<< "node_register_info insert sql: "<<ostrsql.str().c_str();
+
+                    DatabaseOperatorTask insert_task_1;
+                    insert_task_1.operator_type=0;
+                    insert_task_1.content=ostrsql.str().c_str();
+                    g_DatabaseOperator.AddTask(insert_task_1);
+
+                    ostrsql.clear();
+                    ostrsql <<"INSERT INTO `jacdb`.`machine_management`(`machine_id`,`addr`,`gateway`,`machine_type`,`row`,`col`,`thread_number`,`Mcuversion`,`Universion`,`Hw1version`,`Hw2version`) VALUES('"
+                            << m_pTmpMsgLogin->macID << "',"<<m_pTmpHeader->destAddr << ",'"<<m_pTmpMsgLogin->gatewayId <<"','"
+                            << m_pTmpMsgLogin->macType <<"',"<< m_pTmpMsgLogin->Row <<","<<m_pTmpMsgLogin->Col<< ","<<m_pTmpMsgLogin->Warp<<","
+                            << m_pTmpMsgLogin->McuVer <<","<<m_pTmpMsgLogin->UiVer<<","<<m_pTmpMsgLogin->Hw1Ver<<","<<m_pTmpMsgLogin->Hw2Ver<<
+                            ")";
+                    LOG_DEBUG<< "machine_management insert sql: " <<ostrsql.str().c_str();
+
+                    DatabaseOperatorTask insert_task_2;
+                    insert_task_2.operator_type=0;
+                    insert_task_2.content=ostrsql.str().c_str();
+                    g_DatabaseOperator.AddTask(insert_task_2);
+
+
+                    //g_DatabaseOperator.InsertNodeOfGateway( m_curGateway->getIp(),m_pTmpHeader->destAddr,tmpNode->addr);
 #endif
 
                     // m_curGateway->setCurOperatorType(REGISTER_FINISH);
@@ -472,53 +498,66 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
             // MSG_Login
             tmpAckCode_=ACK_OK;
-            MSG_Login* stuBody = (MSG_Login*)const_cast<char*>(buf->peek());
+            m_pTmpMsgLogin = (MSG_Login*)const_cast<char*>(buf->peek());
 
             if (m_localAddr == 0)
             {
-                m_localAddr = (stuBody->header.destAddr);
+                m_localAddr = (m_pTmpMsgLogin->header.destAddr);
                 LOG_INFO << "---------destAddr: " << m_localAddr;
             }
 
-            LOG_INFO << "-------------------srcAddr: " << (stuBody->header.srcAddr);
-            LOG_INFO << "destAddr: " << (stuBody->header.destAddr);
+            LOG_INFO << "-------------------srcAddr: " << (m_pTmpMsgLogin->header.srcAddr);
+            LOG_INFO << "destAddr: " << (m_pTmpMsgLogin->header.destAddr);
 
-            LOG_DEBUG<< "length: " << Tranverse16(stuBody->header.length);
-            LOG_DEBUG << "serialNo: " << Tranverse16(stuBody->header.serialNo);
-            LOG_DEBUG << "replyNo: " << Tranverse16(stuBody->header.replyNo);
-            LOG_DEBUG << "crc16: " << stuBody->header.crc16;
+            LOG_DEBUG<< "length: " << Tranverse16(m_pTmpMsgLogin->header.length);
+            LOG_DEBUG << "serialNo: " << Tranverse16(m_pTmpMsgLogin->header.serialNo);
+            LOG_DEBUG << "replyNo: " << Tranverse16(m_pTmpMsgLogin->header.replyNo);
+            LOG_DEBUG << "crc16: " << m_pTmpMsgLogin->header.crc16;
 
-            LOG_DEBUG << "protocolVersion: " << Tranverse16(stuBody->protocolVersion);
-            LOG_DEBUG << " StringLen: " << Tranverse16(stuBody->StringLen);
+            LOG_DEBUG << "protocolVersion: " << Tranverse16(m_pTmpMsgLogin->protocolVersion);
+            LOG_DEBUG << " StringLen: " << Tranverse16(m_pTmpMsgLogin->StringLen);
 
-            LOG_INFO << "gatewayId: " << stuBody->gatewayId;
-            LOG_DEBUG << "Row: " << (stuBody->Row);
-            LOG_DEBUG << "Col: " << (stuBody->Col);
-            LOG_DEBUG << "Warp: " << Tranverse16(stuBody->Warp);
-            LOG_DEBUG << "Installation: " << (stuBody->Installation);
-            LOG_DEBUG << "CardSlot: " << (stuBody->CardSlot);
-            LOG_DEBUG << "macID: " << (stuBody->macID);
-            LOG_DEBUG << "macType: " << (stuBody->macType);
-            LOG_DEBUG << "McuVer: " << (stuBody->McuVer);
-            LOG_DEBUG << "UiVer: " << (stuBody->UiVer);
-            LOG_DEBUG << "Hw1Ver: " << (stuBody->Hw1Ver);
-            LOG_DEBUG << "Hw2Ver: " << (stuBody->Hw2Ver);
+            LOG_INFO << "gatewayId: " << m_pTmpMsgLogin->gatewayId;
+            LOG_DEBUG << "Row: " << (m_pTmpMsgLogin->Row);
+            LOG_DEBUG << "Col: " << (m_pTmpMsgLogin->Col);
+            LOG_DEBUG << "Warp: " << Tranverse16(m_pTmpMsgLogin->Warp);
+            LOG_DEBUG << "Installation: " << (m_pTmpMsgLogin->Installation);
+            LOG_DEBUG << "CardSlot: " << (m_pTmpMsgLogin->CardSlot);
+            LOG_DEBUG << "macID: " << (m_pTmpMsgLogin->macID);
+            LOG_DEBUG << "macType: " << (m_pTmpMsgLogin->macType);
+            LOG_DEBUG << "McuVer: " << (m_pTmpMsgLogin->McuVer);
+            LOG_DEBUG << "UiVer: " << (m_pTmpMsgLogin->UiVer);
+            LOG_DEBUG << "Hw1Ver: " << (m_pTmpMsgLogin->Hw1Ver);
+            LOG_DEBUG << "Hw2Ver: " << (m_pTmpMsgLogin->Hw2Ver);
 
+            // set register info
+            /*
+            node_.addr=stuBody->header.srcAddr;
+            node_.macId=stuBody->macID;
+            node_.unReplyNum=0;
+            node_.curMsgSerialNo=0;
+            node_.machine_state=0;
+            node_.halting_reason=0;
+            node_.broken_total_time=0;
+            node_.total_run_time=0;
+            node_.figure_name="";
+            node_.latitude=0
+*/
 
             //���ĺϷ���У��
-            if(Tranverse16(stuBody->header.length) != sizeof(MSG_Login))
+            if(Tranverse16(m_pTmpMsgLogin->header.length) != sizeof(MSG_Login))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
                 LOG_WARN<< "ACK_OUTOFMEM";
             }
 
-            if ((stuBody->header.Sof != COM_FRM_HEAD) || (stuBody->Eof != COM_FRM_END))
+            if ((m_pTmpMsgLogin->header.Sof != COM_FRM_HEAD) || (m_pTmpMsgLogin->Eof != COM_FRM_END))
             {
                 tmpAckCode_ = ACK_DATALOSS;
                 LOG_WARN<< "ACK_DATALOSS";
             }
 
-            if (stuBody->header.destAddr != m_localAddr)
+            if (m_pTmpMsgLogin->header.destAddr != m_localAddr)
             {
                 tmpAckCode_ = ACK_MSG_ERROR;
                 LOG_WARN<< "ACK_MSG_ERROR";
@@ -530,18 +569,18 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             if (m_curGateway == NULL)
             {
                 m_curGateway = new Gateway();
-                m_curGateway->setName(stuBody->gatewayId);
-                LOG_INFO<<"gatewayId: "<<stuBody->gatewayId;
+                m_curGateway->setName(m_pTmpMsgLogin->gatewayId);
+                LOG_INFO<<"gatewayId: "<<m_pTmpMsgLogin->gatewayId;
 
             }
 
             if (tmpAckCode_ == ACK_OK)
             {
-                if (m_curGateway->isExistNode(stuBody->header.srcAddr))
+                if (m_curGateway->isExistNode(m_pTmpMsgLogin->header.srcAddr))
                 {
                     LOG_INFO << "-----------The node have been registed!!!!";
-                    m_curGateway->deleteNodeByAddr(stuBody->header.srcAddr);
-                    g_DatabaseOperator.DeleteNodeOfGateway(m_curGateway->getIp(), stuBody->header.srcAddr);
+                    m_curGateway->deleteNodeByAddr(m_pTmpMsgLogin->header.srcAddr);
+                    g_DatabaseOperator.DeleteNodeOfGateway(m_curGateway->getIp(), m_pTmpMsgLogin->header.srcAddr);
                 }
             }
             else
@@ -556,14 +595,14 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 m_pTmpHeader = new MSG_Header();
             }
 
-            m_pTmpHeader->destAddr= stuBody->header.destAddr;
-            m_pTmpHeader->srcAddr= stuBody->header.srcAddr;
-            m_pTmpHeader->serialNo = stuBody->header.serialNo;
-            m_pTmpHeader->replyNo = stuBody->header.replyNo;
+            m_pTmpHeader->destAddr= m_pTmpMsgLogin->header.destAddr;
+            m_pTmpHeader->srcAddr= m_pTmpMsgLogin->header.srcAddr;
+            m_pTmpHeader->serialNo = m_pTmpMsgLogin->header.serialNo;
+            m_pTmpHeader->replyNo = m_pTmpMsgLogin->header.replyNo;
 
             m_curGateway->setCurOperatorType( REGISTER_NODE);
             m_loop->cancel(m_roundTimer);
-            modifyDestAddr(stuBody->header.srcAddr);
+            modifyDestAddr(m_pTmpMsgLogin->header.srcAddr);
 
             buf->retrieve(sizeof(MSG_Login));
         }

@@ -44,15 +44,16 @@ public:
           numThreads_(numThreads)         
     {
         server_.setConnectionCallback(
-            boost::bind(&JacServer::onConnection, this, _1));
+                boost::bind(&JacServer::onConnection, this, _1));
         server_.setMessageCallback(
-            boost::bind(&JacServer::onMessage, this, _1, _2, _3));
+                boost::bind(&JacServer::onMessage, this, _1, _2, _3));
 
         m_curMsgSerialNo = 0;
         m_iSendNo = 0;
         m_curGateway = NULL;
         m_delayBuf = NULL;
         m_pTmpHeader = NULL;
+        m_pTmpMsgLogin = NULL;
         time_sync_ = NULL;
         times_get_mac_state_=0;
         tmpAckCode_=ACK_OK;
@@ -60,7 +61,7 @@ public:
     }
 
     void start();
-
+        
 private:
     void onConnection(const TcpConnectionPtr& conn);
 
@@ -98,8 +99,10 @@ private:
     UINT8 tmpAckCode_;
 
     pMSG_Header m_pTmpHeader;       //临时存放消息头，用于新节点注册时的交互
+    MSG_Login*  m_pTmpMsgLogin;
 
     Gateway*  m_curGateway;       //当前线程所处理的网关，目前只支持一个线程，一个网关
+   // INFO_Node node_;
 
     TimerId   m_roundTimer;        //轮询定时器
     TimerId   m_resendTimer;        //指令重发定时器  修改目标节点地址
