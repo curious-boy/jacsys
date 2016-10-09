@@ -40,7 +40,6 @@ public:
     string              getName();
     void                setName(string name);
     pINFO_Node          getCurNode();
-    pINFO_Node          getNodeByAddr(UINT16 addr);
     void                updateNodeByAddr(UINT16 addr,pINFO_Node pnode);
     pINFO_Node          getNextNode();
     void                setCurNode(UINT16 curAddr);
@@ -178,7 +177,7 @@ void Gateway::setCurNode(UINT16 curAddr)
     }
 }
 
-pINFO_Node Gateway:: getNodeByAddr(UINT16 addr)
+pINFO_Node Gateway::getNodeByAddr(UINT16 addr)
 {
     for(int i=0; i<m_vNodesInfo.size(); i++)
     {
@@ -239,18 +238,6 @@ void Gateway::deleteNodeByAddr(UINT16 addr)
             m_vNodesInfo.erase(m_vNodesInfo.begin()+i);
         }
     }
-}
-
-pINFO_Node Gateway::getNodeByAddr(UINT16 addr)
-{
-    for(int i=0; i<m_vNodesInfo.size(); i++)
-    {
-        if(m_vNodesInfo[i]->addr == addr)
-        {
-            return m_vNodesInfo[i];
-        }
-    }
-    return NULL;
 }
 
 string Gateway::getName()
