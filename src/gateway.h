@@ -32,23 +32,25 @@ public:
 
 public:
     pINFO_Node         getNodeByAddr(UINT16 addr);         // get nodeinfo by addr
-    void                    insertNode(pINFO_Node pNode);           // insert nodeinfo £¬½«½ÚµãÊı¾İÁÙÊ±´æ·Å
+    void                    insertNode(pINFO_Node pNode);           // insert nodeinfo ï¼Œå°†èŠ‚ç‚¹æ•°æ®ä¸´æ—¶å­˜æ”¾
     UINT16              getNodeSize();                      // get size of node
-    void                    resetCurNode();                         // reset m_curIndex to 0
-    void                    removeAllNodes();                   // remove all nodes
-    void                    deleteNodeByAddr(UINT16 addr);      //
+    void                resetCurNode();                         // reset m_curIndex to 0
+    void                removeAllNodes();                   // remove all nodes
+    void                deleteNodeByAddr(UINT16 addr);      //
     string              getName();
-    void                    setName(string name);
-    pINFO_Node      getCurNode();
-    pINFO_Node      getNextNode();
+    void                setName(string name);
+    pINFO_Node          getCurNode();
+    pINFO_Node          getNodeByAddr(UINT16 addr);
+    void                updateNodeByAddr(UINT16 addr,pINFO_Node pnode);
+    pINFO_Node          getNextNode();
     void                setCurNode(UINT16 curAddr);
-    void                increaseUnReplyNum(int inum=1);             //Ôö¼Óµ±Ç°½ÚµãÎ´·µ»ØµÄÇëÇóÊı
-    int                 getUnReplyNum();                                        //·µ»Øµ±Ç°½ÚµãÎ´·µ»ØµÄÇëÇóÊı
-    void                resetUnReplyNum(UINT16 addr=0);                                  //ÖØÖÃµ±Ç°½ÚµãµÄÎ´·µ»ØµÄÇëÇóÊı
+    void                increaseUnReplyNum(int inum=1);             //å¢åŠ å½“å‰èŠ‚ç‚¹æœªè¿”å›çš„è¯·æ±‚æ•°
+    int                 getUnReplyNum();                                        //è¿”å›å½“å‰èŠ‚ç‚¹æœªè¿”å›çš„è¯·æ±‚æ•°
+    void                resetUnReplyNum(UINT16 addr=0);                                  //é‡ç½®å½“å‰èŠ‚ç‚¹çš„æœªè¿”å›çš„è¯·æ±‚æ•°
     void                setCurOperatorType(OperatorType oType);
-    OperatorType    getCurOperatorType();
+    OperatorType        getCurOperatorType();
     bool                isExistNode(UINT16 addr);
-    void                 setIp(string ip);
+    void                setIp(string ip);
     string              getIp();
 
 
@@ -188,6 +190,17 @@ pINFO_Node Gateway:: getNodeByAddr(UINT16 addr)
     return NULL;
 }
 
+void Gateway::updateNodeByAddr(UINT16 addr,pINFO_Node pnode)
+{
+    for(int i=0; i<m_vNodesInfo.size(); i++)
+    {
+        if(m_vNodesInfo[i]->addr == addr)
+        {
+            m_vNodesInfo[i] = pnode;
+        }
+    }
+}
+
 void Gateway::insertNode(pINFO_Node pNode)
 {
     if(!isExistNode(pNode->addr) )
@@ -226,6 +239,18 @@ void Gateway::deleteNodeByAddr(UINT16 addr)
             m_vNodesInfo.erase(m_vNodesInfo.begin()+i);
         }
     }
+}
+
+pINFO_Node Gateway::getNodeByAddr(UINT16 addr)
+{
+    for(int i=0; i<m_vNodesInfo.size(); i++)
+    {
+        if(m_vNodesInfo[i]->addr == addr)
+        {
+            return m_vNodesInfo[i];
+        }
+    }
+    return NULL;
 }
 
 string Gateway::getName()

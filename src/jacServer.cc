@@ -69,7 +69,7 @@ void JacServer::onConnection(const TcpConnectionPtr& conn)
 
             if(vnodes.size() > 0)
             {
-                //���ڵ���Ϣ���ӵ�������Ϣ�б�
+                //锟斤拷锟节碉拷锟斤拷息锟斤拷锟接碉拷锟斤拷锟斤拷锟斤拷息锟叫憋拷
                 m_localAddr=g_DatabaseOperator.GetZigAddrOfGateway(strip);
                 if(m_localAddr == 0)
                 {
@@ -111,7 +111,7 @@ void JacServer::onTimer()
         return;
     }
 
-    //ѭ�������Ѿ�ע���Ľڵ�
+    //循锟斤拷锟斤拷锟斤拷锟窖撅拷注锟斤拷锟侥节碉拷
     if (m_curGateway->getNodeSize() == 0 )
     {
         LOG_INFO << "no node registed now!";
@@ -129,7 +129,7 @@ void JacServer::onTimer()
     }
     else
     {
-//δ��Ӧ������������8ʱ���ж��ڵ����ߣ���������Ϣ��ɾ���ýڵ�
+//未锟斤拷应锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷8时锟斤拷锟叫讹拷锟节碉拷锟斤拷锟竭ｏ拷锟斤拷锟斤拷锟斤拷锟斤拷息锟斤拷删锟斤拷锟矫节碉拷
         LOG_INFO << "+++++ getUnReplyNum , " << m_curGateway->getUnReplyNum();
 
         if(m_curGateway->getUnReplyNum() > MAX_UNREPLY_NUM)
@@ -151,7 +151,7 @@ void JacServer::onTimer()
                 return;
             }
 
-//��ѯ��һ���ڵ��ĵ�ַ
+//锟斤拷询锟斤拷一锟斤拷锟节碉拷锟侥碉拷址
             m_destAddr= m_curGateway->getNextNode()->addr;
             modifyDestAddr(m_destAddr);
 
@@ -166,7 +166,7 @@ void JacServer::onTimer()
 
         if(times_get_mac_state_ < 10)
         {
-            // #define MSG_GETMACSTATE       0X49  //��ȡ����״̬��Ϣ
+            // #define MSG_GETMACSTATE       0X49  //锟斤拷取锟斤拷锟斤拷状态锟斤拷息
             msgLen = sizeof(MSG_GetMacState);
             MSG_GetMacState* stuGetMacState = (MSG_GetMacState*)new char[sizeof(MSG_GetMacState)];
 
@@ -297,7 +297,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             && (tmpAck->protocolTag3 == 0xEF)
             && (tmpAck->funcCode == 0xD2 ) )
         {
-            //�����޸�Ŀ���ڵ������
+            //锟斤拷锟斤拷锟睫革拷目锟斤拷锟节碉拷锟斤拷锟筋反锟斤拷
             if (tmpAck->ackCode == 0x00)
             {
                 m_loop->cancel( m_resendTimer );
@@ -310,7 +310,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     tmpNode->unReplyNum = 0;
                     m_curGateway->insertNode(tmpNode);
 
-                    //���ڵ���Ϣ���뵽���ݿ���
+                    //锟斤拷锟节碉拷锟斤拷息锟斤拷锟诫到锟斤拷锟捷匡拷锟斤拷
 #if USE_DATABASE
 
                     std::ostringstream ostrsql;
@@ -349,7 +349,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     }
                     LOG_DEBUG<<"------REGISTER_NODE";
 
-                    setNodeTime(m_destAddr);    //�ڵ�ע���ɹ�����ͬ���ڵ�ʱ��
+                    setNodeTime(m_destAddr);    //锟节碉拷注锟斤拷锟缴癸拷锟斤拷锟斤拷同锟斤拷锟节碉拷时锟斤拷
 
                     if (m_curGateway->getNodeSize() > 0 )
                     {
@@ -377,7 +377,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                     sendReplyAck(get_pointer(conn),m_pTmpHeader,tmpAckCode_);
                     LOG_DEBUG << "---------LOGOUT_NODE ACK,sendReplyAck finished!-------";
 
-                    // �ж��Ƿ��������ӵĽڵ�
+                    // 锟叫讹拷锟角凤拷锟斤拷锟斤拷锟斤拷锟接的节碉拷
                     if (m_curGateway->getNodeSize() > 0 )
                     {
                         m_curGateway->resetCurNode();
@@ -396,7 +396,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 else if(m_curGateway->getCurOperatorType() == LOGOUT_FINISH)
                 {
                     LOG_DEBUG << "---------LOGOUT_FINISH ACK!-------";
-                    // �ж��Ƿ��������ӵĽڵ�
+                    // 锟叫讹拷锟角凤拷锟斤拷锟斤拷锟斤拷锟接的节碉拷
                     if (m_curGateway->getNodeSize() > 0 )
                     {
                         m_curGateway->resetCurNode();
@@ -544,7 +544,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             node_.latitude=0
 */
 
-            //���ĺϷ���У��
+            //锟斤拷锟侥合凤拷锟斤拷校锟斤拷
             if(Tranverse16(m_pTmpMsgLogin->header.length) != sizeof(MSG_Login))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
@@ -563,9 +563,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 LOG_WARN<< "ACK_MSG_ERROR";
             }
 
-            // 1 ��ʱȡ����ѯ��ʱ
-            // 2 ��������Ŀ���ڵ���ַΪ��ǰע���ڵ���ַ��������ע���ɹ�Ӧ��
-            // 3 �ָ�ԭ��ѯ״̬��������ѯ��
+            // 1 锟斤拷时取锟斤拷锟斤拷询锟斤拷时
+            // 2 锟斤拷锟斤拷锟斤拷锟斤拷目锟斤拷锟节碉拷锟斤拷址为锟斤拷前注锟斤拷锟节碉拷锟斤拷址锟斤拷锟斤拷锟斤拷锟斤拷注锟斤拷锟缴癸拷应锟斤拷
+            // 3 锟街革拷原锟斤拷询状态锟斤拷锟斤拷锟斤拷锟斤拷询锟斤拷
             if (m_curGateway == NULL)
             {
                 m_curGateway = new Gateway();
@@ -609,7 +609,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
         else if (tHeader->MsgType == MSG_LOGOUT)
         {
             LOG_INFO << "===========ONMSG:   MSG_LOGOUT++++++++";
-            //�ڵ�ע�����޸Ľڵ�״̬
+            //锟节碉拷注锟斤拷锟斤拷锟睫改节碉拷状态
             if(buf->readableBytes() < sizeof(MSG_Logout))
             {
                 sendReplyAck(get_pointer(conn),tHeader,ACK_DATALOSS);
@@ -619,7 +619,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             //MSG_Logout* stuBody = (MSG_Logout*) new char[sizeof(MSG_Logout)];
             MSG_Logout* stuBody = (MSG_Logout*)const_cast<char*>(buf->peek());
 
-            //���ĺϷ���У��
+            //锟斤拷锟侥合凤拷锟斤拷校锟斤拷
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_Logout))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
@@ -638,7 +638,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             buf->retrieve(sizeof(MSG_Logout));
 
             // add code to process logout   remove node info in Gateway
-            // �ڵ�ע��
+            // 锟节碉拷注锟斤拷
             if (tmpAckCode_ == ACK_OK)
             {
                 if (m_curGateway->isExistNode(stuBody->header.srcAddr))
@@ -684,10 +684,10 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             //MSG_Logout* stuBody = (MSG_Logout*) new char[sizeof(MSG_Logout)];
             MSG_ACK* stuBody = (MSG_ACK*)const_cast<char*>(buf->peek());
 
-            LOG_INFO << "��������������common ack,serialNo = " << stuBody->header.serialNo << " | "
+            LOG_INFO << "锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷common ack,serialNo = " << stuBody->header.serialNo << " | "
                      << "replyNo = " << stuBody->header.replyNo;
 
-            //���ĺϷ���У��
+            //锟斤拷锟侥合凤拷锟斤拷校锟斤拷
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_ACK))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
@@ -725,7 +725,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
             MSG_MacState* stuBody = (MSG_MacState*)const_cast<char*>(buf->peek());
 
-            //���ĺϷ���У��
+            //锟斤拷锟侥合凤拷锟斤拷校锟斤拷
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_MacState))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
@@ -768,7 +768,7 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
             MSG_Production* stuBody = (MSG_Production*)const_cast<char*>(buf->peek());
 
-            //���ĺϷ���У��
+            //锟斤拷锟侥合凤拷锟斤拷校锟斤拷
             if(Tranverse16(stuBody->header.length) != sizeof(MSG_Production))
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
@@ -862,7 +862,7 @@ void JacServer::modifyDestAddr(UINT16 addr)
     stuModifyGateWayDestAddr->funcCode = 0xD2;
 
     //LOG_INFO << "modifyDestAddr, test01";
-    // UINT16 destAddr = m_curGateway->getNextNode()->addr;    // getNextNode��Ҫ�ظ�����
+    // UINT16 destAddr = m_curGateway->getNextNode()->addr;    // getNextNode锟斤拷要锟截革拷锟斤拷锟斤拷
     LOG_INFO << "^^^^^^^^^^^^^^^^^^ send modify dest node, addr = " << addr;
     stuModifyGateWayDestAddr->addr = addr;
 
@@ -899,7 +899,7 @@ void JacServer::modifyDestAddr()
 
 void    JacServer::setNodeTime(UINT16 addr)
 {
-    // #define MSG_SETTIME           0X44  //���ýڵ�ʱ��
+    // #define MSG_SETTIME           0X44  //锟斤拷锟矫节碉拷时锟斤拷
     UINT16 tmpCrc=0;
 
     UINT16 tmpNo = getMsgSerialNo();
