@@ -22,7 +22,7 @@ typedef struct
 	UINT8  unReplyNum;
 	UINT16 curMsgSerialNo;
 
-	UINT8  machine_state;		//机器状态 1 开车 0 停车
+	UINT8  machine_state;			//机器状态 1 开车 0 停车
 	UINT8  halting_reason;			//机器故障信息 0x00 无故障 0x01 断纱 0x02 。。
 	UINT32 broken_total_time;		//停机时长，单位：秒
 
