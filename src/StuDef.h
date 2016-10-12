@@ -27,6 +27,8 @@ typedef struct
 	UINT32 broken_total_time;		//停机时长，单位：秒
 
 	UINT32 total_run_time;				//开机时长 单位：秒
+	UINT32 total_day_time;				//机台当日开机时长
+	UINT32 total_day_produced;			//机台当时产量
 
 	std::string figure_name;			//花样名称
 	UINT32 latitude;

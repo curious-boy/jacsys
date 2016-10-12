@@ -1,125 +1,127 @@
-#ifndef JAC_SERVER_H
-#define JAC_SERVER_H
+#include "jacServer.h"
+#include "database_operator.h"
 
-#include <muduo/net/TcpServer.h>
+#include "muduo/base/TimeZone.h"
 
-#include <muduo/base/AsyncLogging.h>
-#include <muduo/base/Logging.h>
-#include <muduo/base/Condition.h>
-#include <muduo/base/Mutex.h>
-#include <muduo/base/Thread.h>
-#include <muduo/base/ThreadPool.h>
-#include <muduo/net/EventLoop.h>
-#include <muduo/net/InetAddress.h>
+DatabaseOperator g_DatabaseOperator;
 
-#include <boost/bind.hpp>
-
-#include <utility>
-
-#include <set>
-#include <stdio.h>
-#include <unistd.h>
-#include <sstream>
-
-#include <string>
-
-#include <sys/time.h>
-
-#include "MsgTypeDef.h"
-#include "tools.h"
-#include "gateway.h"
-
-
-#define USE_DATABASE 1
-
-using namespace muduo;
-using namespace muduo::net;
-
-
-class JacServer
+void JacServer::processDB()
 {
-public:
-    JacServer(EventLoop* loop, const InetAddress& listenAddr, int numThreads)
-        : m_loop(loop),
-          server_(loop, listenAddr, "JacServer"),
-          numThreads_(numThreads)         
-    {
-        server_.setConnectionCallback(
-                boost::bind(&JacServer::onConnection, this, _1));
-        server_.setMessageCallback(
-                boost::bind(&JacServer::onMessage, this, _1, _2, _3));
+    LOG_INFO << "... processDB ...";
 
-        m_curMsgSerialNo = 0;
-        m_iSendNo = 0;
-        m_curGateway = NULL;
-        m_delayBuf = NULL;
-        m_pTmpHeader = NULL;
-        m_pTmpMsgLogin = NULL;
-        time_sync_ = NULL;
-        times_get_mac_state_=0;
-        tmpAckCode_=ACK_OK;
-        m_localAddr=0;
+    while(true)
+    {
+        g_DatabaseOperator.ExecTasks();
+
+        usleep(50);
     }
 
-    void start();
-        
-private:
-    void onConnection(const TcpConnectionPtr& conn);
+}
 
-    void onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time);
+void JacServer::start()
+{
+    LOG_INFO << "starting " << numThreads_ << " threads.";
+    threadPool_.start(numThreads_);
 
-    void onTimer();
-
-    void sendAll(Buffer* buf);
-
-    void sendReplyAck(TcpConnection* conn, pMSG_Header srcheader,UINT8 ACK_code);
-
-    UINT16 getMsgSerialNo();
-
-    void    modifyDestAddr(UINT16 addr);
-    void    modifyDestAddr();
-
-    void    setNodeTime(UINT16 addr);
-    void    updateTime();
-
-    static void processDB();
-
-    typedef std::set<TcpConnectionPtr> ConnectionList;
-    EventLoop* m_loop;
-    TcpServer server_;
-    ConnectionList connections_;
-    ThreadPool threadPool_;             // 线程池 设置为两个线程 主线程处理网络io，数据库线程处理数据
-    int         numThreads_;                //线程数 2
-
-    UINT16 m_curMsgSerialNo;            //当前消息序号
-    UINT16 m_localAddr;                     //本地的地址
-
-    //临时存放 目标地址
-    UINT16  m_destAddr;
-    UINT16  m_iSendNo;
-    UINT8 tmpAckCode_;
-
-    pMSG_Header m_pTmpHeader;       //临时存放消息头，用于新节点注册时的交互
-    MSG_Login*  m_pTmpMsgLogin;
-
-    Gateway*  m_curGateway;       //当前线程所处理的网关，目前只支持一个线程，一个网关
-   // INFO_Node node_;
-
-    TimerId   m_roundTimer;        //轮询定时器
-    TimerId   m_resendTimer;        //指令重发定时器  修改目标节点地址
-
-    Buffer*       m_delayBuf;         //缓存延迟处理的数据
-    Buffer          m_sendBuf;
-
-    tm*    time_sync_;         //当前时间
-
-    int         times_get_mac_state_;       //获取节点状态命令次数，每轮询十次，轮询一次节点产量信息
-    
-
-};
-
-#endif
+#if USE_DATABASE
+    // create dbthread here
+    if(g_DatabaseOperator.Init() < 0)
     {
+        LOG_ERROR << "Database Init failed! ";
+        exit(-1);
+    }
+
+    threadPool_.run(boost::bind(&processDB));
+#endif
+
+    server_.start();
+}
+
+void JacServer::onConnection(const TcpConnectionPtr& conn)
+{
+    LOG_DEBUG<< conn->peerAddress().toIpPort() << " -> "
+             << conn->peerAddress().toIpPort() << " is "
+             << (conn->connected() ? "UP" : "DOWN");
+
+    if( conn->connected())
+    {
+        if(connections_.size() >= 1)
+        {
+            LOG_WARN << "!!!!!!!!!!!!!! only one gateway supperted. ";
+            conn->shutdown();
+        }
+        else
+        {
+            connections_.insert(conn);
+
+            if (m_curGateway == NULL)
+            {
+                m_curGateway = new Gateway();
+                LOG_DEBUG << "onConnection,currentip :=" << conn->peerAddress().toIp();
+
+                m_curGateway->setIp(conn->peerAddress().toIp());
+            }
+
+#if USE_DATABASE
+            std::vector<UINT16> vnodes;
+            string strip =conn->peerAddress().toIp();
+            vnodes = g_DatabaseOperator.GetNodesOfGateway(strip );
+
+            if(vnodes.size() > 0)
+            {
+                //锟斤拷锟节碉拷锟斤拷息锟斤拷锟接碉拷锟斤拷锟斤拷锟斤拷息锟叫憋拷
+                m_localAddr=g_DatabaseOperator.GetZigAddrOfGateway(strip);
+                if(m_localAddr == 0)
+                {
+                    return;
+                }
+
+                for(int i=0; i<vnodes.size(); i++)
+                {
+                    pINFO_Node tmpNode = new INFO_Node();
+                    tmpNode->addr = vnodes[i];
+                    tmpNode->unReplyNum = 0;
+                    LOG_DEBUG<<">>>>>t node by db";
+                    m_curGateway->insertNode(tmpNode);
+                }
+                m_roundTimer = m_loop->runAfter(1, boost::bind(&JacServer::onTimer, this));
+            }
+            else
+            {
+                LOG_DEBUG<<"There are no node of getway "<<strip<<" be registered!!!";
+            }
+#endif
+        }
+    }
+    else
+    {
+        connections_.erase(conn);
+    }
+}
+
+void JacServer::onTimer()
+{
+    UINT16 msgLen = 0;
+    LOG_INFO << "onTimer....";
+
+    if (m_curGateway == NULL)
+    {
+        m_loop->cancel(m_roundTimer);
+        m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS, boost::bind(&JacServer::onTimer, this));
+        return;
+    }
+
+    //循锟斤拷锟斤拷锟斤拷锟窖撅拷注锟斤拷锟侥节碉拷
+    if (m_curGateway->getNodeSize() == 0 )
+    {
+        LOG_INFO << "no node registed now!";
+        m_loop->cancel(m_roundTimer);
+        m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS, boost::bind(&JacServer::onTimer, this));
+        return;
+    }
+    else if (m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
+    {
+
 
         UINT16 destAddr = m_curGateway->getNextNode()->addr;
         LOG_INFO << "%%%%%%%%%%%%%%%%%m_destAddr: " << destAddr;
@@ -751,14 +753,27 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             }
             else
             {
-                pINFO_Node pNode = m_curGateway->getNodeByAddr( stuBody->header.srcAddr);
-                
-                // process if state changed??
-                pNode->machine_state = stuBody->MacState;
-                pNode->broken_total_time = stuBody->IdlTmLen;
-                pNode->halting_reason = stuBody->MacErr;
+                //机器故障0x01,说明机器断纱，向机器故障表中插入一条记录，故障类型为 01-机器断纱
+                //机器状态为0,肯停机累计时长已经超过服务器设定的阈值，向机器故障表中插入一条故障数据，故障类型为01-机器断纱
+                //服务端三次轮询节点无响应，则判断节点掉线，向机器故障表中插入一条故障数据，故障类型为 03-机器掉线
+                //异常时同时向状态表和故障表中插入一条记录
+                //machine_status 只插入
+                //fault_record
 
-                m_curGateway->updateNodeByAddr(stuBody->header.srcAddr,pNode);
+                if( stuBody->MacErr == 0x01 )
+                {
+                    pINFO_Node pNode = m_curGateway->getNodeByAddr(stuBody->header.srcAddr);
+
+                    // process if state changed??
+                    pNode->machine_state = stuBody->MacState;
+                    pNode->broken_total_time = stuBody->IdlTmLen;
+                    pNode->halting_reason = stuBody->MacErr;
+
+                    m_curGateway->updateNodeByAddr(stuBody->header.srcAddr, pNode);
+
+                    // insert data to db 
+
+                }
 
             }
             m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
@@ -798,6 +813,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
             LOG_DEBUG << "WorkNum: " << stuBody->WorkNum;
             LOG_DEBUG << "ClassTmLen: " << Tranverse32(stuBody->ClassTmLen);
             LOG_DEBUG << "ClassOut: " << Tranverse32(stuBody->ClassOut);
+            LOG_DEBUG << "TodayOut:" << Tranverse32(stuBody->TodayOut);
+            LOG_DEBUG << "TodayTmLen:" << Tranverse32(stuBody->TodayTmLen);
+
             LOG_DEBUG << "PatTask: " << Tranverse32(stuBody->PatTask);
             LOG_DEBUG << "TotalOut: " << Tranverse32(stuBody->TotalOut);
             LOG_DEBUG << "RemainTm: " << Tranverse32(stuBody->RemainTm);
@@ -837,6 +855,9 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
 
                 // process if state changed??
                 pNode->total_run_time = stuBody->RunTmLen;
+                pNode->total_day_time = stuBody->TodayTmLen;
+                pNode->total_day_produced = stuBody->TodayOut;
+                
                 pNode->figure_name = stuBody->FileName;
                 pNode->latitude = stuBody->WeftDensity;
                 pNode->opening = stuBody->OpeningDegree;
@@ -850,6 +871,14 @@ void JacServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp t
                 
 
                 m_curGateway->updateNodeByAddr(stuBody->header.srcAddr,pNode);
+
+
+                //节点产量信息协议
+                //machine_info 首次插入记录，后续只更新数据
+                //figure_info 当节点机花样名称发生变化时，插入新记录，并记录花样更新时间到update_time字段，后续过程此字段保持不变
+                //只更新其它字段 操作说明：当节点机的花样发生变化时，插入新记录，否则更新对应记录
+                //production_info 当值机工号发生变化时，插入新记录，并记录工号更新时间到update_time字段，后续过程该字段保持不变，
+                //只更新其它字段； 操作类型：当节点机的值机工号发生变化时插入新记录，否则更新对应记录
             }
             m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
 
