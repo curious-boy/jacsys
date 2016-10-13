@@ -294,6 +294,12 @@ preDef.h
 string
 -
 
+/mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc
+database_operator.h
+/mnt/hgfs/github/jacServer/jacsys/src/database_operator.h
+sstream
+-
+
 /mnt/hgfs/github/jacServer/jacsys/src/database_operator.h
 mysql++.h
 -

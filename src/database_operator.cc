@@ -8,24 +8,7 @@ int DatabaseOperator::Init()
 
     if(conn_.connect(DATABASE_NAME,DATABASE_SERVER_IP,"root","111111"))
     {
-        //LOG_INFO <<"DB Connection success: ";
-        //mysqlpp::Query query = conn_.query("select job_id,name from employee_info");
-        //if (mysqlpp::StoreQueryResult res = query.store())
-        //{
-        //    LOG_INFO << "We have:" ;
-        //    mysqlpp::StoreQueryResult::const_iterator it;
-        //    for (it = res.begin(); it != res.end(); ++it)
-        //    {
-        //        mysqlpp::Row row = *it;
-        //        //LOG_INFO << row[0] << " | " << row[1] ;
-        //        cout << '\t' << row[0] << '\t' << row[1] << endl;
-        //    }
-        //}
-        //else
-        //{
-        //    LOG_ERROR << "Failed to get item list: " << query.error() ;
-
-        //}
+        LOG_INFO <<"DB Connection success..";
     }
     else
     {
@@ -73,7 +56,7 @@ bool DatabaseOperator::ExecTasks()
                 break;
             default:
                 {
-                    //WARN
+                    LOG_DEBUG<<"unknown sql operator";
                 }
                 break;
         }
@@ -188,7 +171,7 @@ bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)
 
 bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 g_zig, UINT16 node)
 {
-    //²åÈëÖ®Ç°²éÑ¯ÊÇ·ñÓÐÏàÍ¬½Úµã´æÔÚ
+    //æ’å…¥ä¹‹å‰æŸ¥è¯¢æ˜¯å¦æœ‰ç›¸åŒèŠ‚ç‚¹å­˜åœ¨
     std::vector<UINT16> tvNodes;
     std::ostringstream ostrsql;
     ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr) VALUES ('','"
