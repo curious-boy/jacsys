@@ -39,7 +39,7 @@ void JacServer::start()
 void JacServer::onConnection(const TcpConnectionPtr &conn)
 {
     LOG_DEBUG << conn->peerAddress().toIpPort() << " -> "
-              << conn->peerAddress().toIpPort() << " is "
+              << conn->localAddress().toIpPort() << " is "
               << (conn->connected() ? "UP" : "DOWN");
 
     if (conn->connected())
@@ -1089,7 +1089,7 @@ int main(int argc, char *argv[])
     }
 
     //set time config
-    Logger::setLogLevel(Logger::INFO);
+    Logger::setLogLevel(Logger::DEBUG);
     muduo::TimeZone beijing(8 * 3600, "CST");
     Logger::setTimeZone(beijing);
 
