@@ -849,6 +849,61 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 // UINT32  product_total_output;
 
                 // process if state changed??
+                
+
+                //节点产量信息协议@@@@ 后续需要关于时间判断的完善
+                //machine_info 首次插入记录，后续只更新数据 如果注册时间的日期等于今天，则进行更新，否则进行插入@@
+                std::ostringstream ostrsql;
+                ostrsql << "insert into machine_info (machine_id, total_run_time,total_day_time,total_day_produced) VALUES ('" << pNode->macId << "'," << stuBody->RunTmLen << "," << stuBody->TodayTmLen << "," << stuBody->TodayOut << ");";
+
+                LOG_DEBUG << "machine_info insert sql: " << ostrsql.str().c_str();
+
+                DatabaseOperatorTask insert_task_1;
+                insert_task_1.operator_type = 0;
+                insert_task_1.content = ostrsql.str().c_str();
+                g_DatabaseOperator.AddTask(insert_task_1);
+
+                //figure_info 当节点机花样名称发生变化时，插入新记录，并记录花样更新时间到update_time字段，后续过程此字段保持不变
+                //只更新其它字段 操作说明：当节点机的花样发生变化时，插入新记录，否则更新对应记录
+                ostrsql.str("");
+                if(pNode->figure_name != stuBody->FileName)
+                {
+                    ostrsql << "insert into figure_info (machine_id,register_time, figure_name,latitude,opening,tasks_number,number_produced,how_long_to_finish,concurrent_produce_number) VALUES ('" << pNode->macId << "'," << GetCurrentTime << ",'" << stuBody->FileName << "'," << stuBody->WeftDensity<<","<< stuBody->OpeningDegree<<","<<stuBody->PatTask<<","<<stuBody->TotalOut<<","<<stuBody->RemainTm<<","<<stuBody->OutNum << ");";
+
+                    LOG_DEBUG << "figure_info insert sql: " << ostrsql.str().c_str();
+
+                    DatabaseOperatorTask insert_task_1;
+                    insert_task_1.operator_type = 0;
+                    insert_task_1.content = ostrsql.str().c_str();
+                    g_DatabaseOperator.AddTask(insert_task_1);
+                }
+                else
+                {
+                    //update record  @@@
+                }
+
+                //production_info 当值机工号发生变化时，插入新记录，并记录工号更新时间到update_time字段，后续过程该字段保持不变，
+                //只更新其它字段； 操作类型：当节点机的值机工号发生变化时插入新记录，否则更新对应记录
+                ostrsql.str("");
+                if(pNode->operator_num != stuBody->WorkNum)
+                {
+                    //insert
+                    ostrsql << "insert into production_info (machine_id,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "'," << GetCurrentTime << ",'" << stuBody->WorkNum << "'," << stuBody->ClassTmLen<<","<< stuBody->ClassOut<<");";
+
+                    LOG_DEBUG << "figure_info insert sql: " << ostrsql.str().c_str();
+
+                    DatabaseOperatorTask insert_task_1;
+                    insert_task_1.operator_type = 0;
+                    insert_task_1.content = ostrsql.str().c_str();
+                    g_DatabaseOperator.AddTask(insert_task_1);
+
+                }
+                else
+                {
+                    //update
+                }
+                
+                //更新内存中的数据
                 pNode->total_run_time = stuBody->RunTmLen;
                 pNode->total_day_time = stuBody->TodayTmLen;
                 pNode->total_day_produced = stuBody->TodayOut;
@@ -865,13 +920,6 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 pNode->product_total_output = stuBody->ClassOut;
 
                 m_curGateway->updateNodeByAddr(stuBody->header.srcAddr, pNode);
-
-                //节点产量信息协议
-                //machine_info 首次插入记录，后续只更新数据
-                //figure_info 当节点机花样名称发生变化时，插入新记录，并记录花样更新时间到update_time字段，后续过程此字段保持不变
-                //只更新其它字段 操作说明：当节点机的花样发生变化时，插入新记录，否则更新对应记录
-                //production_info 当值机工号发生变化时，插入新记录，并记录工号更新时间到update_time字段，后续过程该字段保持不变，
-                //只更新其它字段； 操作类型：当节点机的值机工号发生变化时插入新记录，否则更新对应记录
             }
             m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
         }

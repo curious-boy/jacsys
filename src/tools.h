@@ -25,3 +25,12 @@ UINT16 CalcCRC16(UINT16 crc16,UINT8* pData,UINT32 uLen)
 
 	return crc16;
 }
+
+// get current time  timestamp
+int GetCurrentTime()
+{
+	time_t t;
+	int j;
+	j = time(&t);
+	return j;
+}
