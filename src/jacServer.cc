@@ -2,6 +2,8 @@
 #include "database_operator.h"
 
 #include "muduo/base/TimeZone.h"
+#include "muduo/base/LogFile.h"
+#include "muduo/base/Logging.h"
 
 DatabaseOperator g_DatabaseOperator;
 
@@ -1070,11 +1072,23 @@ void setLogging(const char *argv0)
     g_asyncLog->start();
 }
 
+
 #define LISTEN_PORT 2007
+
+boost::scoped_ptr<muduo::LogFile> g_logFile;
+
+void outputFunc(const char* msg, int len)
+{
+  g_logFile->append(msg, len);
+}
+
+void flushFunc()
+{
+  g_logFile->flush();
+}
 
 int main(int argc, char *argv[])
 {
-    //setLogging(argv[0]);
     int iport = LISTEN_PORT;
 
     char *p;
@@ -1087,6 +1101,14 @@ int main(int argc, char *argv[])
             iport = ltmp;
         }
     }
+
+    // write log to file
+    std::ostringstream ostrlogfile;
+    ostrlogfile << argv[0] << "." << iport;
+
+    g_logFile.reset(new muduo::LogFile(::basename(ostrlogfile.str().c_str()), 200 * 1000));
+    muduo::Logger::setOutput(outputFunc);
+    muduo::Logger::setFlush(flushFunc);
 
     //set time config
     Logger::setLogLevel(Logger::DEBUG);

@@ -1,0 +1,6 @@
+20161015 23:53:35.332524 12484 INFO  pid = 12484, tid = 12484 - jacServer.cc:1118
+20161015 23:53:35.332552 12484 DEBUG EventLoop EventLoop created 0x7FFF5F990510 in thread 12484 - EventLoop.cc:76
+20161015 23:53:35.332555 12484 INFO  Listening at: 2007 - jacServer.cc:1122
+20161015 23:53:35.332589 12484 INFO  starting 2 threads. - jacServer.cc:24
+20161015 23:53:35.336141 12484 ERROR DB Connection failed: Access denied for user 'root'@'localhost' (using password: YES) - database_operator.cc:15
+20161015 23:53:35.336147 12484 ERROR Database Init failed!  - jacServer.cc:31

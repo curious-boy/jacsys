@@ -78,6 +78,16 @@ boost/noncopyable.hpp
 stdint.h
 -
 
+/mnt/hgfs/github/jacServer/build/release-install/include/muduo/base/LogFile.h
+muduo/base/Mutex.h
+-
+muduo/base/Types.h
+-
+boost/noncopyable.hpp
+-
+boost/scoped_ptr.hpp
+-
+
 /mnt/hgfs/github/jacServer/build/release-install/include/muduo/base/LogStream.h
 muduo/base/StringPiece.h
 -
@@ -294,12 +304,6 @@ preDef.h
 string
 -
 
-/mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc
-database_operator.h
-/mnt/hgfs/github/jacServer/jacsys/src/database_operator.h
-sstream
--
-
 /mnt/hgfs/github/jacServer/jacsys/src/database_operator.h
 mysql++.h
 -
@@ -335,6 +339,10 @@ database_operator.h
 /mnt/hgfs/github/jacServer/jacsys/src/database_operator.h
 muduo/base/TimeZone.h
 /mnt/hgfs/github/jacServer/jacsys/src/muduo/base/TimeZone.h
+muduo/base/LogFile.h
+/mnt/hgfs/github/jacServer/jacsys/src/muduo/base/LogFile.h
+muduo/base/Logging.h
+/mnt/hgfs/github/jacServer/jacsys/src/muduo/base/Logging.h
 
 /mnt/hgfs/github/jacServer/jacsys/src/jacServer.h
 muduo/net/TcpServer.h

@@ -72,6 +72,7 @@ CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /m
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/build/release-install/include/muduo/base/Condition.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/build/release-install/include/muduo/base/CountDownLatch.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/build/release-install/include/muduo/base/CurrentThread.h
+CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/build/release-install/include/muduo/base/LogFile.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/build/release-install/include/muduo/base/LogStream.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/build/release-install/include/muduo/base/Logging.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/build/release-install/include/muduo/base/Mutex.h
