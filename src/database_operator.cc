@@ -44,7 +44,6 @@ bool DatabaseOperator::ExecTasks()
                 {
                     mysqlpp::Query query = conn_.query(tasks_beExec_[i].content.c_str());
                     query.exec();
-
                 }
                 break;
             case 1:

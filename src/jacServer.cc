@@ -738,11 +738,20 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 //fault_record
 
                 pINFO_Node pNode = m_curGateway->getNodeByAddr(stuBody->header.srcAddr);
+                if(pNode == NULL )
+                {
+                    LOG_WARN<<"getNodeByAddr return NULL !!!!!!";
+                    return;
+                }
 
                 // process if state changed??
                 pNode->machine_state = stuBody->MacState;
                 pNode->broken_total_time = stuBody->IdlTmLen;
                 pNode->halting_reason = stuBody->MacErr;
+
+                LOG_DEBUG<<"MacState: "<<stuBody->MacState;
+                LOG_DEBUG<<"IdlTmLen: "<<stuBody->IdlTmLen;
+                LOG_DEBUG<<"MacErr: "<<stuBody->MacErr;
 
                 m_curGateway->updateNodeByAddr(stuBody->header.srcAddr, pNode);
 
@@ -767,15 +776,16 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 g_DatabaseOperator.AddTask(insert_task_1);
 
                 // insert data to fault record
-                ostrsql.clear();
-                ostrsql << "insert into fault_record (fault_type,machine_id) VALUES('" << pNode->halting_reason << "','" << pNode->macId << "');";
 
-                LOG_DEBUG << "fault_record insert sql: " << ostrsql.str().c_str();
+                // ostrsql.str("");
+                // ostrsql << "insert into fault_record (fault_type,machine_id) VALUES('" << pNode->halting_reason << "','" << pNode->macId << "');";
 
-                DatabaseOperatorTask insert_task_2;
-                insert_task_2.operator_type = 0;
-                insert_task_2.content = ostrsql.str().c_str();
-                g_DatabaseOperator.AddTask(insert_task_2);
+                // LOG_DEBUG << "fault_record insert sql: " << ostrsql.str().c_str();
+
+                // DatabaseOperatorTask insert_task_2;
+                // insert_task_2.operator_type = 0;
+                // insert_task_2.content = ostrsql.str().c_str();
+                // g_DatabaseOperator.AddTask(insert_task_2);
             }
             m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
         }
