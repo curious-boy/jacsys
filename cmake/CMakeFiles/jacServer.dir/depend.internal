@@ -21,6 +21,7 @@ CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/database_operator.
  /mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc
  /mnt/hgfs/github/jacServer/jacsys/src/database_operator.h
  /mnt/hgfs/github/jacServer/jacsys/src/preDef.h
+ /mnt/hgfs/github/jacServer/jacsys/src/stuDef.h
  /usr/include/mysql++/beemutex.h
  /usr/include/mysql++/common.h
  /usr/include/mysql++/comparable.h
@@ -99,6 +100,7 @@ CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o
  /mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc
  /mnt/hgfs/github/jacServer/jacsys/src/jacServer.h
  /mnt/hgfs/github/jacServer/jacsys/src/preDef.h
+ /mnt/hgfs/github/jacServer/jacsys/src/stuDef.h
  /mnt/hgfs/github/jacServer/jacsys/src/tools.h
  /usr/include/mysql++/beemutex.h
  /usr/include/mysql++/common.h

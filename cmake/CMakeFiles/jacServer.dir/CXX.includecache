@@ -304,12 +304,6 @@ preDef.h
 string
 -
 
-/mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc
-database_operator.h
-/mnt/hgfs/github/jacServer/jacsys/src/database_operator.h
-sstream
--
-
 /mnt/hgfs/github/jacServer/jacsys/src/database_operator.h
 mysql++.h
 -
@@ -327,6 +321,8 @@ muduo/base/Mutex.h
 -
 MsgTypeDef.h
 /mnt/hgfs/github/jacServer/jacsys/src/MsgTypeDef.h
+stuDef.h
+/mnt/hgfs/github/jacServer/jacsys/src/stuDef.h
 
 /mnt/hgfs/github/jacServer/jacsys/src/gateway.h
 StuDef.h
@@ -393,6 +389,12 @@ gateway.h
 /mnt/hgfs/github/jacServer/jacsys/src/gateway.h
 
 /mnt/hgfs/github/jacServer/jacsys/src/preDef.h
+
+/mnt/hgfs/github/jacServer/jacsys/src/stuDef.h
+preDef.h
+/mnt/hgfs/github/jacServer/jacsys/src/preDef.h
+string
+-
 
 /mnt/hgfs/github/jacServer/jacsys/src/tools.h
 

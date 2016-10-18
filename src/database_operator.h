@@ -11,6 +11,7 @@
 #include <muduo/base/Logging.h>
 #include <muduo/base/Mutex.h>
 #include "MsgTypeDef.h"
+#include "stuDef.h"
 
 
 #define DATABASE_SERVER_IP "127.0.0.1"
@@ -37,7 +38,7 @@ public:
 
     int Init();
     
-    std::vector<UINT16> GetNodesOfGateway (string ipaddr );
+    std::vector<INFO_Node> GetNodesOfGateway (string ipaddr );
     UINT16 GetZigAddrOfGateway(string ipaddr);
     bool DeleteNodeOfGateway(string ipaddr, UINT16 node);
     bool DeleteNodesOfGateway(string ipaddr);

@@ -82,10 +82,10 @@ void DatabaseOperator::AddTask(DatabaseOperatorTask task)
     tasks_.push_back(task);
 }
 
-std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
+std::vector<INFO_Node>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
 {
-    std::vector<UINT16> tvNodes;
-    string strsql = "select node_zig_addr from node_register_info where gateway_ip='" + ipaddr + "'";
+    std::vector<INFO_Node> tvNodes;
+    string strsql = "select node_zig_addr,machine_id from node_register_info where gateway_ip='" + ipaddr + "'";
     LOG_DEBUG << "GetNodesOfGateway strsql, " << strsql;
 
     mysqlpp::Query query = conn_.query(strsql.c_str());
@@ -93,10 +93,13 @@ std::vector<UINT16>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
     {
 
         mysqlpp::StoreQueryResult::const_iterator it;
+        INFO_Node tmpNode;
         for (it = res.begin(); it != res.end(); ++it)
         {
             mysqlpp::Row row = *it;
-            tvNodes.push_back(row[0]);
+            tmpNode.macId.insert(0,row[1]);
+            tmpNode.addr = row[0];
+            tvNodes.push_back(tmpNode);
         }
     }
     else

@@ -20,6 +20,7 @@ CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/database_operator.
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc.o: /mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc.o: /mnt/hgfs/github/jacServer/jacsys/src/database_operator.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc.o: /mnt/hgfs/github/jacServer/jacsys/src/preDef.h
+CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc.o: /mnt/hgfs/github/jacServer/jacsys/src/stuDef.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc.o: /usr/include/mysql++/beemutex.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc.o: /usr/include/mysql++/common.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/database_operator.cc.o: /usr/include/mysql++/comparable.h
@@ -98,6 +99,7 @@ CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /m
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/jacsys/src/jacServer.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/jacsys/src/preDef.h
+CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/jacsys/src/stuDef.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /mnt/hgfs/github/jacServer/jacsys/src/tools.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /usr/include/mysql++/beemutex.h
 CMakeFiles/jacServer.dir/mnt/hgfs/github/jacServer/jacsys/src/jacServer.cc.o: /usr/include/mysql++/common.h

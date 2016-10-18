@@ -64,7 +64,7 @@ void JacServer::onConnection(const TcpConnectionPtr &conn)
             }
 
 #if USE_DATABASE
-            std::vector<UINT16> vnodes;
+            std::vector<INFO_Node> vnodes;
             string strip = conn->peerAddress().toIp();
             vnodes = g_DatabaseOperator.GetNodesOfGateway(strip);
 
@@ -80,7 +80,8 @@ void JacServer::onConnection(const TcpConnectionPtr &conn)
                 for (int i = 0; i < vnodes.size(); i++)
                 {
                     pINFO_Node tmpNode = new INFO_Node();
-                    tmpNode->addr = vnodes[i];
+                    tmpNode->addr = vnodes[i].addr;
+                    tmpNode->macId = vnodes[i].macId;
                     tmpNode->unReplyNum = 0;
                     LOG_DEBUG << ">>>>>t node by db";
                     m_curGateway->insertNode(tmpNode);
@@ -319,8 +320,8 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 #if USE_DATABASE
                     //machine_management
                     std::ostringstream ostrsql;
-                    ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr) VALUES ('','"
-                            << m_curGateway->getIp() << "' ," << m_pTmpHeader->destAddr << "," << tmpNode->addr << ")";
+                    ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr,machine_id) VALUES ('','"
+                            << m_curGateway->getIp() << "' ," << m_pTmpHeader->destAddr << "," << tmpNode->addr << ",'"<< m_pTmpMsgLogin->macID<<"')";
 
                     LOG_DEBUG << "node_register_info insert sql: " << ostrsql.str().c_str();
 
@@ -661,7 +662,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
             //MSG_Logout* stuBody = (MSG_Logout*) new char[sizeof(MSG_Logout)];
             MSG_ACK *stuBody = (MSG_ACK *)const_cast<char *>(buf->peek());
 
-            LOG_INFO << "锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷common ack,serialNo = " << stuBody->header.serialNo << " | "
+            LOG_INFO << "common ack,serialNo = " << stuBody->header.serialNo << " | "
                      << "replyNo = " << stuBody->header.replyNo;
 
             //锟斤拷锟侥合凤拷锟斤拷校锟斤拷
@@ -766,7 +767,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                 // insert data to machine_status
                 std::ostringstream ostrsql;
-                ostrsql << "insert into machine_status (machine_id, machine_state,broken_total_time,halting_reason) VALUES ('" << pNode->macId << "'," << pNode->machine_state << "," << pNode->broken_total_time << "," << pNode->halting_reason << ");";
+                ostrsql << "insert into machine_status (machine_id, machine_state,broken_total_time,halting_reason) VALUES ('" << pNode->macId << "'," << stuBody->MacState << "," << stuBody->IdlTmLen << "," << stuBody->MacErr << ");";
 
                 LOG_DEBUG << "machine_status insert sql: " << ostrsql.str().c_str();
 
