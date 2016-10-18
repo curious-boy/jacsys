@@ -142,7 +142,7 @@ void JacServer::onTimer()
             LOG_INFO << ">>>>>>before deleteNodeByAddr, size = " << m_curGateway->getNodeSize();
 
 #if USE_DATABASE
-            //insert fault record here 
+            //insert fault record here
             std::ostringstream ostrsql;
             ostrsql << "insert into fault_record (fault_type,machine_id) VALUES('" << 03 << "','" << tnode->macId << "');";
 
@@ -330,7 +330,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                     insert_task_1.content = ostrsql.str().c_str();
                     g_DatabaseOperator.AddTask(insert_task_1);
 
-                    ostrsql.clear();
+                    ostrsql.str("");
                     ostrsql << "INSERT INTO `jacdb`.`machine_management`(`machine_id`,`addr`,`gateway`,`machine_type`,`row`,`col`,`thread_number`,`Mcuversion`,`Universion`,`Hw1version`,`Hw2version`) VALUES('"
                             << m_pTmpMsgLogin->macID << "'," << m_pTmpHeader->destAddr << ",'" << m_pTmpMsgLogin->gatewayId << "','"
                             << m_pTmpMsgLogin->macType << "'," << m_pTmpMsgLogin->Row << "," << m_pTmpMsgLogin->Col << "," << m_pTmpMsgLogin->Warp << ","
@@ -495,7 +495,13 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
             // MSG_Login
             tmpAckCode_ = ACK_OK;
-            m_pTmpMsgLogin = (MSG_Login *)const_cast<char *>(buf->peek());
+            if(m_pTmpMsgLogin == NULL)
+            {
+                m_pTmpMsgLogin = (MSG_Login*)malloc(sizeof(MSG_Login));
+                memset(m_pTmpMsgLogin,0,sizeof(MSG_Login));
+            }
+            memcpy(m_pTmpMsgLogin,buf->peek(),sizeof(MSG_Login));
+            //m_pTmpMsgLogin = (MSG_Login *)const_cast<char *>(buf->peek());
 
             if (m_localAddr == 0)
             {
@@ -862,7 +868,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 // UINT32  product_total_output;
 
                 // process if state changed??
-                
+
 
                 //节点产量信息协议@@@@ 后续需要关于时间判断的完善
                 //machine_info 首次插入记录，后续只更新数据 如果注册时间的日期等于今天，则进行更新，否则进行插入@@
@@ -915,7 +921,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 {
                     //update
                 }
-                
+
                 //更新内存中的数据
                 pNode->total_run_time = stuBody->RunTmLen;
                 pNode->total_day_time = stuBody->TodayTmLen;
@@ -1101,7 +1107,7 @@ void flushFunc()
 int main(int argc, char *argv[])
 {
     int iport = LISTEN_PORT;
-
+#if 0
     char *p;
     long ltmp;
     if (argc > 1)
@@ -1120,7 +1126,7 @@ int main(int argc, char *argv[])
     g_logFile.reset(new muduo::LogFile(::basename(ostrlogfile.str().c_str()), 200 * 1000));
     muduo::Logger::setOutput(outputFunc);
     muduo::Logger::setFlush(flushFunc);
-
+#endif
     //set time config
     Logger::setLogLevel(Logger::DEBUG);
     muduo::TimeZone beijing(8 * 3600, "CST");
