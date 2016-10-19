@@ -271,8 +271,6 @@ void JacServer::sendReplyAck(TcpConnection *conn, pMSG_Header srcheader, UINT8 A
 
     pheader->serialNo = Tranverse16(tmpNo);
     pheader->replyNo = srcheader->serialNo;
-    LOG_INFO << "----------serialNo: " << Tranverse16(pheader->serialNo);
-    LOG_INFO << "---------replyNo: " << Tranverse16(pheader->replyNo);
 
     pheader->crc16 = 0;
 
@@ -285,7 +283,6 @@ void JacServer::sendReplyAck(TcpConnection *conn, pMSG_Header srcheader, UINT8 A
     ackBuf.append(&stuAck, sizeof(MSG_ACK));
 
     conn->send(&ackBuf);
-    LOG_DEBUG << "ack was sended!";
 }
 
 // process data/protocol
@@ -332,9 +329,9 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                     ostrsql.str("");
                     ostrsql << "INSERT INTO `jacdb`.`machine_management`(`machine_id`,`addr`,`gateway`,`machine_type`,`row`,`col`,`thread_number`,`Mcuversion`,`Universion`,`Hw1version`,`Hw2version`) VALUES('"
-                            << m_pTmpMsgLogin->macID << "'," << m_pTmpHeader->destAddr << ",'" << m_pTmpMsgLogin->gatewayId << "','"
-                            << m_pTmpMsgLogin->macType << "'," << m_pTmpMsgLogin->Row << "," << m_pTmpMsgLogin->Col << "," << m_pTmpMsgLogin->Warp << ","
-                            << m_pTmpMsgLogin->McuVer << "," << m_pTmpMsgLogin->UiVer << "," << m_pTmpMsgLogin->Hw1Ver << "," << m_pTmpMsgLogin->Hw2Ver << ")";
+                            << m_pTmpMsgLogin->macID << "'," << Tranverse16(m_pTmpHeader->destAddr) << ",'" << m_pTmpMsgLogin->gatewayId << "','"
+                            << m_pTmpMsgLogin->macType << "'," <<(int)m_pTmpMsgLogin->Row << "," << (int)m_pTmpMsgLogin->Col << "," << (int)m_pTmpMsgLogin->Warp << ","
+                            << (int)m_pTmpMsgLogin->McuVer << "," << (int)m_pTmpMsgLogin->UiVer << "," << (int)m_pTmpMsgLogin->Hw1Ver << "," << (int)m_pTmpMsgLogin->Hw2Ver << ")";
                     LOG_DEBUG << "machine_management insert sql: " << ostrsql.str().c_str();
 
                     DatabaseOperatorTask insert_task_2;
@@ -773,7 +770,8 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                 // insert data to machine_status
                 std::ostringstream ostrsql;
-                ostrsql << "insert into machine_status (machine_id, machine_state,broken_total_time,halting_reason) VALUES ('" << pNode->macId << "'," << stuBody->MacState << "," << stuBody->IdlTmLen << "," << stuBody->MacErr << ");";
+                ostrsql << "insert into machine_status (machine_id, machine_state,broken_total_time,halting_reason) VALUES ('"
+                    << pNode->macId << "'," << (int)stuBody->MacState << "," << (int)Tranverse32(stuBody->IdlTmLen) << "," << (int)stuBody->MacErr << ");";
 
                 LOG_DEBUG << "machine_status insert sql: " << ostrsql.str().c_str();
 
@@ -1107,7 +1105,7 @@ void flushFunc()
 int main(int argc, char *argv[])
 {
     int iport = LISTEN_PORT;
-#if 0
+
     char *p;
     long ltmp;
     if (argc > 1)
@@ -1119,6 +1117,7 @@ int main(int argc, char *argv[])
         }
     }
 
+#if 0
     // write log to file
     std::ostringstream ostrlogfile;
     ostrlogfile << argv[0] << "." << iport;

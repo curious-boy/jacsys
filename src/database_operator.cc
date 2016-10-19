@@ -70,7 +70,7 @@ bool DatabaseOperator::GetTaskList()
     {
         return false;
     }
-    tasks_beExec_.insert(tasks_beExec_.begin(),tasks_.begin(),tasks_.end());
+    tasks_beExec_.swap(tasks_);
     tasks_.clear();
     return true;
 
