@@ -871,7 +871,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 //节点产量信息协议@@@@ 后续需要关于时间判断的完善
                 //machine_info 首次插入记录，后续只更新数据 如果注册时间的日期等于今天，则进行更新，否则进行插入@@
                 std::ostringstream ostrsql;
-                ostrsql << "insert into machine_info (machine_id, total_run_time,total_day_time,total_day_produced) VALUES ('" << pNode->macId << "'," << stuBody->RunTmLen << "," << stuBody->TodayTmLen << "," << stuBody->TodayOut << ");";
+                ostrsql << "insert into machine_info (machine_id, total_run_time,total_day_time,total_day_produced) VALUES ('" << pNode->macId << "'," << (int)Tranverse32(stuBody->RunTmLen) << "," << (int)Tranverse32(stuBody->TodayTmLen) << "," << (int)Tranverse32(stuBody->TodayOut) << ");";
 
                 LOG_DEBUG << "machine_info insert sql: " << ostrsql.str().c_str();
 
@@ -885,7 +885,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 ostrsql.str("");
                 if(pNode->figure_name != stuBody->FileName)
                 {
-                    ostrsql << "insert into figure_info (machine_id,register_time, figure_name,latitude,opening,tasks_number,number_produced,how_long_to_finish,concurrent_produce_number) VALUES ('" << pNode->macId << "'," << GetCurrentTime << ",'" << stuBody->FileName << "'," << (int)Tranverse16(stuBody->WeftDensity)<<","<< (int)Tranverse16(stuBody->OpeningDegree)<<","<<(int)Tranverse32(stuBody->PatTask)<<","<<(int)Tranverse32(stuBody->TotalOut)<<","<<(int)Tranverse32(stuBody->RemainTm)<<","<<(int)stuBody->OutNum << ");";
+                    ostrsql << "insert into figure_info (machine_id,register_time, figure_name,latitude,opening,tasks_number,number_produced,how_long_to_finish,concurrent_produce_number) VALUES ('" << pNode->macId << "'," << GetCurrentTime << ",'" << stuBody->FileName << "'," << (int)Tranverse16(stuBody->WeftDensity)/100<<","<< (int)Tranverse16(stuBody->OpeningDegree)/100<<","<<(int)Tranverse32(stuBody->PatTask)<<","<<(int)Tranverse32(stuBody->TotalOut)<<","<<(int)Tranverse32(stuBody->RemainTm)<<","<<(int)stuBody->OutNum << ");";
 
                     LOG_DEBUG << "figure_info insert sql: " << ostrsql.str().c_str();
 
@@ -905,7 +905,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 if(pNode->operator_num != stuBody->WorkNum)
                 {
                     //insert
-                    ostrsql << "insert into production_info (machine_id,update_time,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "',"<<GetCurrentTime() << GetCurrentTime() << ",'" << stuBody->WorkNum << "'," << stuBody->ClassTmLen<<","<< stuBody->ClassOut<<");";
+                    ostrsql << "insert into production_info (machine_id,update_time,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "',"<<GetCurrentTime() << GetCurrentTime() << ",'" <<stuBody->WorkNum << "'," << (int)Tranverse32(stuBody->ClassTmLen)<<","<< (int)Tranverse32(stuBody->ClassOut)<<");";
 
                     LOG_DEBUG << "figure_info insert sql: " << ostrsql.str().c_str();
 
