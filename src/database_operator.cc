@@ -97,6 +97,7 @@ std::vector<INFO_Node>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
         for (it = res.begin(); it != res.end(); ++it)
         {
             mysqlpp::Row row = *it;
+            tmpNode.macId.clear();
             tmpNode.macId.insert(0,row[1]);
             tmpNode.addr = row[0];
             tvNodes.push_back(tmpNode);

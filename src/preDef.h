@@ -10,11 +10,11 @@ typedef uint32_t        UINT32;
 typedef uint64_t        UINT64;
 
 
-#define MAX_SERIAL_NO                       65535          // ×î´óÃüÁîÐòºÅ£¬³¬¹ýºóÖØÐÂÅÅÐò
-#define MAX_UNREPLY_NUM                     3           //½ÚµãÎ´ÏìÓ¦×î´ó´ÎÊý
-#define  ROUND_INTERVAL_SECONDS        1                 //ÂÖÑ¯¼ä¸ôÊ±¼ä
-#define  MAX_THREAD_NUM                     6               //×î´óÏß³ÌÊýÄ¿ ÓëÖ§³ÖµÄÍø¹ØÊýÓÐ¹Ø
-#define STRING_MAXLEN                        20             //×î´óµÄ×Ö·û´®³¤¶È£¬ÔÝ¶¨
+#define MAX_SERIAL_NO                       65535          // ???????????Å£???????????????
+#define MAX_UNREPLY_NUM                     6           //?Úµ?Î´??Ó¦????????
+#define  ROUND_INTERVAL_SECONDS        1                 //??Ñ¯????Ê±??
+#define  MAX_THREAD_NUM                     6               //?????ß³???Ä¿ ??Ö§?Öµ????????Ð¹?
+#define STRING_MAXLEN                        20             //???????Ö·û´®³¤?È£??Ý¶?
 
 
 //ä¿®æ”¹ç½‘å…³çš„ç›®æ ‡èŠ‚ç‚¹åœ°å€åº”ç­”

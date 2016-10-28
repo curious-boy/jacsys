@@ -310,6 +310,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                     pINFO_Node tmpNode = new INFO_Node();
                     tmpNode->addr = m_pTmpHeader->srcAddr;
+                    tmpNode->macId = m_pTmpMsgLogin->macID;
                     tmpNode->unReplyNum = 0;
                     m_curGateway->insertNode(tmpNode);
 
@@ -329,7 +330,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                     ostrsql.str("");
                     ostrsql << "INSERT INTO `jacdb`.`machine_management`(`machine_id`,`addr`,`gateway`,`machine_type`,`row`,`col`,`thread_number`,`Mcuversion`,`Universion`,`Hw1version`,`Hw2version`) VALUES('"
-                            << m_pTmpMsgLogin->macID << "'," << Tranverse16(m_pTmpHeader->destAddr) << ",'" << m_pTmpMsgLogin->gatewayId << "','"
+                            << m_pTmpMsgLogin->macID << "'," << Tranverse16(m_pTmpHeader->srcAddr) << ",'" << m_pTmpMsgLogin->gatewayId << "','"
                             << m_pTmpMsgLogin->macType << "'," <<(int)m_pTmpMsgLogin->Row << "," << (int)m_pTmpMsgLogin->Col << "," << (int)m_pTmpMsgLogin->Warp << ","
                             << (int)m_pTmpMsgLogin->McuVer << "," << (int)m_pTmpMsgLogin->UiVer << "," << (int)m_pTmpMsgLogin->Hw1Ver << "," << (int)m_pTmpMsgLogin->Hw2Ver << ")";
                     LOG_DEBUG << "machine_management insert sql: " << ostrsql.str().c_str();
@@ -638,6 +639,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 }
             }
 
+            m_curGateway->setCurOperatorType(LOGOUT_NODE);
             m_loop->cancel(m_roundTimer);
             modifyDestAddr(stuBody->header.srcAddr);
 
@@ -733,7 +735,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
             }
             else
             {
-                int timeInterval = 100;
+                int timeInterval = 1800;
                 //机器故障0x01,说明机器断纱，向机器故障表中插入一条记录，故障类型为 01-机器断纱
                 //机器状态为0,肯停机累计时长已经超过服务器设定的阈值，向机器故障表中插入一条故障数据，故障类型为01-机器断纱
                 //服务端三次轮询节点无响应，则判断节点掉线，向机器故障表中插入一条故障数据，故障类型为 03-机器掉线
@@ -759,14 +761,6 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                 m_curGateway->updateNodeByAddr(stuBody->header.srcAddr, pNode);
 
-                // if( stuBody->MacErr == 0x01 )
-                // {
-                //    }
-
-                if (stuBody->MacState == 0 && stuBody->IdlTmLen > timeInterval)
-                {
-                    pNode->halting_reason = 02;
-                }
 
                 // insert data to machine_status
                 std::ostringstream ostrsql;
@@ -780,17 +774,33 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 insert_task_1.content = ostrsql.str().c_str();
                 g_DatabaseOperator.AddTask(insert_task_1);
 
+                int iHaltingReason=0;
+                if( stuBody->MacErr == 0x01 )
+                {
+                    iHaltingReason=1;
+                }
+                else if (stuBody->MacState == 0 && (int)Tranverse32(stuBody->IdlTmLen) > timeInterval)
+                {
+                    iHaltingReason=2;
+                }
+                else
+                {
+
+                    m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
+                    return;
+                }
+
                 // insert data to fault record
 
-                // ostrsql.str("");
-                // ostrsql << "insert into fault_record (fault_type,machine_id) VALUES('" << pNode->halting_reason << "','" << pNode->macId << "');";
+                ostrsql.str("");
+                ostrsql << "insert into fault_record (fault_type,machine_id) VALUES('" << iHaltingReason<< "','" << pNode->macId << "');";
 
-                // LOG_DEBUG << "fault_record insert sql: " << ostrsql.str().c_str();
+                LOG_DEBUG << "fault_record insert sql: " << ostrsql.str().c_str();
 
-                // DatabaseOperatorTask insert_task_2;
-                // insert_task_2.operator_type = 0;
-                // insert_task_2.content = ostrsql.str().c_str();
-                // g_DatabaseOperator.AddTask(insert_task_2);
+                DatabaseOperatorTask insert_task_2;
+                insert_task_2.operator_type = 0;
+                insert_task_2.content = ostrsql.str().c_str();
+                g_DatabaseOperator.AddTask(insert_task_2);
             }
             m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
         }
@@ -902,10 +912,11 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 //production_info 当值机工号发生变化时，插入新记录，并记录工号更新时间到update_time字段，后续过程该字段保持不变，
                 //只更新其它字段； 操作类型：当节点机的值机工号发生变化时插入新记录，否则更新对应记录
                 ostrsql.str("");
-                if(pNode->operator_num != stuBody->WorkNum)
+                std::string  strWorkNum(stuBody->WorkNum);
+                if(pNode->operator_num != strWorkNum)
                 {
                     //insert
-                    ostrsql << "insert into production_info (machine_id,update_time,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "',"<<GetCurrentTime() << GetCurrentTime() << ",'" <<stuBody->WorkNum << "'," << (int)Tranverse32(stuBody->ClassTmLen)<<","<< (int)Tranverse32(stuBody->ClassOut)<<");";
+                    ostrsql << "insert into production_info (machine_id,update_time,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "',"<<GetCurrentTime()<<","<< GetCurrentTime() << ",'" <<stuBody->WorkNum << "'," << (int)Tranverse32(stuBody->ClassTmLen)<<","<< (int)Tranverse32(stuBody->ClassOut)<<");";
 
                     LOG_DEBUG << "figure_info insert sql: " << ostrsql.str().c_str();
 
