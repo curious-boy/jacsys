@@ -1,6 +1,9 @@
 // tools.h
 //#include "MsgTypeDef.h"
 
+#include<string>
+
+
 
 UINT16 CalcCRC16(UINT16 crc16,UINT8* pData,UINT32 uLen)
 {
@@ -27,10 +30,16 @@ UINT16 CalcCRC16(UINT16 crc16,UINT8* pData,UINT32 uLen)
 }
 
 // get current time  timestamp
-int GetCurrentTime()
+std::string GetCurrentTime()
 {
-	time_t t;
-	int j;
-	j = time(&t);
-	return j;
+	time_t rawtime;
+    struct tm *timeinfo;
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    char tBuf[128]={0};
+    strftime(tBuf,128,"%Y-%m-%d %H:%m:%S",timeinfo);
+
+	return std::string(tBuf);
 }
