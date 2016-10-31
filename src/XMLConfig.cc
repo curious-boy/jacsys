@@ -1,11 +1,12 @@
 #include "XMLConfig.h"
 
 
+#define XML_FILE "jaccfg.xml"
 
  bool XMLConfig::initByLoadFile()
         {
             XMLDocument cfgdoc;
-            cfgdoc.LoadFile("jaccfg.xml");
+            cfgdoc.LoadFile(XML_FILE);
 
             XMLElement* root_element = cfgdoc.FirstChildElement( "config" );
             if(root_element == NULL)

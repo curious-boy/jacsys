@@ -1187,7 +1187,7 @@ void flushFunc()
 
 int main(int argc, char *argv[])
 {
-#if 0
+#if 1
     if(!g_config.initByLoadFile())
     {
         std::cout<<"load cfg file failed!"<<std::endl;

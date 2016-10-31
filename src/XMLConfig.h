@@ -7,7 +7,6 @@
 
 using namespace tinyxml2;
 
-#define XML_FILE "./jaccfg.xml"
 
 class XMLConfig
 {
