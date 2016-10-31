@@ -43,3 +43,18 @@ std::string GetCurrentTime()
 
 	return std::string(tBuf);
 }
+
+// get current date
+std::string GetCurrentDate()
+{
+	time_t rawtime;
+    struct tm *timeinfo;
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    char tBuf[128]={0};
+    strftime(tBuf,128,"%Y-%m-%d",timeinfo);
+
+	return std::string(tBuf);
+}

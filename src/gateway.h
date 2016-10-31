@@ -156,10 +156,6 @@ pINFO_Node Gateway::getNextNode()
     m_curIndex++;
     LOG_INFO << "m_curIndex: " << m_curIndex
              << " m_vNodesInfo.size(), " << m_vNodesInfo.size();
-    for(int i=0; i<m_vNodesInfo.size(); i++)
-    {
-        LOG_DEBUG << "WHY... " << m_vNodesInfo[i]->addr;
-    }
 
     m_curIndex = m_curIndex%(m_vNodesInfo.size());
 

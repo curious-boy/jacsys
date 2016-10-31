@@ -52,6 +52,9 @@ public:
     bool ExecTasks();
     void AddTask(DatabaseOperatorTask task);
 
+
+    bool IsRecordExist(std::string sql);
+
     private:
         bool GetTaskList();
 

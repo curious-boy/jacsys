@@ -207,6 +207,28 @@ bool  DatabaseOperator::UpdateNodesOfGateway(string ipaddr, string name)
 }
 
 
+bool  DatabaseOperator::IsRecordExist(std::string sql)
+{
+    //查询数据是否存在
+
+    mysqlpp::Query query = conn_.query(sql);
+    if (mysqlpp::StoreQueryResult res = query.store())
+    {
+        if (res.num_rows()>0)
+        {
+            return true;
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return false;
+
+}
+
+
 string  DatabaseOperator::GetNameOfGateWay(string ipaddr)
 {
     return "";
