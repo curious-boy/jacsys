@@ -28,6 +28,8 @@
 #include "tools.h"
 #include "gateway.h"
 
+#include "XMLConfig.h"
+
 
 #define USE_DATABASE 1
 

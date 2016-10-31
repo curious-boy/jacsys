@@ -7,6 +7,8 @@
 
 DatabaseOperator g_DatabaseOperator;
 
+XMLConfig g_config;
+
 void JacServer::processDB()
 {
     LOG_INFO << "... processDB ...";
@@ -145,7 +147,7 @@ void JacServer::onTimer()
 #if USE_DATABASE
             //insert fault record here
             std::ostringstream ostrsql;
-            ostrsql << "select * from fault_record,userorder where fault_record.fault_id = userorder.faultId and userorder.state <> 2 and fault_record.machine_id='" << tnode->macId << "'" ;
+            ostrsql << "select * from fault_record,userorder where fault_record.fault_id = userorder.faultId and userorder.state <> 2 and fault_record.fault_type=3 and fault_record.machine_id='" << tnode->macId << "'" ;
             if(g_DatabaseOperator.IsRecordExist(ostrsql.str().c_str()))
             {
 
@@ -304,6 +306,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
     if (buf->readableBytes() >= sizeof(RspAck))
     {
+
         pRspAck tmpAck = (pRspAck) new char[sizeof(RspAck)];
         tmpAck = (pRspAck) const_cast<char *>(buf->peek());
 
@@ -448,8 +451,25 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
     if (m_curGateway != NULL)
     {
-        if ((m_curGateway->getCurOperatorType() == REGISTER_NODE) || (m_curGateway->getCurOperatorType() == REGISTER_NODE))
+        if ((m_curGateway->getCurOperatorType() == REGISTER_NODE) || (m_curGateway->getCurOperatorType() == LOGOUT_NODE))
         {
+            //find the modify ack response
+            int index = getSubArrayIndexOfArray(buf->peek(),buf->readableBytes());
+            if(index>0)
+            {
+                buf->retrieve(index);
+                LOG_DEBUG<<"=======================index: "<<index<<"=========================";
+                return;
+            }
+            else
+            {
+                LOG_DEBUG<<"=======================throw: "<<buf->readableBytes()<<"=========================";
+                buf->retrieve(buf->readableBytes());
+                return;
+            }
+
+            ////////////////////////////////////////////////////new add by frankz
+
             int iTempLen = buf->readableBytes();
             int iHeaderIndex = 0;
             int iEndIndex = 0;
@@ -821,7 +841,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                 // insert data to fault record
                 ostrsql.str("");
-                ostrsql << "select * from fault_record,userorder where fault_record.fault_id = userorder.faultId and userorder.state <> 2 and fault_record.machine_id='" << pNode->macId << "'" ;
+                ostrsql << "select * from fault_record,userorder where fault_record.fault_id = userorder.faultId and userorder.state <> 2 and fault_record.fault_type=iHaltingReason and fault_record.machine_id='" << pNode->macId << "'" ;
                 if(g_DatabaseOperator.IsRecordExist(ostrsql.str().c_str()))
                 {
 
@@ -898,22 +918,6 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
             else
             {
                 pINFO_Node pNode = m_curGateway->getNodeByAddr(stuBody->header.srcAddr);
-
-                // UINT32 total_run_time;				//开机时长 单位：秒
-
-                // std::string figure_name;			//花样名称
-                // UINT32 latitude;
-                // UINT32	opening;
-                // UINT32 tasks_number;
-                // UINT32 number_produced;
-                // UINT32	how_long_to_finish;
-                // UINT16	concurrent_produce_number;
-                // std::string operator_num;
-                // UINT32  product_total_time;
-                // UINT32  product_total_output;
-
-                // process if state changed??
-
 
                 //节点产量信息协议@@@@ 后续需要关于时间判断的完善
                 //machine_info 首次插入记录，后续只更新数据 如果注册时间的日期等于今天，则进行更新，否则进行插入@@
@@ -1031,14 +1035,6 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
         {
             LOG_INFO << "###############---------unknown cmd----################";
             // disconnect
-
-            //            int iLen = buf->readableBytes();
-            //            LOG_INFO << "data_len: " << iLen;
-            //            for (int i = 0; i < iLen; ++i)
-            //            {
-            //                printf("%02X ", buf->peek()[i]);
-            //            }
-            //            printf("\n");
 
             buf->retrieve(buf->readableBytes());
         }
@@ -1191,6 +1187,18 @@ void flushFunc()
 
 int main(int argc, char *argv[])
 {
+#if 0
+    if(!g_config.initByLoadFile())
+    {
+        std::cout<<"load cfg file failed!"<<std::endl;
+        return -1;
+    }
+    else
+    {
+        std::cout<<g_config.port<<std::endl;
+    }
+#endif
+    //XMLDocument cfgdoc;
     //std::string  strTime=GetCurrentTime();
     //std::string  strDate=GetCurrentDate();
     int iport = LISTEN_PORT;

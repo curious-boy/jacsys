@@ -1,5 +1,7 @@
 // tools.h
 //#include "MsgTypeDef.h"
+#ifndef TOOLS_H
+#define TOOLS_H
 
 #include<string>
 
@@ -58,3 +60,23 @@ std::string GetCurrentDate()
 
 	return std::string(tBuf);
 }
+
+int getSubArrayIndexOfArray(char* pchar,int size)
+{
+    if(pchar == NULL || size<=0)
+    {
+        return -1;
+    }
+
+    for(int i=0;i<size-3;i++)
+    {
+        if(pchar+i == 0Xde && pchar+i+1 == 0X00 && pchar+i+2 == 0x02 && pchar+i+3 == 0x00 )
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+#endif
