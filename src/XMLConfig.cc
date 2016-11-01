@@ -1,10 +1,14 @@
 #include "XMLConfig.h"
+//#include "tools.h"
 
 
 #define XML_FILE "jaccfg.xml"
 
  bool XMLConfig::initByLoadFile()
         {
+            //std::string filename=getAbsolutePath();
+            //filename.append(XML_FILE);
+
             XMLDocument cfgdoc;
             cfgdoc.LoadFile(XML_FILE);
 

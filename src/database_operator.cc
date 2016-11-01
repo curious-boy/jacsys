@@ -145,11 +145,11 @@ bool  DatabaseOperator::DeleteNodeOfGateway(string ipaddr, UINT16 node)
     std::ostringstream ostrsql;
     if(node == 0)
     {
-        ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr << "'";
+        ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr << "' limit 200 ";
     }
     else
     {
-        ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr<< "' and node_zig_addr=" << node;
+        ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr<< "' and node_zig_addr=" << node<<" limit 1";
     }
     std::cout<<"DeleteNodeOfGateway: "<< ostrsql.str()<<std::endl;
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
@@ -164,7 +164,7 @@ bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)
 
     std::ostringstream ostrsql;
 
-    ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr<<"'";
+    ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr<<"' limit 200";
 
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
     query.exec();

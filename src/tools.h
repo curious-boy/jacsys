@@ -9,27 +9,28 @@
 
 UINT16 CalcCRC16(UINT16 crc16,UINT8* pData,UINT32 uLen)
 {
-	unsigned int i;
+    unsigned int i;
 
-	while(uLen--)
-	{
-		crc16=crc16 ^ (unsigned short)(*pData) << 8;
-		pData++;
-		for (i = 0; i < 8; ++i)
-		{
-			if (crc16 & 0x8000)
-			{
-				crc16=crc16<<1 ^ 0x1021;
-			}
-			else
-			{
-				crc16=crc16<<1;
-			}
-		}
-	}
+    while(uLen--)
+    {
+        crc16=crc16 ^ (unsigned short)(*pData) << 8;
+        pData++;
+        for (i = 0; i < 8; ++i)
+        {
+            if (crc16 & 0x8000)
+            {
+                crc16=crc16<<1 ^ 0x1021;
+            }
+            else
+            {
+                crc16=crc16<<1;
+            }
+        }
+    }
 
-	return crc16;
+        return crc16;
 }
+
 
 // get current time  timestamp
 std::string GetCurrentTime()
@@ -41,7 +42,7 @@ std::string GetCurrentTime()
     timeinfo = localtime(&rawtime);
 
     char tBuf[128]={0};
-    strftime(tBuf,128,"%Y-%m-%d %H:%m:%S",timeinfo);
+    strftime(tBuf,128,"%Y-%m-%d %H:%M:%S",timeinfo);
 
 	return std::string(tBuf);
 }
@@ -61,22 +62,55 @@ std::string GetCurrentDate()
 	return std::string(tBuf);
 }
 
-int getSubArrayIndexOfArray(char* pchar,int size)
+int getIndexOfSubMem(char* pchar)
 {
-    if(pchar == NULL || size<=0)
+    if(pchar == NULL)
     {
         return -1;
     }
 
-    for(int i=0;i<size-3;i++)
+    char subpchar[4]={0xDE,0xDF,0xEF,0xD2};
+
+    char* reschar=strstr(pchar,subpchar);
+
+    if(reschar == NULL)
     {
-        if(pchar+i == 0Xde && pchar+i+1 == 0X00 && pchar+i+2 == 0x02 && pchar+i+3 == 0x00 )
-        {
-            return i;
-        }
+        return -1;
     }
+    else
+    {
+        return reschar-pchar;
+    }
+
 
     return -1;
 }
+
+#if 0
+#define MAX_PATH 256
+
+std::string getAbsolutePath()
+{
+    char tpath[MAX_PATH];
+
+    int cnt = readlink("/proc/self/exe",tpath,MAX_PATH);
+    if(cnt <0 || cnt >= MAX_PATH)
+    {
+        return "";
+    }
+
+    int i;
+    for(i=cnt;i>=0;--i)
+    {
+        if(tpath[i]=='/')
+        {
+            tpath[i+1]='\0';
+            break;
+        }
+    }
+
+    return std::string(tpath);
+}
+#endif
 
 #endif

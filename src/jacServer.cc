@@ -454,11 +454,11 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
         if ((m_curGateway->getCurOperatorType() == REGISTER_NODE) || (m_curGateway->getCurOperatorType() == LOGOUT_NODE))
         {
             //find the modify ack response
-            int index = getSubArrayIndexOfArray(buf->peek(),buf->readableBytes());
+            int index = getIndexOfSubMem(buf->peek());
             if(index>0)
             {
                 buf->retrieve(index);
-                LOG_DEBUG<<"=======================index: "<<index<<"=========================";
+                LOG_DEBUG<<"=======================index: "<<index<<"was throwed! =========================";
                 return;
             }
             else
@@ -812,7 +812,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 else
                 {
                     //update
-                    ostrsql << "update  machine_status set register_time='" << GetCurrentTime() <<"',machine_state="<<(int)stuBody->MacState<<",broken_total_time=" <<(int)Tranverse32(stuBody->IdlTmLen)<<",halting_reason="<<(int)stuBody->MacErr<<" where machine_id = '"<<pNode->macId<<"';";
+                    ostrsql << "update  machine_status set register_time='" << GetCurrentTime() <<"',machine_state="<<(int)stuBody->MacState<<",broken_total_time=" <<(int)Tranverse32(stuBody->IdlTmLen)<<",halting_reason="<<(int)stuBody->MacErr<<" where machine_id = '"<<pNode->macId<<"' limit 1;";
 
                     LOG_DEBUG << "machine_status update sql: " << ostrsql.str().c_str();
 
@@ -927,7 +927,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 if(g_DatabaseOperator.IsRecordExist(ostrsql.str().c_str()))
                 {
                      ostrsql.str("");
-                     ostrsql << "update machine_info set register_time='" << GetCurrentTime() << "' , total_run_time=" << (int)Tranverse32(stuBody->RunTmLen) << " , total_day_time=" << (int)Tranverse32(stuBody->TodayTmLen) << " ,  total_day_produced="  << (int)Tranverse32(stuBody->TodayOut) << "  where machine_id='" << pNode->macId << "'  and date_time='"  << GetCurrentDate() << "';";
+                     ostrsql << "update machine_info set register_time='" << GetCurrentTime() << "' , total_run_time=" << (int)Tranverse32(stuBody->RunTmLen) << " , total_day_time=" << (int)Tranverse32(stuBody->TodayTmLen) << " ,  total_day_produced="  << (int)Tranverse32(stuBody->TodayOut) << "  where machine_id='" << pNode->macId << "'  and date_time='"  << GetCurrentDate() << "' limit 1;";
                      LOG_DEBUG << "machine_info update sql: " << ostrsql.str().c_str();
 
                      DatabaseOperatorTask insert_task_1;
@@ -968,7 +968,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 {
                     //update record
                     ostrsql.str("");
-                    ostrsql << "update figure_info set register_time='"<<GetCurrentTime()<<"',figure_name='"<<stuBody->FileName<<"',latitude="<<(int)Tranverse16(stuBody->WeftDensity)/100<<",opening="<<(int)Tranverse16(stuBody->OpeningDegree)/100<<",tasks_number="<<(int)Tranverse32(stuBody->PatTask) <<",number_produced="<<(int)Tranverse32(stuBody->TotalOut)<<",how_long_to_finish="<<(int)Tranverse32(stuBody->RemainTm)<<",concurrent_produce_number="<<(int)stuBody->OutNum<<" where machine_id='"<<pNode->macId<<"';";
+                    ostrsql << "update figure_info set register_time='"<<GetCurrentTime()<<"',figure_name='"<<stuBody->FileName<<"',latitude="<<(int)Tranverse16(stuBody->WeftDensity)/100<<",opening="<<(int)Tranverse16(stuBody->OpeningDegree)/100<<",tasks_number="<<(int)Tranverse32(stuBody->PatTask) <<",number_produced="<<(int)Tranverse32(stuBody->TotalOut)<<",how_long_to_finish="<<(int)Tranverse32(stuBody->RemainTm)<<",concurrent_produce_number="<<(int)stuBody->OutNum<<" where machine_id='"<<pNode->macId<<"' limit 1;";
 
                     LOG_DEBUG << "figure_info update sql: " << ostrsql.str().c_str();
 
@@ -1000,7 +1000,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 {
                     //update
                     ostrsql.str("");
-                    ostrsql << "update  production_info set register_time='"<<GetCurrentTime()<<"',operator='"<<stuBody->WorkNum<<"',product_total_time="<<(int)Tranverse32(stuBody->ClassTmLen)<<",product_total_output="<<(int)Tranverse32(stuBody->ClassOut)<<" where machine_id='"<<pNode->macId<<"';";
+                    ostrsql << "update  production_info set register_time='"<<GetCurrentTime()<<"',operator='"<<stuBody->WorkNum<<"',product_total_time="<<(int)Tranverse32(stuBody->ClassTmLen)<<",product_total_output="<<(int)Tranverse32(stuBody->ClassOut)<<" where machine_id='"<<pNode->macId<<"' limit 1;";
 
                     LOG_DEBUG << "production_info update sql: " << ostrsql.str().c_str();
 
@@ -1187,6 +1187,7 @@ void flushFunc()
 
 int main(int argc, char *argv[])
 {
+
 #if 1
     if(!g_config.initByLoadFile())
     {
@@ -1202,6 +1203,7 @@ int main(int argc, char *argv[])
     //std::string  strTime=GetCurrentTime();
     //std::string  strDate=GetCurrentDate();
     int iport = LISTEN_PORT;
+
 
     char *p;
     long ltmp;
