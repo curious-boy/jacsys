@@ -1,12 +1,15 @@
 #include "database_operator.h"
 #include <sstream>
+#include "XMLConfig.h"
+
+extern XMLConfig g_config;
 
 // create database connect
 int DatabaseOperator::Init()
 {
     conn_.set_option(new mysqlpp::SetCharsetNameOption("utf8"));
 
-    if(conn_.connect(DATABASE_NAME,DATABASE_SERVER_IP,"root","111111"))
+    if(conn_.connect(g_config.dbName.c_str(),g_config.dbServerIp.c_str(),g_config.userName.c_str(),g_config.password.c_str()))
     {
         LOG_INFO <<"DB Connection success..";
     }

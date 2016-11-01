@@ -5,6 +5,8 @@
 
 #include<string>
 
+#include "preDef.h"
+
 
 
 UINT16 CalcCRC16(UINT16 crc16,UINT8* pData,UINT32 uLen)
@@ -86,7 +88,7 @@ int getIndexOfSubMem(char* pchar)
     return -1;
 }
 
-#if 0
+#if 1
 #define MAX_PATH 256
 
 std::string getAbsolutePath()
@@ -111,6 +113,7 @@ std::string getAbsolutePath()
 
     return std::string(tpath);
 }
+
 #endif
 
 #endif

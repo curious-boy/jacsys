@@ -112,7 +112,7 @@ void JacServer::onTimer()
     if (m_curGateway == NULL)
     {
         m_loop->cancel(m_roundTimer);
-        m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS, boost::bind(&JacServer::onTimer, this));
+        m_roundTimer = m_loop->runAfter(g_config.roundtimeinterval, boost::bind(&JacServer::onTimer, this));
         return;
     }
 
@@ -121,7 +121,7 @@ void JacServer::onTimer()
     {
         LOG_INFO << "no node registed now!";
         m_loop->cancel(m_roundTimer);
-        m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS, boost::bind(&JacServer::onTimer, this));
+        m_roundTimer = m_loop->runAfter(g_config.roundtimeinterval, boost::bind(&JacServer::onTimer, this));
         return;
     }
     else if (m_curGateway->getCurOperatorType() == MODIFY_DEST_NODE)
@@ -137,7 +137,7 @@ void JacServer::onTimer()
         //未锟斤拷应锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷8时锟斤拷锟叫讹拷锟节碉拷锟斤拷锟竭ｏ拷锟斤拷锟斤拷锟斤拷锟斤拷息锟斤拷删锟斤拷锟矫节碉拷
         LOG_INFO << "+++++ getUnReplyNum , " << m_curGateway->getUnReplyNum();
 
-        if (m_curGateway->getUnReplyNum() > MAX_UNREPLY_NUM)
+        if (m_curGateway->getUnReplyNum() > g_config.respondtimes )
         {
             pINFO_Node tnode = m_curGateway->getCurNode();
 
@@ -238,7 +238,7 @@ void JacServer::onTimer()
         sendAll(&m_sendBuf);
 
         m_loop->cancel(m_roundTimer);
-        m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS, boost::bind(&JacServer::onTimer, this));
+        m_roundTimer = m_loop->runAfter(g_config.roundtimeinterval, boost::bind(&JacServer::onTimer, this));
     }
 }
 
@@ -435,7 +435,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                     LOG_INFO << "---------modify dest node failed!-------";
                     m_loop->cancel(m_roundTimer);
 
-                    m_roundTimer = m_loop->runAfter(ROUND_INTERVAL_SECONDS, boost::bind(&JacServer::onTimer, this));
+                    m_roundTimer = m_loop->runAfter(g_config.roundtimeinterval, boost::bind(&JacServer::onTimer, this));
                 }
                 else
                 {
@@ -828,7 +828,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 {
                     iHaltingReason=1;
                 }
-                else if (stuBody->MacState == 0 && (int)Tranverse32(stuBody->IdlTmLen) > timeInterval)
+                else if (stuBody->MacState == 0 && (int)Tranverse32(stuBody->IdlTmLen) > g_config.timeoutofstop)
                 {
                     iHaltingReason=2;
                 }
@@ -1187,8 +1187,6 @@ void flushFunc()
 
 int main(int argc, char *argv[])
 {
-
-#if 1
     if(!g_config.initByLoadFile())
     {
         std::cout<<"load cfg file failed!"<<std::endl;
@@ -1198,10 +1196,7 @@ int main(int argc, char *argv[])
     {
         std::cout<<g_config.port<<std::endl;
     }
-#endif
-    //XMLDocument cfgdoc;
-    //std::string  strTime=GetCurrentTime();
-    //std::string  strDate=GetCurrentDate();
+
     int iport = LISTEN_PORT;
 
 

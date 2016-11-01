@@ -13,16 +13,18 @@ class XMLConfig
     public:
         bool initByLoadFile();
 
+        std::string XMLConfig::getAbsolutePath();
+
     public:
         std::string dbServerIp;
-            int    port;
-            std::string dbName;
-            std::string userName;
-            std::string password;
+        int    port;
+        std::string dbName;
+        std::string userName;
+        std::string password;
 
-            int roundtimeinterval;
-            int timeoutofstop;
-            int respondtimes;
+        double roundtimeinterval;
+        int timeoutofstop;
+        int respondtimes;
 
 };
 #endif

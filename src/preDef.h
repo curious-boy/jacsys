@@ -12,31 +12,9 @@ typedef uint64_t        UINT64;
 
 #define MAX_SERIAL_NO                       65535          // ???????????ţ???????????????
 #define MAX_UNREPLY_NUM                     6           //?ڵ?δ??Ӧ????????
-#define  ROUND_INTERVAL_SECONDS        1                 //??ѯ????ʱ??
+#define  ROUND_INTERVAL_SECONDS             1                 //??ѯ????ʱ??
 #define  MAX_THREAD_NUM                     6               //?????߳???Ŀ ??֧?ֵ????????й?
 #define STRING_MAXLEN                        20             //???????ַ�����?ȣ??ݶ?
-
-
-//修改网关的目标节点地址应答
-typedef struct
-{
-    UINT8 protocolTag1;
-    UINT8 protocolTag2;
-    UINT8 protocolTag3;
-    UINT8 funcCode;
-    UINT8 ackCode;
-
-} RspAck,*pRspAck;
-
-// 修改网关的目标节点地址
-typedef struct
-{
-    UINT8 protocolTag1;
-    UINT8 protocolTag2;
-    UINT8 protocolTag3;
-    UINT8 funcCode;
-    UINT16 addr;
-} ModifyGateWayDestAddr,*pModifyGateWayDestAddr;
 
 
 

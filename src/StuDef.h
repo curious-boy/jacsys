@@ -46,5 +46,30 @@ typedef struct
 }INFO_Node,*pINFO_Node;
 
 
+//修改网关的目标节点地址应答
+typedef struct
+{
+    UINT8 protocolTag1;
+    UINT8 protocolTag2;
+    UINT8 protocolTag3;
+    UINT8 funcCode;
+    UINT8 ackCode;
+
+} RspAck,*pRspAck;
+
+// 修改网关的目标节点地址
+typedef struct
+{
+    UINT8 protocolTag1;
+    UINT8 protocolTag2;
+    UINT8 protocolTag3;
+    UINT8 funcCode;
+    UINT16 addr;
+} ModifyGateWayDestAddr,*pModifyGateWayDestAddr;
+
+
+
+
+
 
 #endif
