@@ -22,6 +22,21 @@ int DatabaseOperator::Init()
     return 0;
 }
 
+bool DatabaseOperator::reConnect()
+{
+    if(conn_.connect(g_config.dbName.c_str(),g_config.dbServerIp.c_str(),g_config.userName.c_str(),g_config.password.c_str()))
+    {
+        LOG_INFO <<"DB Connection success..";
+        return true;
+    }
+    else
+    {
+        LOG_ERROR <<"DB Connection failed: " << conn_.error();
+        return false;
+    }
+
+}
+
 bool DatabaseOperator::ExecTasks()
 {
     if(GetTaskList()==false)
@@ -45,15 +60,29 @@ bool DatabaseOperator::ExecTasks()
         {
             case 0:
                 {
+                    if(!conn_.connected())
+                    {
+                        reConnect();
+                    }
                     mysqlpp::Query query = conn_.query(tasks_beExec_[i].content.c_str());
-                    query.exec();
+                    if(!query.exec())
+                    {
+                        LOG_WARN<<tasks_beExec_[i].content.c_str()<<" insert_task failed,errnum:= "<<query.errnum()<<",error msg: "<<query.error();
+                    }
                 }
                 break;
             case 1:
                 {
-                    mysqlpp::Query query = conn_.query(tasks_beExec_[i].content.c_str());
-                    query.exec();
+                    if(!conn_.connected())
+                    {
+                        reConnect();
+                    }
 
+                    mysqlpp::Query query = conn_.query(tasks_beExec_[i].content.c_str());
+                    if(!query.exec())
+                    {
+                        LOG_WARN<<tasks_beExec_[i].content.c_str()<<" update_task failed,errnum:= "<<query.errnum()<<",error msg: "<<query.error();
+                    }
                 }
                 break;
             default:
@@ -229,6 +258,12 @@ bool  DatabaseOperator::IsRecordExist(std::string sql)
 
     return false;
 
+}
+
+bool  DatabaseOperator::ExeNonQuery(std::string sql)
+{
+    mysqlpp::Query query = conn_.query(sql);
+    return query.exec();
 }
 
 

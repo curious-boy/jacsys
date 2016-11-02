@@ -765,7 +765,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
             }
             else
             {
-                int timeInterval = 1800;
+                //int timeInterval = 1800;
                 //机器故障0x01,说明机器断纱，向机器故障表中插入一条记录，故障类型为 01-机器断纱
                 //机器状态为0,肯停机累计时长已经超过服务器设定的阈值，向机器故障表中插入一条故障数据，故障类型为01-机器断纱
                 //服务端三次轮询节点无响应，则判断节点掉线，向机器故障表中插入一条故障数据，故障类型为 03-机器掉线

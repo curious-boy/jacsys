@@ -38,6 +38,8 @@ public:
 
     int Init();
 
+    bool reConnect();
+
     std::vector<INFO_Node> GetNodesOfGateway (string ipaddr );
     UINT16 GetZigAddrOfGateway(string ipaddr);
     bool DeleteNodeOfGateway(string ipaddr, UINT16 node);
@@ -54,6 +56,8 @@ public:
 
 
     bool IsRecordExist(std::string sql);
+
+    bool ExeNonQuery(std::string sql);
 
     private:
         bool GetTaskList();
