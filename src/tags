@@ -228,6 +228,7 @@ LinkState	MsgTypeDef.h	/^    UINT8 LinkState;\/\/閿熸枻鎷峰墠閿熸枻鎷�
 LoadFile	tinyxml2.cpp	/^XMLError XMLDocument::LoadFile( FILE* fp )$/;"	f	class:tinyxml2::XMLDocument
 LoadFile	tinyxml2.cpp	/^XMLError XMLDocument::LoadFile( const char* filename )$/;"	f	class:tinyxml2::XMLDocument
 LongFitsIntoSizeTMinusOne	tinyxml2.cpp	/^struct LongFitsIntoSizeTMinusOne<false> {$/;"	s	namespace:tinyxml2	file:
+MAX_PATH	tools.h	90;"	d
 MAX_SERIAL_NO	preDef.h	13;"	d
 MAX_THREAD_NUM	preDef.h	16;"	d
 MAX_UNREPLY_NUM	preDef.h	14;"	d
@@ -660,7 +661,7 @@ XML_ERROR_PARSING_DECLARATION	tinyxml2.h	/^    XML_ERROR_PARSING_DECLARATION,$/;
 XML_ERROR_PARSING_ELEMENT	tinyxml2.h	/^    XML_ERROR_PARSING_ELEMENT,$/;"	e	enum:tinyxml2::XMLError
 XML_ERROR_PARSING_TEXT	tinyxml2.h	/^    XML_ERROR_PARSING_TEXT,$/;"	e	enum:tinyxml2::XMLError
 XML_ERROR_PARSING_UNKNOWN	tinyxml2.h	/^    XML_ERROR_PARSING_UNKNOWN,$/;"	e	enum:tinyxml2::XMLError
-XML_FILE	XMLConfig.h	10;"	d
+XML_FILE	XMLConfig.cc	5;"	d	file:
 XML_NO_ATTRIBUTE	tinyxml2.h	/^    XML_NO_ATTRIBUTE,$/;"	e	enum:tinyxml2::XMLError
 XML_NO_TEXT_NODE	tinyxml2.h	/^    XML_NO_TEXT_NODE,$/;"	e	enum:tinyxml2::XMLError
 XML_SUCCESS	tinyxml2.h	/^    XML_SUCCESS = 0,$/;"	e	enum:tinyxml2::XMLError
@@ -762,15 +763,16 @@ g_config	jacServer.cc	/^XMLConfig g_config;$/;"	v
 g_logFile	jacServer.cc	/^boost::scoped_ptr<muduo::LogFile> g_logFile;$/;"	v
 gatewayId	MsgTypeDef.h	/^    char  gatewayId[STRING_MAXLEN];   \/\/閿熸枻鎷烽敓鎴唻鎷疯瘑閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹閿熻鍑ゆ嫹閿熸枻鎷� 閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鑺傜粨鏋勯敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹$/;"	m	struct:__anon23
 gatewayId	MsgTypeDef.h	/^    char  gatewayId[STRING_MAXLEN];   \/\/閿熸枻鎷烽敓鎴唻鎷疯瘑閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹閿熻鍑ゆ嫹閿熸枻鎷�$/;"	m	struct:__anon26
+getAbsolutePath	tools.h	/^std::string getAbsolutePath()$/;"	f
 getCurNode	gateway.h	/^pINFO_Node Gateway::getCurNode()$/;"	f	class:Gateway
 getCurOperatorType	gateway.h	/^OperatorType Gateway::getCurOperatorType()$/;"	f	class:Gateway
+getIndexOfSubMem	tools.h	/^int getIndexOfSubMem(char* pchar)$/;"	f
 getIp	gateway.h	/^string Gateway::getIp()$/;"	f	class:Gateway
 getMsgSerialNo	jacServer.cc	/^UINT16 JacServer::getMsgSerialNo()$/;"	f	class:JacServer
 getName	gateway.h	/^string Gateway::getName()$/;"	f	class:Gateway
 getNextNode	gateway.h	/^pINFO_Node Gateway::getNextNode()$/;"	f	class:Gateway
 getNodeByAddr	gateway.h	/^pINFO_Node Gateway::getNodeByAddr(UINT16 addr)$/;"	f	class:Gateway
 getNodeSize	gateway.h	/^UINT16 Gateway::getNodeSize()$/;"	f	class:Gateway
-getSubArrayIndexOfArray	tools.h	/^int getSubArrayIndexOfArray(char* pchar,int size)$/;"	f
 getUnReplyNum	gateway.h	/^int Gateway::getUnReplyNum()$/;"	f	class:Gateway
 gwID	MsgTypeDef.h	/^    char gwID[STRING_MAXLEN];$/;"	m	struct:__anon5
 halting_reason	StuDef.h	/^	UINT8  halting_reason;			\/\/机器故障信息 0x00 无故障 0x01 断纱 0x02 。。$/;"	m	struct:__anon35

@@ -794,23 +794,25 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                 // insert data to machine_status
                 std::ostringstream ostrsql;
-
-                if(pNode->machine_state_has_record == 0)
+				ostrsql << "select * from machine_status where machine_id = '"<<pNode->macId<<"'";
+                if(!g_DatabaseOperator.IsRecordExist(ostrsql.str().c_str()))
                 {
-                ostrsql << "insert into machine_status (machine_id, machine_state,broken_total_time,halting_reason) VALUES ('"
-                    << pNode->macId << "'," << (int)stuBody->MacState << "," << (int)Tranverse32(stuBody->IdlTmLen) << "," << (int)stuBody->MacErr << ");";
+                	ostrsql.str("");
+                	ostrsql << "insert into machine_status (machine_id, machine_state,broken_total_time,halting_reason) VALUES ('"
+                    	<< pNode->macId << "'," << (int)stuBody->MacState << "," << (int)Tranverse32(stuBody->IdlTmLen) << "," << (int)stuBody->MacErr << ");";
 
-                LOG_DEBUG << "machine_status insert sql: " << ostrsql.str().c_str();
+                	LOG_DEBUG << "machine_status insert sql: " << ostrsql.str().c_str();
 
-                DatabaseOperatorTask insert_task_1;
-                insert_task_1.operator_type = 0;
-                insert_task_1.content = ostrsql.str().c_str();
-                g_DatabaseOperator.AddTask(insert_task_1);
+                	DatabaseOperatorTask insert_task_1;
+                	insert_task_1.operator_type = 0;
+                	insert_task_1.content = ostrsql.str().c_str();
+                	g_DatabaseOperator.AddTask(insert_task_1);
 
-                pNode->machine_state_has_record=1;
+                	pNode->machine_state_has_record=1;
                 }
                 else
                 {
+                	ostrsql.str("");
                     //update
                     ostrsql << "update  machine_status set register_time='" << GetCurrentTime() <<"',machine_state="<<(int)stuBody->MacState<<",broken_total_time=" <<(int)Tranverse32(stuBody->IdlTmLen)<<",halting_reason="<<(int)stuBody->MacErr<<" where machine_id = '"<<pNode->macId<<"' limit 1;";
 
