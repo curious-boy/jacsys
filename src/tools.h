@@ -64,6 +64,7 @@ std::string GetCurrentDate()
 	return std::string(tBuf);
 }
 
+
 int getIndexOfSubMem(char* pchar)
 {
     if(pchar == NULL)

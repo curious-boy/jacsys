@@ -55,15 +55,15 @@ bool DatabaseOperator::ExecTasks()
         LOG_DEBUG << "task content: " << tasks_beExec_[i].content;
 
         // 0 insert 1 update 2 other
+        if(!conn_.connected())
+        {
+            reConnect();
+        }
 
         switch(operatorType)
         {
             case 0:
                 {
-                    if(!conn_.connected())
-                    {
-                        reConnect();
-                    }
                     mysqlpp::Query query = conn_.query(tasks_beExec_[i].content.c_str());
                     if(!query.exec())
                     {
@@ -73,16 +73,51 @@ bool DatabaseOperator::ExecTasks()
                 break;
             case 1:
                 {
-                    if(!conn_.connected())
-                    {
-                        reConnect();
-                    }
-
                     mysqlpp::Query query = conn_.query(tasks_beExec_[i].content.c_str());
                     if(!query.exec())
                     {
                         LOG_WARN<<tasks_beExec_[i].content.c_str()<<" update_task failed,errnum:= "<<query.errnum()<<",error msg: "<<query.error();
                     }
+                }
+                break;
+            case 2:
+                {
+                    std::vector<std::string> sqlVector=split(tasks_beExec_[i].content.c_str(),';');
+                    std::string selectsql= sqlVector[0];
+                    std::string updatesql= sqlVector[1];
+                    std::string insertsql= sqlVector[2];
+
+                    bool result=false;
+                    mysqlpp::Query query = conn_.query(selectsql);
+    				if (mysqlpp::StoreQueryResult res = query.store())
+    				{
+        				if (res.num_rows()>0)
+        				{
+            				result= true;
+        				}
+    				}
+    				else
+    				{
+        				result= false;
+    				}
+    				if(result)
+    				{
+    					query = conn_.query(updatesql);
+                    	if(!query.exec())
+                    	{
+                        	LOG_WARN<<tasks_beExec_[i].content.c_str()<<" update_task failed,errnum:= "<<query.errnum()<<",error msg: "<<query.error();
+                    	}
+    				}
+    				else
+    				{
+    					query = conn_.query(insertsql);
+                    	if(!query.exec())
+                    	{
+                        	LOG_WARN<<tasks_beExec_[i].content.c_str()<<" insert_task failed,errnum:= "<<query.errnum()<<",error msg: "<<query.error();
+                    	}
+    				}
+    				sqlVector.clear();
+
                 }
                 break;
             default:
@@ -225,10 +260,7 @@ bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 g_zig, UINT16 
     //插入之前查询是否有相同节点存在
     std::vector<UINT16> tvNodes;
     std::ostringstream ostrsql;
-    
-    ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr<< "' and gateway_zig_addr=" + g_zig << " and node_zig_addr=" << node<<" limit 500";
-    ExeNonQuery(ostrsql.str().c_str());
-    
+
     ostrsql.str("");
     ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr) VALUES ('','"
             << ipaddr << "' ,"<< g_zig << ","  << node << ")";
@@ -236,6 +268,7 @@ bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 g_zig, UINT16 
     {
         reConnect();
     }
+
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
     LOG_DEBUG<< "InsertNodeOfGateway, sql: " << ostrsql.str().c_str();
 
@@ -263,39 +296,6 @@ bool  DatabaseOperator::UpdateNodesOfGateway(string ipaddr, string name)
 }
 
 
-bool  DatabaseOperator::IsRecordExist(std::string sql)
-{
-    //查询数据是否存在
-    if(!conn_.connected())
-    {
-        reConnect();
-    }
-    mysqlpp::Query query = conn_.query(sql);
-    if (mysqlpp::StoreQueryResult res = query.store())
-    {
-        if (res.num_rows()>0)
-        {
-            return true;
-        }
-    }
-    else
-    {
-        return false;
-    }
-
-    return false;
-
-}
-
-bool  DatabaseOperator::ExeNonQuery(std::string sql)
-{
-    if(!conn_.connected())
-    {
-        reConnect();
-    }
-    mysqlpp::Query query = conn_.query(sql);
-    return query.exec();
-}
 
 
 string  DatabaseOperator::GetNameOfGateWay(string ipaddr)

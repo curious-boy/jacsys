@@ -148,22 +148,16 @@ void JacServer::onTimer()
             //insert fault record here
             std::ostringstream ostrsql;
             ostrsql << "select * from fault_record,userorder where fault_record.fault_id = userorder.faultId and userorder.state <> 2 and fault_record.fault_type=3 and fault_record.machine_id='" << tnode->macId << "'" ;
-            if(g_DatabaseOperator.IsRecordExist(ostrsql.str().c_str()))
-            {
+            ostrsql << ";";
+            ostrsql << "commit";
+            ostrsql << ";";
+            ostrsql << "insert into fault_record (fault_type,machine_id) VALUES(3,'" << tnode->macId << "')";
 
-            }
-            else
-            {
-                ostrsql.str("");
-                ostrsql << "insert into fault_record (fault_type,machine_id) VALUES('" << 03 << "','" << tnode->macId << "');";
+            DatabaseOperatorTask insert_task_2;
+            insert_task_2.operator_type = 2;
+            insert_task_2.content = ostrsql.str().c_str();
+            g_DatabaseOperator.AddTask(insert_task_2);
 
-                LOG_DEBUG << "fault_record insert sql: " << ostrsql.str().c_str();
-
-                DatabaseOperatorTask insert_task_2;
-                insert_task_2.operator_type = 0;
-                insert_task_2.content = ostrsql.str().c_str();
-                g_DatabaseOperator.AddTask(insert_task_2);
-            }
             g_DatabaseOperator.DeleteNodeOfGateway(m_curGateway->getIp(), tnode->addr);
 #endif
             m_curGateway->deleteNodeByAddr(tnode->addr);
@@ -331,27 +325,38 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 #if USE_DATABASE
                     //machine_management
                     std::ostringstream ostrsql;
-                    ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr,machine_id) VALUES ('','"
+                    ostrsql << "select * from node_register_info where machine_id='" << m_pTmpMsgLogin->macID<< "' and gateway_zig_addr=" + m_pTmpHeader->destAddr << " and node_zig_addr=" << tmpNode->addr;
+                    ostrsql << ";";
+                    ostrsql << "delete from node_register_info where machine_id='" << m_pTmpMsgLogin->macID<< "' and gateway_zig_addr=" + m_pTmpHeader->destAddr << " and node_zig_addr=" << tmpNode->addr<<" limit 200";
+    				ostrsql << ";";
+    				ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr,machine_id) VALUES ('','"
                             << m_curGateway->getIp() << "' ," << m_pTmpHeader->destAddr << "," << tmpNode->addr << ",'"<< m_pTmpMsgLogin->macID<<"')";
+    				LOG_DEBUG << "node_register_info delete sql: " << ostrsql.str().c_str();
 
-                    LOG_DEBUG << "node_register_info insert sql: " << ostrsql.str().c_str();
+                    DatabaseOperatorTask insert_task_0;
+                    insert_task_0.operator_type = 2;
+                    insert_task_0.content = ostrsql.str().c_str();
+                    g_DatabaseOperator.AddTask(insert_task_0);
 
-                    DatabaseOperatorTask insert_task_1;
-                    insert_task_1.operator_type = 0;
-                    insert_task_1.content = ostrsql.str().c_str();
-                    g_DatabaseOperator.AddTask(insert_task_1);
+
 
                     ostrsql.str("");
+                    ostrsql << "select * from machine_management where machine_id='" << m_pTmpMsgLogin->macID<< "'";
+                    ostrsql << ";";
+                    ostrsql << "commit";
+                    ostrsql << ";";
                     ostrsql << "INSERT INTO `jacdb`.`machine_management`(`machine_id`,`addr`,`gateway`,`machine_type`,`row`,`col`,`thread_number`,`Mcuversion`,`Universion`,`Hw1version`,`Hw2version`) VALUES('"
                             << m_pTmpMsgLogin->macID << "'," << Tranverse16(m_pTmpHeader->srcAddr) << ",'" << m_pTmpMsgLogin->gatewayId << "','"
                             << m_pTmpMsgLogin->macType << "'," <<(int)m_pTmpMsgLogin->Row << "," << (int)m_pTmpMsgLogin->Col << "," << (int)m_pTmpMsgLogin->Warp << ","
                             << (int)m_pTmpMsgLogin->McuVer << "," << (int)m_pTmpMsgLogin->UiVer << "," << (int)m_pTmpMsgLogin->Hw1Ver << "," << (int)m_pTmpMsgLogin->Hw2Ver << ")";
-                    LOG_DEBUG << "machine_management insert sql: " << ostrsql.str().c_str();
 
-                    DatabaseOperatorTask insert_task_2;
-                    insert_task_2.operator_type = 0;
-                    insert_task_2.content = ostrsql.str().c_str();
-                    g_DatabaseOperator.AddTask(insert_task_2);
+
+                    DatabaseOperatorTask insert_task_1;
+                    insert_task_1.operator_type = 2;
+                    insert_task_1.content = ostrsql.str().c_str();
+                    g_DatabaseOperator.AddTask(insert_task_1);
+
+
 
 //g_DatabaseOperator.InsertNodeOfGateway( m_curGateway->getIp(),m_pTmpHeader->destAddr,tmpNode->addr);
 #endif
@@ -418,7 +423,6 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                     {
                         return;
                     }
-
                     modifyDestAddr(m_curGateway->getCurNode()->addr);
                     m_loop->cancel(m_roundTimer);
                     LOG_DEBUG << "---logout finished----";
@@ -795,35 +799,16 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 // insert data to machine_status
                 std::ostringstream ostrsql;
 				ostrsql << "select * from machine_status where machine_id = '"<<pNode->macId<<"'";
-                if(!g_DatabaseOperator.IsRecordExist(ostrsql.str().c_str()))
-                {
-                	ostrsql.str("");
-                	ostrsql << "insert into machine_status (machine_id, machine_state,broken_total_time,halting_reason) VALUES ('"
-                    	<< pNode->macId << "'," << (int)stuBody->MacState << "," << (int)Tranverse32(stuBody->IdlTmLen) << "," << (int)stuBody->MacErr << ");";
+				ostrsql << ";";
+				ostrsql << "update  machine_status set register_time='" << GetCurrentTime() <<"',machine_state="<<(int)stuBody->MacState<<",broken_total_time=" <<(int)Tranverse32(stuBody->IdlTmLen)<<",halting_reason="<<(int)stuBody->MacErr<<" where machine_id = '"<<pNode->macId<<"' limit 1";
+                ostrsql << ";";
+                ostrsql << "insert into machine_status (machine_id, machine_state,broken_total_time,halting_reason) VALUES ('"
+                    	<< pNode->macId << "'," << (int)stuBody->MacState << "," << (int)Tranverse32(stuBody->IdlTmLen) << "," << (int)stuBody->MacErr << ")";
 
-                	LOG_DEBUG << "machine_status insert sql: " << ostrsql.str().c_str();
-
-                	DatabaseOperatorTask insert_task_1;
-                	insert_task_1.operator_type = 0;
-                	insert_task_1.content = ostrsql.str().c_str();
-                	g_DatabaseOperator.AddTask(insert_task_1);
-
-                	pNode->machine_state_has_record=1;
-                }
-                else
-                {
-                	ostrsql.str("");
-                    //update
-                    ostrsql << "update  machine_status set register_time='" << GetCurrentTime() <<"',machine_state="<<(int)stuBody->MacState<<",broken_total_time=" <<(int)Tranverse32(stuBody->IdlTmLen)<<",halting_reason="<<(int)stuBody->MacErr<<" where machine_id = '"<<pNode->macId<<"' limit 1;";
-
-                    LOG_DEBUG << "machine_status update sql: " << ostrsql.str().c_str();
-
-                    DatabaseOperatorTask insert_task_1;
-                    insert_task_1.operator_type = 1;
-                    insert_task_1.content = ostrsql.str().c_str();
-                    g_DatabaseOperator.AddTask(insert_task_1);
-
-                }
+                DatabaseOperatorTask insert_task_1;
+                insert_task_1.operator_type = 2;
+                insert_task_1.content = ostrsql.str().c_str();
+                g_DatabaseOperator.AddTask(insert_task_1);
 
                 int iHaltingReason=0;
                 if( stuBody->MacErr == 0x01 )
@@ -843,23 +828,16 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                 // insert data to fault record
                 ostrsql.str("");
-                ostrsql << "select * from fault_record,userorder where fault_record.fault_id = userorder.faultId and userorder.state <> 2 and fault_record.fault_type=iHaltingReason and fault_record.machine_id='" << pNode->macId << "'" ;
-                if(g_DatabaseOperator.IsRecordExist(ostrsql.str().c_str()))
-                {
+                ostrsql << "select * from fault_record,userorder where fault_record.fault_id = userorder.faultId and userorder.state <> 2 and fault_record.fault_type=" << iHaltingReason << " and fault_record.machine_id='" << pNode->macId << "'" ;
+                ostrsql << ";";
+                ostrsql << "commit";
+                ostrsql << ";";
+                ostrsql << "insert into fault_record (fault_type,machine_id) VALUES(" << iHaltingReason<< ",'" << pNode->macId << "')";
 
-                }
-                else
-                {
-                    ostrsql.str("");
-                    ostrsql << "insert into fault_record (fault_type,machine_id) VALUES('" << iHaltingReason<< "','" << pNode->macId << "');";
-
-                    LOG_DEBUG << "fault_record insert sql: " << ostrsql.str().c_str();
-
-                    DatabaseOperatorTask insert_task_2;
-                    insert_task_2.operator_type = 0;
-                    insert_task_2.content = ostrsql.str().c_str();
-                    g_DatabaseOperator.AddTask(insert_task_2);
-                }
+                DatabaseOperatorTask insert_task_2;
+                insert_task_2.operator_type = 2;
+                insert_task_2.content = ostrsql.str().c_str();
+                g_DatabaseOperator.AddTask(insert_task_2);
             }
             m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
         }
@@ -926,92 +904,44 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 std::ostringstream ostrsql;
                 ostrsql.str("");
                 ostrsql << "select * from machine_info where machine_id='" << pNode->macId << "'  and date_time='"  << GetCurrentDate() << "'";
-                if(g_DatabaseOperator.IsRecordExist(ostrsql.str().c_str()))
-                {
-                     ostrsql.str("");
-                     ostrsql << "update machine_info set register_time='" << GetCurrentTime() << "' , total_run_time=" << (int)Tranverse32(stuBody->RunTmLen) << " , total_day_time=" << (int)Tranverse32(stuBody->TodayTmLen) << " ,  total_day_produced="  << (int)Tranverse32(stuBody->TodayOut) << "  where machine_id='" << pNode->macId << "'  and date_time='"  << GetCurrentDate() << "' limit 1;";
-                     LOG_DEBUG << "machine_info update sql: " << ostrsql.str().c_str();
+                ostrsql << ";";
+                ostrsql << "update machine_info set register_time='" << GetCurrentTime() << "' , total_run_time=" << (int)Tranverse32(stuBody->RunTmLen) << " , total_day_time=" << (int)Tranverse32(stuBody->TodayTmLen) << " ,  total_day_produced="  << (int)Tranverse32(stuBody->TodayOut) << "  where machine_id='" << pNode->macId << "'  and date_time='"  << GetCurrentDate() << "' limit 1";
+                ostrsql << ";";
+                ostrsql << "insert into machine_info (machine_id, total_run_time,total_day_time,total_day_produced,date_time) VALUES ('" << pNode->macId << "'," << (int)Tranverse32(stuBody->RunTmLen) << "," << (int)Tranverse32(stuBody->TodayTmLen) << "," << (int)Tranverse32(stuBody->TodayOut) << ",'" << GetCurrentDate() << "')";
 
-                     DatabaseOperatorTask insert_task_1;
-                     insert_task_1.operator_type = 1;
-                     insert_task_1.content = ostrsql.str().c_str();
-                     g_DatabaseOperator.AddTask(insert_task_1);
-                }
-                else
-                {
-                     ostrsql.str("");
-                    ostrsql << "insert into machine_info (machine_id, total_run_time,total_day_time,total_day_produced,date_time) VALUES ('" << pNode->macId << "'," << (int)Tranverse32(stuBody->RunTmLen) << "," << (int)Tranverse32(stuBody->TodayTmLen) << "," << (int)Tranverse32(stuBody->TodayOut) << ",'" << GetCurrentDate() << "');";
-
-                     LOG_DEBUG << "machine_info insert sql: " << ostrsql.str().c_str();
-
-                    DatabaseOperatorTask insert_task_1;
-                    insert_task_1.operator_type = 0;
-                    insert_task_1.content = ostrsql.str().c_str();
-                    g_DatabaseOperator.AddTask(insert_task_1);
-                }
+                DatabaseOperatorTask insert_task_1;
+                insert_task_1.operator_type = 2;
+                insert_task_1.content = ostrsql.str().c_str();
+                g_DatabaseOperator.AddTask(insert_task_1);
 
                 //figure_info 当节点机花样名称发生变化时，插入新记录，并记录花样更新时间到update_time字段，后续过程此字段保持不变
                 //只更新其它字段 操作说明：当节点机的花样发生变化时，插入新记录，否则更新对应记录
                 ostrsql.str("");
                 ostrsql << "select * from figure_info where machine_id='" << pNode->macId <<"' and figure_name='" << stuBody->FileName << "'";
-                if(!g_DatabaseOperator.IsRecordExist(ostrsql.str().c_str()))
-                {
-                    ostrsql.str("");
-                    ostrsql << "insert into figure_info (machine_id,update_time,register_time, figure_name,latitude,opening,tasks_number,number_produced,how_long_to_finish,concurrent_produce_number) VALUES ('" << pNode->macId << "','" << GetCurrentTime() << "','"<<GetCurrentTime()<<"','" << stuBody->FileName << "'," << (int)Tranverse16(stuBody->WeftDensity)/100<<","<< (int)Tranverse16(stuBody->OpeningDegree)/100<<","<<(int)Tranverse32(stuBody->PatTask)<<","<<(int)Tranverse32(stuBody->TotalOut)<<","<<(int)Tranverse32(stuBody->RemainTm)<<","<<(int)stuBody->OutNum << ");";
+                ostrsql << ";";
+                ostrsql << "update figure_info set register_time='"<<GetCurrentTime()<<"',figure_name='"<<stuBody->FileName<<"',latitude="<<(int)Tranverse16(stuBody->WeftDensity)/100<<",opening="<<(int)Tranverse16(stuBody->OpeningDegree)/100<<",tasks_number="<<(int)Tranverse32(stuBody->PatTask) <<",number_produced="<<(int)Tranverse32(stuBody->TotalOut)<<",how_long_to_finish="<<(int)Tranverse32(stuBody->RemainTm)<<",concurrent_produce_number="<<(int)stuBody->OutNum<<" where machine_id='"<<pNode->macId<<"' limit 1";
+                ostrsql << ";";
+                ostrsql << "insert into figure_info (machine_id,update_time,register_time, figure_name,latitude,opening,tasks_number,number_produced,how_long_to_finish,concurrent_produce_number) VALUES ('" << pNode->macId << "','" << GetCurrentTime() << "','"<<GetCurrentTime()<<"','" << stuBody->FileName << "'," << (int)Tranverse16(stuBody->WeftDensity)/100<<","<< (int)Tranverse16(stuBody->OpeningDegree)/100<<","<<(int)Tranverse32(stuBody->PatTask)<<","<<(int)Tranverse32(stuBody->TotalOut)<<","<<(int)Tranverse32(stuBody->RemainTm)<<","<<(int)stuBody->OutNum << ")";
 
-                    LOG_DEBUG << "figure_info insert sql: " << ostrsql.str().c_str();
-
-                    DatabaseOperatorTask insert_task_1;
-                    insert_task_1.operator_type = 0;
-                    insert_task_1.content = ostrsql.str().c_str();
-                    g_DatabaseOperator.AddTask(insert_task_1);
-                }
-                else
-                {
-                    //update record
-                    ostrsql.str("");
-                    ostrsql << "update figure_info set register_time='"<<GetCurrentTime()<<"',figure_name='"<<stuBody->FileName<<"',latitude="<<(int)Tranverse16(stuBody->WeftDensity)/100<<",opening="<<(int)Tranverse16(stuBody->OpeningDegree)/100<<",tasks_number="<<(int)Tranverse32(stuBody->PatTask) <<",number_produced="<<(int)Tranverse32(stuBody->TotalOut)<<",how_long_to_finish="<<(int)Tranverse32(stuBody->RemainTm)<<",concurrent_produce_number="<<(int)stuBody->OutNum<<" where machine_id='"<<pNode->macId<<"' limit 1;";
-
-                    LOG_DEBUG << "figure_info update sql: " << ostrsql.str().c_str();
-
-                    DatabaseOperatorTask insert_task_1;
-                    insert_task_1.operator_type = 1;
-                    insert_task_1.content = ostrsql.str().c_str();
-                    g_DatabaseOperator.AddTask(insert_task_1);
-                }
+                DatabaseOperatorTask insert_task_2;
+                insert_task_2.operator_type = 2;
+                insert_task_2.content = ostrsql.str().c_str();
+                g_DatabaseOperator.AddTask(insert_task_2);
 
                 //production_info 当值机工号发生变化时，插入新记录，并记录工号更新时间到update_time字段，后续过程该字段保持不变，
                 //只更新其它字段； 操作类型：当节点机的值机工号发生变化时插入新记录，否则更新对应记录
                 ostrsql.str("");
                 std::string  strWorkNum(stuBody->WorkNum);
                 ostrsql << "select * from production_info where machine_id='" << pNode->macId <<"' and operator='" << stuBody->WorkNum << "'";
-                if(!g_DatabaseOperator.IsRecordExist(ostrsql.str().c_str()))
-                {
-                    //insert
-                     ostrsql.str("");
-                    ostrsql << "insert into production_info (machine_id,update_time,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "','"<<GetCurrentTime()<<"','"<< GetCurrentTime()<< "','" <<stuBody->WorkNum << "'," << (int)Tranverse32(stuBody->ClassTmLen)<<","<< (int)Tranverse32(stuBody->ClassOut)<<");";
+                ostrsql << ";";
+                ostrsql << "update  production_info set register_time='"<<GetCurrentTime()<<"',operator='"<<stuBody->WorkNum<<"',product_total_time="<<(int)Tranverse32(stuBody->ClassTmLen)<<",product_total_output="<<(int)Tranverse32(stuBody->ClassOut)<<" where machine_id='"<<pNode->macId<<"' limit 1";
+                ostrsql << ";";
+                ostrsql << "insert into production_info (machine_id,update_time,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "','"<<GetCurrentTime()<<"','"<< GetCurrentTime()<< "','" <<stuBody->WorkNum << "'," << (int)Tranverse32(stuBody->ClassTmLen)<<","<< (int)Tranverse32(stuBody->ClassOut)<<")";
 
-                    LOG_DEBUG << "production_info insert sql: " << ostrsql.str().c_str();
-
-                    DatabaseOperatorTask insert_task_1;
-                    insert_task_1.operator_type = 0;
-                    insert_task_1.content = ostrsql.str().c_str();
-                    g_DatabaseOperator.AddTask(insert_task_1);
-                }
-                else
-                {
-                    //update
-                    ostrsql.str("");
-                    ostrsql << "update  production_info set register_time='"<<GetCurrentTime()<<"',operator='"<<stuBody->WorkNum<<"',product_total_time="<<(int)Tranverse32(stuBody->ClassTmLen)<<",product_total_output="<<(int)Tranverse32(stuBody->ClassOut)<<" where machine_id='"<<pNode->macId<<"' limit 1;";
-
-                    LOG_DEBUG << "production_info update sql: " << ostrsql.str().c_str();
-
-                    DatabaseOperatorTask insert_task_1;
-                    insert_task_1.operator_type = 1;
-                    insert_task_1.content = ostrsql.str().c_str();
-                    g_DatabaseOperator.AddTask(insert_task_1);
-
-                }
+                DatabaseOperatorTask insert_task_3;
+                insert_task_3.operator_type = 2;
+                insert_task_3.content = ostrsql.str().c_str();
+                g_DatabaseOperator.AddTask(insert_task_3);
 
                 //更新内存中的数据
                 pNode->total_run_time = stuBody->RunTmLen;

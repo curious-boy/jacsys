@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 //#include <muduo/base/StringPiece.h>
 #include <muduo/base/AsyncLogging.h>
@@ -55,9 +56,6 @@ public:
     void AddTask(DatabaseOperatorTask task);
 
 
-    bool IsRecordExist(std::string sql);
-
-    bool ExeNonQuery(std::string sql);
 
     private:
         bool GetTaskList();
@@ -71,6 +69,22 @@ private:
     DatabaseOperatorTaskList                        tasks_;                // database task list
     DatabaseOperatorTaskList                        tasks_beExec_;                // database task list will be execed
     mutable MutexLock                                   task_list_mutex_;                               //
+    
+    void split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss;
+    ss.str(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
 
 
 
