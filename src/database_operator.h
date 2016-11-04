@@ -69,7 +69,8 @@ private:
     DatabaseOperatorTaskList                        tasks_;                // database task list
     DatabaseOperatorTaskList                        tasks_beExec_;                // database task list will be execed
     mutable MutexLock                                   task_list_mutex_;                               //
-    
+    mutable MutexLock                               conn_mutex_;                   // mutex for conn
+
     void split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss;
     ss.str(s);

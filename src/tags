@@ -67,9 +67,9 @@ CompactMode	tinyxml2.h	/^	virtual bool CompactMode( const XMLElement& )	{ return
 ConnectionList	jacServer.h	/^    typedef std::set<TcpConnectionPtr> ConnectionList;$/;"	t	class:JacServer
 ConvertUTF32ToUTF8	tinyxml2.cpp	/^void XMLUtil::ConvertUTF32ToUTF8( unsigned long input, char* output, int* length )$/;"	f	class:tinyxml2::XMLUtil
 CurrentAllocs	tinyxml2.h	/^    int CurrentAllocs() const		{$/;"	f	class:tinyxml2::MemPoolT
-DATABASE_NAME	database_operator.h	18;"	d
+DATABASE_NAME	database_operator.h	19;"	d
 DATABASE_OPERATOR_H	database_operator.h	2;"	d
-DATABASE_SERVER_IP	database_operator.h	17;"	d
+DATABASE_SERVER_IP	database_operator.h	18;"	d
 DEBUG	tinyxml2.h	58;"	d
 DOUBLE_QUOTE	tinyxml2.cpp	/^static const char DOUBLE_QUOTE			= '\\"';$/;"	v	file:
 Daddr	MsgTypeDef.h	/^    UINT16 Daddr;\/\/can鐩敓鏂ゆ嫹閿熸枻鎷峰潃閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷蜂竴閿熸枻鎷烽敓鏂ゆ嫹閿熸帴鐨勭鎷峰潃$/;"	m	struct:__anon5
@@ -179,7 +179,7 @@ Head	MsgTypeDef.h	/^    UINT8 Head;\/\/閿熸暀璁规嫹涓�0xAA$/;"	m	struct
 HostAddr	MsgTypeDef.h	75;"	d
 Hw1Ver	MsgTypeDef.h	/^    UINT8   Hw1Ver;  \/\/纭敓鏂ゆ嫹1閿熻姤鏈�$/;"	m	struct:__anon23
 Hw2Ver	MsgTypeDef.h	/^    UINT8   Hw2Ver;  \/\/纭敓鏂ゆ嫹2閿熻姤鏈�$/;"	m	struct:__anon23
-INFO_Node	StuDef.h	/^}INFO_Node,*pINFO_Node;$/;"	t	typeref:struct:__anon35
+INFO_Node	StuDef.h	/^}INFO_Node,*pINFO_Node;$/;"	t	typeref:struct:__anon33
 ITEMS_PER_BLOCK	tinyxml2.h	/^    enum { ITEMS_PER_BLOCK = (4 * 1024) \/ ITEM_SIZE };$/;"	e	enum:tinyxml2::MemPoolT::__anon38
 IdLen	MsgTypeDef.h	/^    UINT16 IdLen;$/;"	m	struct:__anon5
 Identify	tinyxml2.cpp	/^char* XMLDocument::Identify( char* p, XMLNode** node )$/;"	f	class:tinyxml2::XMLDocument
@@ -199,7 +199,6 @@ Interval	MsgTypeDef.h	/^    UINT8   Interval;\/\/閿熸枻鎷烽敓鏂ゆ嫹閿�
 Interval	MsgTypeDef.h	/^    UINT8   Interval;\/\/閿熸枻鎷蜂綅閿熸枻鎷烽敓鎺ワ綇鎷蜂负0鏃堕敓楗鸿揪鎷峰仠姝㈤敓鏂ゆ嫹閿熸枻鎷烽敓杈冭揪鎷�$/;"	m	struct:__anon31
 IsNameChar	tinyxml2.h	/^    inline static bool IsNameChar( unsigned char ch ) {$/;"	f	class:tinyxml2::XMLUtil
 IsNameStartChar	tinyxml2.h	/^    inline static bool IsNameStartChar( unsigned char ch ) {$/;"	f	class:tinyxml2::XMLUtil
-IsRecordExist	database_operator.cc	/^bool  DatabaseOperator::IsRecordExist(std::string sql)$/;"	f	class:DatabaseOperator
 IsUTF8Continuation	tinyxml2.h	/^    inline static bool IsUTF8Continuation( char p ) {$/;"	f	class:tinyxml2::XMLUtil
 IsWhiteSpace	tinyxml2.h	/^    static bool IsWhiteSpace( char p )					{$/;"	f	class:tinyxml2::XMLUtil
 Item	tinyxml2.h	/^    union Item {$/;"	u	class:tinyxml2::MemPoolT
@@ -210,7 +209,7 @@ JacServer	jacServer.h	/^class JacServer$/;"	c
 LASTEVENT	MsgTypeDef.h	99;"	d
 LF	tinyxml2.cpp	/^static const char LF = LINE_FEED;$/;"	v	file:
 LINE_FEED	tinyxml2.cpp	/^static const char LINE_FEED				= (char)0x0a;			\/\/ all line endings are normalized to LF$/;"	v	file:
-LISTEN_PORT	jacServer.cc	1174;"	d	file:
+LISTEN_PORT	jacServer.cc	1106;"	d	file:
 LOGIN_TIMER	MsgTypeDef.h	102;"	d
 LOGOUT_FINISH	gateway.h	/^    LOGOUT_FINISH,$/;"	e	enum:__anon2
 LOGOUT_NODE	gateway.h	/^    LOGOUT_NODE,$/;"	e	enum:__anon2
@@ -228,7 +227,8 @@ LinkState	MsgTypeDef.h	/^    UINT8 LinkState;\/\/閿熸枻鎷峰墠閿熸枻鎷�
 LoadFile	tinyxml2.cpp	/^XMLError XMLDocument::LoadFile( FILE* fp )$/;"	f	class:tinyxml2::XMLDocument
 LoadFile	tinyxml2.cpp	/^XMLError XMLDocument::LoadFile( const char* filename )$/;"	f	class:tinyxml2::XMLDocument
 LongFitsIntoSizeTMinusOne	tinyxml2.cpp	/^struct LongFitsIntoSizeTMinusOne<false> {$/;"	s	namespace:tinyxml2	file:
-MAX_PATH	tools.h	90;"	d
+MAX_PATH	XMLConfig.cc	75;"	d	file:
+MAX_PATH	tools.h	93;"	d
 MAX_SERIAL_NO	preDef.h	13;"	d
 MAX_THREAD_NUM	preDef.h	16;"	d
 MAX_UNREPLY_NUM	preDef.h	14;"	d
@@ -276,7 +276,7 @@ MemPool	tinyxml2.h	/^    MemPool() {}$/;"	f	class:tinyxml2::MemPool
 MemPool	tinyxml2.h	/^class MemPool$/;"	c	namespace:tinyxml2
 MemPoolT	tinyxml2.h	/^    MemPoolT() : _root(0), _currentAllocs(0), _nAllocs(0), _maxAllocs(0), _nUntracked(0)	{}$/;"	f	class:tinyxml2::MemPoolT
 MemPoolT	tinyxml2.h	/^class MemPoolT : public MemPool$/;"	c	namespace:tinyxml2
-ModifyGateWayDestAddr	preDef.h	/^} ModifyGateWayDestAddr,*pModifyGateWayDestAddr;$/;"	t	typeref:struct:__anon34
+ModifyGateWayDestAddr	StuDef.h	/^} ModifyGateWayDestAddr,*pModifyGateWayDestAddr;$/;"	t	typeref:struct:__anon35
 Msg	MsgTypeDef.h	/^    UINT8 Msg;\/\/閿熸枻鎷锋伅閿熸枻鎷烽敓閰碉綇鎷穊it7=0閿熸枻鎷风ず閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷穊it7=1閿熸枻鎷风ず搴旈敓鏂ゆ嫹$/;"	m	struct:__anon10
 Msg	MsgTypeDef.h	/^    UINT8 Msg;\/\/閿熸枻鎷锋伅閿熸枻鎷烽敓閰碉綇鎷穊it7=0閿熸枻鎷风ず閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷穊it7=1閿熸枻鎷风ず搴旈敓鏂ゆ嫹$/;"	m	struct:__anon7
 MsgSize	MsgTypeDef.h	74;"	d
@@ -408,7 +408,7 @@ Reset	tinyxml2.cpp	/^void StrPair::Reset()$/;"	f	class:tinyxml2::StrPair
 RootElement	tinyxml2.h	/^    XMLElement* RootElement()				{$/;"	f	class:tinyxml2::XMLDocument
 RootElement	tinyxml2.h	/^    const XMLElement* RootElement() const	{$/;"	f	class:tinyxml2::XMLDocument
 Row	MsgTypeDef.h	/^    UINT8   Row; \/\/閿熷彨纰夋嫹閿熸枻鎷烽敓鏂ゆ嫹澶撮敓鏂ゆ嫹閿熸枻鎷�$/;"	m	struct:__anon23
-RspAck	preDef.h	/^} RspAck,*pRspAck;$/;"	t	typeref:struct:__anon33
+RspAck	StuDef.h	/^} RspAck,*pRspAck;$/;"	t	typeref:struct:__anon34
 RunTmLen	MsgTypeDef.h	/^    UINT32  RunTmLen;\/\/閿熸枻鎷烽敓鏂ゆ嫹鏃堕敓鏂ゆ嫹 閿熸枻鎷蜂綅閿熸枻鎷烽敓鏂ゆ嫹$/;"	m	struct:__anon25
 SEND_MESSAGE	gateway.h	/^    SEND_MESSAGE$/;"	e	enum:__anon2
 SINGLE_QUOTE	tinyxml2.cpp	/^static const char SINGLE_QUOTE			= '\\'';$/;"	v	file:
@@ -661,7 +661,7 @@ XML_ERROR_PARSING_DECLARATION	tinyxml2.h	/^    XML_ERROR_PARSING_DECLARATION,$/;
 XML_ERROR_PARSING_ELEMENT	tinyxml2.h	/^    XML_ERROR_PARSING_ELEMENT,$/;"	e	enum:tinyxml2::XMLError
 XML_ERROR_PARSING_TEXT	tinyxml2.h	/^    XML_ERROR_PARSING_TEXT,$/;"	e	enum:tinyxml2::XMLError
 XML_ERROR_PARSING_UNKNOWN	tinyxml2.h	/^    XML_ERROR_PARSING_UNKNOWN,$/;"	e	enum:tinyxml2::XMLError
-XML_FILE	XMLConfig.cc	5;"	d	file:
+XML_FILE	XMLConfig.cc	6;"	d	file:
 XML_NO_ATTRIBUTE	tinyxml2.h	/^    XML_NO_ATTRIBUTE,$/;"	e	enum:tinyxml2::XMLError
 XML_NO_TEXT_NODE	tinyxml2.h	/^    XML_NO_TEXT_NODE,$/;"	e	enum:tinyxml2::XMLError
 XML_SUCCESS	tinyxml2.h	/^    XML_SUCCESS = 0,$/;"	e	enum:tinyxml2::XMLError
@@ -722,19 +722,19 @@ _value	tinyxml2.h	/^    mutable StrPair	_value;$/;"	m	class:tinyxml2::XMLNode
 _value	tinyxml2.h	/^    mutable StrPair _value;$/;"	m	class:tinyxml2::XMLAttribute
 _whitespace	tinyxml2.h	/^    Whitespace  _whitespace;$/;"	m	class:tinyxml2::XMLDocument
 _writeBOM	tinyxml2.h	/^    bool        _writeBOM;$/;"	m	class:tinyxml2::XMLDocument
-ackCode	preDef.h	/^    UINT8 ackCode;$/;"	m	struct:__anon33
-addr	StuDef.h	/^	UINT16 addr;$/;"	m	struct:__anon35
-addr	preDef.h	/^    UINT16 addr;$/;"	m	struct:__anon34
+ackCode	StuDef.h	/^    UINT8 ackCode;$/;"	m	struct:__anon34
+addr	StuDef.h	/^	UINT16 addr;$/;"	m	struct:__anon33
+addr	StuDef.h	/^    UINT16 addr;$/;"	m	struct:__anon35
 asyncOutput	jacServer.cc	/^void asyncOutput(const char *msg, int len)$/;"	f
 bit75	MsgTypeDef.h	/^            UINT8 bit75:3;$/;"	m	struct:__anon15::__anon16::__anon17
 bit75	MsgTypeDef.h	/^            UINT8 bit75:3;$/;"	m	struct:__anon18::__anon19::__anon20
 bit75	MsgTypeDef.h	/^            UINT8 bit75:3;$/;"	m	struct:__anon7::__anon8::__anon9
 bit75	MsgTypeDef.h	/^            UINT8 bit75:3;\/\/甯ч敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹$/;"	m	struct:__anon10::__anon11::__anon12
-broken_total_time	StuDef.h	/^	UINT32 broken_total_time;		\/\/停机时长，单位：秒$/;"	m	struct:__anon35
+broken_total_time	StuDef.h	/^	UINT32 broken_total_time;		\/\/停机时长，单位：秒$/;"	m	struct:__anon33
 callfopen	tinyxml2.cpp	/^static FILE* callfopen( const char* filepath, const char* mode )$/;"	f	namespace:tinyxml2
 chan	MsgTypeDef.h	/^    UINT8 chan;             \/**< \\brief 閫氶敓鏂ゆ嫹閿熸枻鎷�        *\/$/;"	m	struct:__anon5
 client_	jacClient.cc	/^  TcpClient client_;$/;"	m	class:jacClient	file:
-concurrent_produce_number	StuDef.h	/^	UINT16	concurrent_produce_number;$/;"	m	struct:__anon35
+concurrent_produce_number	StuDef.h	/^	UINT16	concurrent_produce_number;$/;"	m	struct:__anon33
 conn_	database_operator.h	/^    mysqlpp::Connection conn_;$/;"	m	class:DatabaseOperator
 connect	jacClient.cc	/^  void connect()$/;"	f	class:jacClient
 connection_	jacClient.cc	/^  TcpConnectionPtr connection_;$/;"	m	class:jacClient	file:
@@ -743,9 +743,9 @@ content	database_operator.h	/^    string    content ;        \/\/ detailed conte
 crc16	MsgTypeDef.h	/^            UINT16 crc16;\/\/CRC鏍￠敓鏂ゆ嫹 涓�0鏃堕敓鏂ゆ嫹鏍￠敓鏂ゆ嫹$/;"	m	struct:__anon10::__anon13::__anon14
 crc16	MsgTypeDef.h	/^    UINT16 crc16;\/\/CRC鏍￠敓鏂ゆ嫹 涓�0鏃堕敓鏂ゆ嫹鏍￠敓鏂ゆ嫹$/;"	m	struct:__anon18
 crc16	MsgTypeDef.h	/^    UINT16 crc16;\/\/CRC鏍￠敓鏂ゆ嫹 涓�0鏃堕敓鏂ゆ嫹鏍￠敓鏂ゆ嫹$/;"	m	struct:__anon21
-curMsgSerialNo	StuDef.h	/^	UINT16 curMsgSerialNo;$/;"	m	struct:__anon35
+curMsgSerialNo	StuDef.h	/^	UINT16 curMsgSerialNo;$/;"	m	struct:__anon33
 date	MsgTypeDef.h	/^    UINT8 date;\/\/閿熸枻鎷�$/;"	m	struct:__anon32
-dbName	XMLConfig.h	/^            std::string dbName;$/;"	m	class:XMLConfig
+dbName	XMLConfig.h	/^        std::string dbName;$/;"	m	class:XMLConfig
 dbServerIp	XMLConfig.h	/^        std::string dbServerIp;$/;"	m	class:XMLConfig
 deleteNodeByAddr	gateway.h	/^void Gateway::deleteNodeByAddr(UINT16 addr)$/;"	f	class:Gateway
 destAddr	MsgTypeDef.h	/^    UINT16 destAddr;\/\/鐩敓鏂ゆ嫹閿熸枻鎷峰潃$/;"	m	struct:__anon21
@@ -753,16 +753,17 @@ destAddr	MsgTypeDef.h	/^    UINT8 destAddr;\/\/can鐩敓鏂ゆ嫹閿熸枻鎷
 destAddr	MsgTypeDef.h	/^    UINT8 destAddr;\/\/can鐩敓鏂ゆ嫹閿熸枻鎷峰潃$/;"	m	struct:__anon18
 disconnect	jacClient.cc	/^  void disconnect()$/;"	f	class:jacClient
 entities	tinyxml2.cpp	/^static const Entity entities[NUM_ENTITIES] = {$/;"	m	namespace:tinyxml2	file:
-figure_name	StuDef.h	/^	std::string figure_name;			\/\/花样名称$/;"	m	struct:__anon35
+figure_name	StuDef.h	/^	std::string figure_name;			\/\/花样名称$/;"	m	struct:__anon33
 flushFunc	jacServer.cc	/^void flushFunc()$/;"	f
-funcCode	preDef.h	/^    UINT8 funcCode;$/;"	m	struct:__anon33
-funcCode	preDef.h	/^    UINT8 funcCode;$/;"	m	struct:__anon34
+funcCode	StuDef.h	/^    UINT8 funcCode;$/;"	m	struct:__anon34
+funcCode	StuDef.h	/^    UINT8 funcCode;$/;"	m	struct:__anon35
 g_DatabaseOperator	jacServer.cc	/^DatabaseOperator g_DatabaseOperator;$/;"	v
 g_asyncLog	jacServer.cc	/^boost::scoped_ptr<muduo::AsyncLogging> g_asyncLog;$/;"	v
 g_config	jacServer.cc	/^XMLConfig g_config;$/;"	v
 g_logFile	jacServer.cc	/^boost::scoped_ptr<muduo::LogFile> g_logFile;$/;"	v
 gatewayId	MsgTypeDef.h	/^    char  gatewayId[STRING_MAXLEN];   \/\/閿熸枻鎷烽敓鎴唻鎷疯瘑閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹閿熻鍑ゆ嫹閿熸枻鎷� 閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鑺傜粨鏋勯敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹$/;"	m	struct:__anon23
 gatewayId	MsgTypeDef.h	/^    char  gatewayId[STRING_MAXLEN];   \/\/閿熸枻鎷烽敓鎴唻鎷疯瘑閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹閿熻鍑ゆ嫹閿熸枻鎷�$/;"	m	struct:__anon26
+getAbsolutePath	XMLConfig.cc	/^std::string XMLConfig::getAbsolutePath()$/;"	f	class:XMLConfig
 getAbsolutePath	tools.h	/^std::string getAbsolutePath()$/;"	f
 getCurNode	gateway.h	/^pINFO_Node Gateway::getCurNode()$/;"	f	class:Gateway
 getCurOperatorType	gateway.h	/^OperatorType Gateway::getCurOperatorType()$/;"	f	class:Gateway
@@ -775,7 +776,7 @@ getNodeByAddr	gateway.h	/^pINFO_Node Gateway::getNodeByAddr(UINT16 addr)$/;"	f	c
 getNodeSize	gateway.h	/^UINT16 Gateway::getNodeSize()$/;"	f	class:Gateway
 getUnReplyNum	gateway.h	/^int Gateway::getUnReplyNum()$/;"	f	class:Gateway
 gwID	MsgTypeDef.h	/^    char gwID[STRING_MAXLEN];$/;"	m	struct:__anon5
-halting_reason	StuDef.h	/^	UINT8  halting_reason;			\/\/机器故障信息 0x00 无故障 0x01 断纱 0x02 。。$/;"	m	struct:__anon35
+halting_reason	StuDef.h	/^	UINT8  halting_reason;			\/\/机器故障信息 0x00 无故障 0x01 断纱 0x02 。。$/;"	m	struct:__anon33
 header	MsgTypeDef.h	/^    MSG_Header header;\/\/閿熸枻鎷锋伅澶�$/;"	m	struct:__anon22
 header	MsgTypeDef.h	/^    MSG_Header header;\/\/閿熸枻鎷锋伅澶�$/;"	m	struct:__anon23
 header	MsgTypeDef.h	/^    MSG_Header header;\/\/閿熸枻鎷锋伅澶�$/;"	m	struct:__anon24
@@ -788,10 +789,10 @@ header	MsgTypeDef.h	/^    MSG_Header header;\/\/閿熸枻鎷锋伅澶�$/;"	m	s
 header	MsgTypeDef.h	/^    MSG_Header header;\/\/閿熸枻鎷锋伅澶�$/;"	m	struct:__anon31
 header	MsgTypeDef.h	/^    MSG_Header header;\/\/閿熸枻鎷锋伅澶�$/;"	m	struct:__anon32
 hour	MsgTypeDef.h	/^    UINT8 hour;\/\/鏃�$/;"	m	struct:__anon32
-how_long_to_finish	StuDef.h	/^	UINT32	how_long_to_finish;$/;"	m	struct:__anon35
+how_long_to_finish	StuDef.h	/^	UINT32	how_long_to_finish;$/;"	m	struct:__anon33
 i	jacClient.cc	/^        int i;$/;"	m	struct:jacClient::teststu	file:
 increaseUnReplyNum	gateway.h	/^void Gateway::increaseUnReplyNum(int inum = 1)$/;"	f	class:Gateway
-initByLoadFile	XMLConfig.cc	/^ bool XMLConfig::initByLoadFile()$/;"	f	class:XMLConfig
+initByLoadFile	XMLConfig.cc	/^bool XMLConfig::initByLoadFile()$/;"	f	class:XMLConfig
 insertNode	gateway.h	/^void Gateway::insertNode(pINFO_Node pNode)$/;"	f	class:Gateway
 isExistNode	gateway.h	/^bool Gateway::isExistNode(UINT16 addr)$/;"	f	class:Gateway
 itemData	tinyxml2.h	/^        char    itemData[ITEM_SIZE];$/;"	m	union:tinyxml2::MemPoolT::Item
@@ -800,7 +801,7 @@ jacClient	jacClient.cc	/^  jacClient(EventLoop* loop, const InetAddress& serverA
 jacClient	jacClient.cc	/^class jacClient : boost::noncopyable$/;"	c	file:
 kHeaderLen	process.h	/^  const static size_t kHeaderLen = sizeof(int32_t);$/;"	m	class:processCodec
 kRollSize	jacServer.cc	/^int kRollSize = 500 * 1000 * 1000;$/;"	v
-latitude	StuDef.h	/^	UINT32 latitude;$/;"	m	struct:__anon35
+latitude	StuDef.h	/^	UINT32 latitude;$/;"	m	struct:__anon33
 length	MsgTypeDef.h	/^            UINT16 length;\/\/閿熸枻鎷锋伅閿熸枻鎷烽敓楗猴綇鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹鎭ご閿熸枻鎷烽敓鏂ゆ嫹鎭敓鏂ゆ嫹$/;"	m	struct:__anon10::__anon13::__anon14
 length	MsgTypeDef.h	/^    UINT16 length;\/\/閿熸枻鎷锋伅閿熸枻鎷烽敓楗猴綇鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹鎭ご閿熸枻鎷烽敓鏂ゆ嫹鎭敓鏂ゆ嫹$/;"	m	struct:__anon18
 length	MsgTypeDef.h	/^    UINT16 length;\/\/閿熸枻鎷锋伅閿熸枻鎷烽敓楗猴綇鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹鎭ご閿熸枻鎷烽敓鏂ゆ嫹鎭敓鏂ゆ嫹$/;"	m	struct:__anon21
@@ -825,10 +826,10 @@ m_strName	gateway.h	/^    string         m_strName;$/;"	m	class:Gateway
 m_vNodesInfo	gateway.h	/^    std::vector<pINFO_Node> m_vNodesInfo;$/;"	m	class:Gateway
 macID	MsgTypeDef.h	/^    char    macID[4];\/\/閿熸枻鎷峰彴閿熸枻鎷烽敓鏂ゆ嫹 閿熺晫锛欰01 A02 B20$/;"	m	struct:__anon23
 macID	MsgTypeDef.h	/^    char  macID[4];\/\/閿熸枻鎷峰彴閿熸枻鎷烽敓鏂ゆ嫹 閿熺晫锛欰01 A02 B20$/;"	m	struct:__anon26
-macId	StuDef.h	/^    std::string  macId;$/;"	m	struct:__anon35
+macId	StuDef.h	/^    std::string  macId;$/;"	m	struct:__anon33
 macType	MsgTypeDef.h	/^    char    macType[4];\/\/閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹 閿熺晫锛欰01 A02 B03 C04     閿熸枻鎷烽敓鏂ゆ嫹閿熺粨鑺遍敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹閫氶敓缁撹姳閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹$/;"	m	struct:__anon23
-machine_state	StuDef.h	/^	UINT8  machine_state;			\/\/机器状态 1 开车 0 停车$/;"	m	struct:__anon35
-machine_state_has_record	StuDef.h	/^    UINT8  machine_state_has_record;  \/\/当前id的机器状态在数据库中是否有记录 0 1$/;"	m	struct:__anon35
+machine_state	StuDef.h	/^	UINT8  machine_state;			\/\/机器状态 1 开车 0 停车$/;"	m	struct:__anon33
+machine_state_has_record	StuDef.h	/^    UINT8  machine_state_has_record;  \/\/当前id的机器状态在数据库中是否有记录 0 1$/;"	m	struct:__anon33
 main	jacClient.cc	/^int main(int argc, char* argv[])$/;"	f
 main	jacServer.cc	/^int main(int argc, char *argv[])$/;"	f
 main	testClient.cc	/^int main(int argc, char *argv[])$/;"	f
@@ -841,7 +842,7 @@ mutex_	jacClient.cc	/^  MutexLock mutex_;$/;"	m	class:jacClient	file:
 name	jacClient.cc	/^        char name[2];$/;"	m	struct:jacClient::teststu	file:
 next	tinyxml2.h	/^        Item*   next;$/;"	m	union:tinyxml2::MemPoolT::Item
 numThreads_	jacServer.h	/^    int         numThreads_;                \/\/�߳��� 2$/;"	m	class:JacServer
-number_produced	StuDef.h	/^	UINT32 number_produced;$/;"	m	struct:__anon35
+number_produced	StuDef.h	/^	UINT32 number_produced;$/;"	m	struct:__anon33
 onConnection	jacClient.cc	/^  void onConnection(const TcpConnectionPtr& conn)$/;"	f	class:jacClient	file:
 onConnection	jacServer.cc	/^void JacServer::onConnection(const TcpConnectionPtr &conn)$/;"	f	class:JacServer
 onMessage	jacClient.cc	/^  void onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time)$/;"	f	class:jacClient	file:
@@ -849,19 +850,19 @@ onMessage	jacServer.cc	/^void JacServer::onMessage(const TcpConnectionPtr &conn,
 onMessage	process.h	/^  void onMessage(const muduo::net::TcpConnectionPtr& conn,$/;"	f	class:processCodec
 onStringMessage	jacClient.cc	/^  void onStringMessage(const TcpConnectionPtr&,$/;"	f	class:jacClient	file:
 onTimer	jacServer.cc	/^void JacServer::onTimer()$/;"	f	class:JacServer
-opening	StuDef.h	/^	UINT32	opening;$/;"	m	struct:__anon35
+opening	StuDef.h	/^	UINT32	opening;$/;"	m	struct:__anon33
 operator =	tinyxml2.h	/^    XMLConstHandle& operator=( const XMLConstHandle& ref )							{$/;"	f	class:tinyxml2::XMLConstHandle
 operator =	tinyxml2.h	/^    XMLHandle& operator=( const XMLHandle& ref )							{$/;"	f	class:tinyxml2::XMLHandle
 operator []	tinyxml2.h	/^    T& operator[](int i)				{$/;"	f	class:tinyxml2::DynArray
 operator []	tinyxml2.h	/^    const T& operator[](int i) const	{$/;"	f	class:tinyxml2::DynArray
-operator_num	StuDef.h	/^	std::string operator_num;$/;"	m	struct:__anon35
+operator_num	StuDef.h	/^	std::string operator_num;$/;"	m	struct:__anon33
 operator_type	database_operator.h	/^    UINT8    operator_type;             \/\/ insert ,select ,update ,and so on$/;"	m	struct:__anon1
 outputFunc	jacServer.cc	/^void outputFunc(const char* msg, int len)$/;"	f
 pCanFrame	MsgTypeDef.h	/^} CanFrame,*pCanFrame;$/;"	t	typeref:struct:__anon7
 pCanNetif	MsgTypeDef.h	/^} CanNetif,*pCanNetif;$/;"	t	typeref:struct:__anon4
 pComFrame	MsgTypeDef.h	/^} ComFrame,*pComFrame;$/;"	t	typeref:struct:__anon10
 pDatabaseOperatorTask	database_operator.h	/^}DatabaseOperatorTask, *pDatabaseOperatorTask;$/;"	t	typeref:struct:__anon1
-pINFO_Node	StuDef.h	/^}INFO_Node,*pINFO_Node;$/;"	t	typeref:struct:__anon35
+pINFO_Node	StuDef.h	/^}INFO_Node,*pINFO_Node;$/;"	t	typeref:struct:__anon33
 pMSG_ACK	MsgTypeDef.h	/^} MSG_ACK,*pMSG_ACK;$/;"	t	typeref:struct:__anon22
 pMSG_CanHeader	MsgTypeDef.h	/^} MSG_CanHeader,*pMSG_CanHeader;$/;"	t	typeref:struct:__anon15
 pMSG_GetMacState	MsgTypeDef.h	/^} MSG_GetMacState,*pMSG_GetMacState;$/;"	t	typeref:struct:__anon30
@@ -876,29 +877,30 @@ pMSG_PatFile	MsgTypeDef.h	/^} MSG_PatFile,*pMSG_PatFile;$/;"	t	typeref:struct:__
 pMSG_PatPara	MsgTypeDef.h	/^} MSG_PatPara,*pMSG_PatPara;$/;"	t	typeref:struct:__anon27
 pMSG_Production	MsgTypeDef.h	/^} MSG_Production,*pMSG_Production;$/;"	t	typeref:struct:__anon25
 pMSG_SetTime	MsgTypeDef.h	/^} MSG_SetTime,*pMSG_SetTime;$/;"	t	typeref:struct:__anon32
-pModifyGateWayDestAddr	preDef.h	/^} ModifyGateWayDestAddr,*pModifyGateWayDestAddr;$/;"	t	typeref:struct:__anon34
-pRspAck	preDef.h	/^} RspAck,*pRspAck;$/;"	t	typeref:struct:__anon33
+pModifyGateWayDestAddr	StuDef.h	/^} ModifyGateWayDestAddr,*pModifyGateWayDestAddr;$/;"	t	typeref:struct:__anon35
+pRspAck	StuDef.h	/^} RspAck,*pRspAck;$/;"	t	typeref:struct:__anon34
 pSendmsgQ	MsgTypeDef.h	/^} SendmsgQ,*pSendmsgQ;$/;"	t	typeref:struct:__anon6
 pTimeEvent	MsgTypeDef.h	/^} TimeEvent,*pTimeEvent;$/;"	t	typeref:struct:__anon3
 pZigNetif	MsgTypeDef.h	/^} ZigNetif,*pZigNetif;$/;"	t	typeref:struct:__anon5
 packetCnt	MsgTypeDef.h	/^    UINT16 packetCnt;\/\/閿熸枻鎷峰墠閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷�$/;"	m	struct:__anon28
 panid	MsgTypeDef.h	/^    UINT16 panid;         \/**< \\brief PanID         *\/$/;"	m	struct:__anon5
-password	XMLConfig.h	/^            std::string password;$/;"	m	class:XMLConfig
+password	XMLConfig.h	/^        std::string password;$/;"	m	class:XMLConfig
 pattern	tinyxml2.cpp	/^    const char* pattern;$/;"	m	struct:tinyxml2::Entity	file:
-port	XMLConfig.h	/^            int    port;$/;"	m	class:XMLConfig
+port	XMLConfig.h	/^        int    port;$/;"	m	class:XMLConfig
 processCodec	process.h	/^  explicit processCodec(const StringMessageCallback& cb)$/;"	f	class:processCodec
 processCodec	process.h	/^class processCodec : boost::noncopyable$/;"	c
 processDB	jacServer.cc	/^void JacServer::processDB()$/;"	f	class:JacServer
-product_total_output	StuDef.h	/^	UINT32  product_total_output;$/;"	m	struct:__anon35
-product_total_time	StuDef.h	/^	UINT32  product_total_time;$/;"	m	struct:__anon35
-protocolTag1	preDef.h	/^    UINT8 protocolTag1;$/;"	m	struct:__anon33
-protocolTag1	preDef.h	/^    UINT8 protocolTag1;$/;"	m	struct:__anon34
-protocolTag2	preDef.h	/^    UINT8 protocolTag2;$/;"	m	struct:__anon33
-protocolTag2	preDef.h	/^    UINT8 protocolTag2;$/;"	m	struct:__anon34
-protocolTag3	preDef.h	/^    UINT8 protocolTag3;$/;"	m	struct:__anon33
-protocolTag3	preDef.h	/^    UINT8 protocolTag3;$/;"	m	struct:__anon34
+product_total_output	StuDef.h	/^	UINT32  product_total_output;$/;"	m	struct:__anon33
+product_total_time	StuDef.h	/^	UINT32  product_total_time;$/;"	m	struct:__anon33
+protocolTag1	StuDef.h	/^    UINT8 protocolTag1;$/;"	m	struct:__anon34
+protocolTag1	StuDef.h	/^    UINT8 protocolTag1;$/;"	m	struct:__anon35
+protocolTag2	StuDef.h	/^    UINT8 protocolTag2;$/;"	m	struct:__anon34
+protocolTag2	StuDef.h	/^    UINT8 protocolTag2;$/;"	m	struct:__anon35
+protocolTag3	StuDef.h	/^    UINT8 protocolTag3;$/;"	m	struct:__anon34
+protocolTag3	StuDef.h	/^    UINT8 protocolTag3;$/;"	m	struct:__anon35
 protocolVersion	MsgTypeDef.h	/^    UINT16  protocolVersion;  \/\/鍗忛敓鏂ゆ嫹閿熻姤鏈敓鏂ゆ嫹, 閿熸枻鎷烽敓鏂ゆ嫹閿熻姤鏈敓鏁欒鎷蜂负0$/;"	m	struct:__anon23
 pteststu	jacClient.cc	/^      }pteststu;$/;"	m	class:jacClient	typeref:struct:jacClient::teststu	file:
+reConnect	database_operator.cc	/^bool DatabaseOperator::reConnect()$/;"	f	class:DatabaseOperator
 removeAllNodes	gateway.h	/^void Gateway::removeAllNodes()$/;"	f	class:Gateway
 replyNo	MsgTypeDef.h	/^            UINT16 replyNo; \/\/搴旈敓鏂ゆ嫹閿熸枻鎷烽敓鑴氾綇鎷峰彧閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷峰簲閿熸枻鎷烽敓鏂ゆ嫹鎭敓鍙綇鎷烽敓鏂ゆ嫹閿熸枻鎷峰尮閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹鎭�$/;"	m	struct:__anon10::__anon13::__anon14
 replyNo	MsgTypeDef.h	/^    UINT16 replyNo; \/\/搴旈敓鏂ゆ嫹閿熸枻鎷烽敓鑴氾綇鎷峰彧閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷峰簲閿熸枻鎷烽敓鏂ゆ嫹鎭敓鍙綇鎷峰簲閿熸枻鎷锋椂閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹鎭敓鏂ゆ嫹serialNo閿熸枻鎷烽敓鎴掕繑閿熸枻鎷峰幓閿熸枻鎷�$/;"	m	struct:__anon21
@@ -907,8 +909,8 @@ replyNo	MsgTypeDef.h	/^    UINT16 replyNo; \/\/搴旈敓鏂ゆ嫹閿熸枻鎷烽
 replyNo	MsgTypeDef.h	/^    UINT16 replyNo; \/\/搴旈敓鏂ゆ嫹閿熸枻鎷烽敓鑴氾綇鎷峰彧閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷峰簲閿熸枻鎷烽敓鏂ゆ嫹鎭敓鍙綇鎷烽敓鏂ゆ嫹閿熸枻鎷峰尮閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹鎭�$/;"	m	struct:__anon5
 resetCurNode	gateway.h	/^void Gateway::resetCurNode()$/;"	f	class:Gateway
 resetUnReplyNum	gateway.h	/^void Gateway::resetUnReplyNum(UINT16 addr=0)$/;"	f	class:Gateway
-respondtimes	XMLConfig.h	/^            int respondtimes;$/;"	m	class:XMLConfig
-roundtimeinterval	XMLConfig.h	/^            int roundtimeinterval;$/;"	m	class:XMLConfig
+respondtimes	XMLConfig.h	/^        int respondtimes;$/;"	m	class:XMLConfig
+roundtimeinterval	XMLConfig.h	/^        double roundtimeinterval;$/;"	m	class:XMLConfig
 second	MsgTypeDef.h	/^    UINT8 second;\/\/閿熸枻鎷�$/;"	m	struct:__anon32
 send	process.h	/^  void send(muduo::net::TcpConnection* conn,$/;"	f	class:processCodec
 sendAll	jacServer.cc	/^void JacServer::sendAll(Buffer *buf)$/;"	f	class:JacServer
@@ -926,11 +928,13 @@ setIp	gateway.h	/^void Gateway::setIp(string ip)$/;"	f	class:Gateway
 setLogging	jacServer.cc	/^void setLogging(const char *argv0)$/;"	f
 setName	gateway.h	/^void Gateway::setName(string name)$/;"	f	class:Gateway
 setNodeTime	jacServer.cc	/^void JacServer::setNodeTime(UINT16 addr)$/;"	f	class:JacServer
+split	database_operator.h	/^    void split(const std::string &s, char delim, std::vector<std::string> &elems) {$/;"	f	class:DatabaseOperator
+split	database_operator.h	/^std::vector<std::string> split(const std::string &s, char delim) {$/;"	f	class:DatabaseOperator
 srcAddr	MsgTypeDef.h	/^    UINT16 srcAddr;\/\/婧愰敓鏂ゆ嫹鍧€$/;"	m	struct:__anon21
 srcAddr	MsgTypeDef.h	/^    UINT8 srcAddr;\/\/can婧愰敓鏂ゆ嫹鍧€$/;"	m	struct:__anon15
 srcAddr	MsgTypeDef.h	/^    UINT8 srcAddr;\/\/can婧愰敓鏂ゆ嫹鍧€$/;"	m	struct:__anon18
 start	jacServer.cc	/^void JacServer::start()$/;"	f	class:JacServer
-state	StuDef.h	/^	UINT8  state;$/;"	m	struct:__anon35
+state	StuDef.h	/^	UINT8  state;$/;"	m	struct:__anon33
 str	MsgTypeDef.h	/^        } str;$/;"	m	union:__anon10::__anon11	typeref:struct:__anon10::__anon11::__anon12
 str	MsgTypeDef.h	/^        } str;$/;"	m	union:__anon10::__anon13	typeref:struct:__anon10::__anon13::__anon14
 str	MsgTypeDef.h	/^        } str;$/;"	m	union:__anon15::__anon16	typeref:struct:__anon15::__anon16::__anon17
@@ -940,19 +944,19 @@ task_list_mutex_	database_operator.h	/^    mutable MutexLock                    
 task_type	database_operator.h	/^    UINT16  task_type;                      \/\/different task ,different select cause;$/;"	m	struct:__anon1
 tasks_	database_operator.h	/^    DatabaseOperatorTaskList                        tasks_;                \/\/ database task list$/;"	m	class:DatabaseOperator
 tasks_beExec_	database_operator.h	/^    DatabaseOperatorTaskList                        tasks_beExec_;                \/\/ database task list will be execed$/;"	m	class:DatabaseOperator
-tasks_number	StuDef.h	/^	UINT32 tasks_number;$/;"	m	struct:__anon35
+tasks_number	StuDef.h	/^	UINT32 tasks_number;$/;"	m	struct:__anon33
 teststu	jacClient.cc	/^struct teststu{$/;"	s	class:jacClient	file:
 threadPool_	jacServer.h	/^    ThreadPool threadPool_;             \/\/ �̳߳� ����Ϊ�����߳� ���̴߳�������io�����ݿ��̴߳�������$/;"	m	class:JacServer
 time_sync_	jacServer.h	/^    tm*    time_sync_;         \/\/��ǰʱ��$/;"	m	class:JacServer
-timeoutofstop	XMLConfig.h	/^            int timeoutofstop;$/;"	m	class:XMLConfig
+timeoutofstop	XMLConfig.h	/^        int timeoutofstop;$/;"	m	class:XMLConfig
 times_get_mac_state_	jacServer.h	/^    int         times_get_mac_state_;       \/\/��ȡ�ڵ�״̬���������ÿ��ѯʮ�Σ���ѯһ�νڵ������Ϣ$/;"	m	class:JacServer
 tinyxml2	tinyxml2.cpp	/^namespace tinyxml2$/;"	n	file:
 tinyxml2	tinyxml2.h	/^namespace tinyxml2$/;"	n
 tmpAckCode_	jacServer.h	/^    UINT8 tmpAckCode_;$/;"	m	class:JacServer
-total_day_produced	StuDef.h	/^	UINT32 total_day_produced;			\/\/机台当时产量$/;"	m	struct:__anon35
-total_day_time	StuDef.h	/^	UINT32 total_day_time;				\/\/机台当日开机时长$/;"	m	struct:__anon35
-total_run_time	StuDef.h	/^	UINT32 total_run_time;				\/\/开机时长 单位：秒$/;"	m	struct:__anon35
-unReplyNum	StuDef.h	/^	UINT8  unReplyNum;$/;"	m	struct:__anon35
+total_day_produced	StuDef.h	/^	UINT32 total_day_produced;			\/\/机台当时产量$/;"	m	struct:__anon33
+total_day_time	StuDef.h	/^	UINT32 total_day_time;				\/\/机台当日开机时长$/;"	m	struct:__anon33
+total_run_time	StuDef.h	/^	UINT32 total_run_time;				\/\/开机时长 单位：秒$/;"	m	struct:__anon33
+unReplyNum	StuDef.h	/^	UINT8  unReplyNum;$/;"	m	struct:__anon33
 uni	MsgTypeDef.h	/^    } uni;$/;"	m	struct:__anon15	typeref:union:__anon15::__anon16
 uni	MsgTypeDef.h	/^    } uni;$/;"	m	struct:__anon18	typeref:union:__anon18::__anon19
 uni	MsgTypeDef.h	/^    } uni;$/;"	m	struct:__anon7	typeref:union:__anon7::__anon8
@@ -960,7 +964,7 @@ uni0	MsgTypeDef.h	/^    } uni0;$/;"	m	struct:__anon10	typeref:union:__anon10::__
 uni1	MsgTypeDef.h	/^    } uni1;$/;"	m	struct:__anon10	typeref:union:__anon10::__anon13
 updateNodeByAddr	gateway.h	/^void Gateway::updateNodeByAddr(UINT16 addr,pINFO_Node pnode)$/;"	f	class:Gateway
 updateTime	jacServer.cc	/^void JacServer::updateTime()$/;"	f	class:JacServer
-userName	XMLConfig.h	/^            std::string userName;$/;"	m	class:XMLConfig
+userName	XMLConfig.h	/^        std::string userName;$/;"	m	class:XMLConfig
 value	tinyxml2.cpp	/^    char value;$/;"	m	struct:tinyxml2::Entity	file:
 write	jacClient.cc	/^  void write(const StringPiece& message)$/;"	f	class:jacClient
 year	MsgTypeDef.h	/^    UINT16 year;\/\/閿熸枻鎷�$/;"	m	struct:__anon32

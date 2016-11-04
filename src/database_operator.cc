@@ -7,6 +7,8 @@ extern XMLConfig g_config;
 // create database connect
 int DatabaseOperator::Init()
 {
+    MutexLockGuard lock(conn_mutex_);
+
     conn_.set_option(new mysqlpp::SetCharsetNameOption("utf8"));
 
     if(conn_.connect(g_config.dbName.c_str(),g_config.dbServerIp.c_str(),g_config.userName.c_str(),g_config.password.c_str()))
@@ -24,6 +26,15 @@ int DatabaseOperator::Init()
 
 bool DatabaseOperator::reConnect()
 {
+    MutexLockGuard lock(conn_mutex_);
+
+    if( conn_.connected() )
+    {
+        return true;
+    }
+
+    conn_.disconnect();
+
     if(conn_.connect(g_config.dbName.c_str(),g_config.dbServerIp.c_str(),g_config.userName.c_str(),g_config.password.c_str()))
     {
         LOG_INFO <<"DB Connection success..";
@@ -34,7 +45,6 @@ bool DatabaseOperator::reConnect()
         LOG_ERROR <<"DB Connection failed: " << conn_.error();
         return false;
     }
-
 }
 
 bool DatabaseOperator::ExecTasks()
@@ -48,6 +58,10 @@ bool DatabaseOperator::ExecTasks()
     UINT16 taskType;
     UINT8  operatorType;
 
+    reConnect();
+
+    MutexLockGuard lock(conn_mutex_);
+
     for(int i=0; i<ilen; i++)
     {
         taskType = tasks_beExec_[i].task_type;
@@ -55,10 +69,6 @@ bool DatabaseOperator::ExecTasks()
         LOG_DEBUG << "task content: " << tasks_beExec_[i].content;
 
         // 0 insert 1 update 2 other
-        if(!conn_.connected())
-        {
-            reConnect();
-        }
 
         switch(operatorType)
         {
@@ -155,10 +165,10 @@ std::vector<INFO_Node>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
     string strsql = "select node_zig_addr,machine_id from node_register_info where gateway_ip='" + ipaddr + "'";
     LOG_DEBUG << "GetNodesOfGateway strsql, " << strsql;
 
-    if(!conn_.connected())
-    {
-        reConnect();
-    }
+    reConnect();
+
+    MutexLockGuard lock(conn_mutex_);
+
     mysqlpp::Query query = conn_.query(strsql.c_str());
     if (mysqlpp::StoreQueryResult res = query.store())
     {
@@ -188,10 +198,10 @@ UINT16 DatabaseOperator::GetZigAddrOfGateway(string ipaddr)
     string strsql = "select gateway_zig_addr from node_register_info where gateway_ip='" + ipaddr + "'";
     LOG_DEBUG << "GetZigAddrOfGateway strsql, " << strsql;
 
-    if(!conn_.connected())
-    {
-        reConnect();
-    }
+    reConnect();
+
+    MutexLockGuard lock(conn_mutex_);
+
     mysqlpp::Query query = conn_.query(strsql.c_str());
     if (mysqlpp::StoreQueryResult res = query.store())
     {
@@ -227,10 +237,11 @@ bool  DatabaseOperator::DeleteNodeOfGateway(string ipaddr, UINT16 node)
         ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr<< "' and node_zig_addr=" << node<<" limit 1";
     }
     std::cout<<"DeleteNodeOfGateway: "<< ostrsql.str()<<std::endl;
-    if(!conn_.connected())
-    {
-        reConnect();
-    }
+
+    reConnect();
+
+    MutexLockGuard lock(conn_mutex_);
+
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
     query.exec();
 
@@ -245,10 +256,10 @@ bool  DatabaseOperator::DeleteNodesOfGateway(string ipaddr)
 
     ostrsql << "delete from node_register_info where gateway_ip='" << ipaddr<<"' limit 500";
 
-    if(!conn_.connected())
-    {
-        reConnect();
-    }
+    reConnect();
+
+    MutexLockGuard lock(conn_mutex_);
+
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
     query.exec();
 
@@ -264,10 +275,10 @@ bool  DatabaseOperator::InsertNodeOfGateway(string ipaddr, UINT16 g_zig, UINT16 
     ostrsql.str("");
     ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr) VALUES ('','"
             << ipaddr << "' ,"<< g_zig << ","  << node << ")";
-    if(!conn_.connected())
-    {
-        reConnect();
-    }
+
+    reConnect();
+
+    MutexLockGuard lock(conn_mutex_);
 
     mysqlpp::Query query = conn_.query(ostrsql.str().c_str());
     LOG_DEBUG<< "InsertNodeOfGateway, sql: " << ostrsql.str().c_str();
