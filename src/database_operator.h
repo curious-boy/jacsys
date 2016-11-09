@@ -49,6 +49,8 @@ public:
 
     bool InsertNodeOfGateway(string ipaddr,UINT16 g_zig, UINT16 node);
 
+    bool  IsNodeExist (std::string machineId,std::string gate_addr,std::string node_addr );     // node is exist in node_register_info
+
     bool UpdateNodesOfGateway(string ipaddr, string name);
     string GetNameOfGateWay(string ipaddr);
 

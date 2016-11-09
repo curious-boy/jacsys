@@ -325,20 +325,44 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 #if USE_DATABASE
                     //machine_management
                     std::ostringstream ostrsql;
+#if 0
                     ostrsql << "select * from node_register_info where machine_id='" << m_pTmpMsgLogin->macID<< "' and gateway_zig_addr=" + m_pTmpHeader->destAddr << " and node_zig_addr=" << tmpNode->addr;
                     ostrsql << ";";
                     ostrsql << "delete from node_register_info where machine_id='" << m_pTmpMsgLogin->macID<< "' and gateway_zig_addr=" + m_pTmpHeader->destAddr << " and node_zig_addr=" << tmpNode->addr<<" limit 200";
     				ostrsql << ";";
-    				ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr,machine_id) VALUES ('','"
+#endif
+                    std::ostringstream ostr_destAddr;
+                    std::ostringstream ostr_addr;
+                    std::ostringstream ostr_macID;
+                    ostr_destAddr<<m_pTmpHeader->destAddr;
+                    ostr_addr<<tmpNode->addr;
+                    ostr_macID<<m_pTmpMsgLogin->macID;
+                    // judge the node is exist in table node_register_info
+                    if(g_DatabaseOperator.IsNodeExist(ostr_macID.str(),ostr_destAddr.str(),ostr_addr.str()))
+                    {
+                        ostrsql << "update node_register_info set gateway_ip='"<<m_curGateway->getIp()
+                            <<"' where gateway_zig_addr = "<<m_pTmpHeader->destAddr<<" and "
+                            <<"node_zig_addr = "<<tmpNode->addr<<" and "
+                            <<"machine_id = '"<<m_pTmpMsgLogin->macID<<"' limit 1";
+                        LOG_DEBUG << "node_register_info update sql: " << ostrsql.str().c_str();
+
+                        DatabaseOperatorTask insert_task_0;
+                        insert_task_0.operator_type = 1;
+                        insert_task_0.content = ostrsql.str().c_str();
+                        g_DatabaseOperator.AddTask(insert_task_0);
+                    }
+                    else
+                    {
+                        ostrsql << "insert into node_register_info (gateway_name, gateway_ip,gateway_zig_addr,node_zig_addr,machine_id) VALUES ('','"
                             << m_curGateway->getIp() << "' ," << m_pTmpHeader->destAddr << "," << tmpNode->addr << ",'"<< m_pTmpMsgLogin->macID<<"')";
-    				LOG_DEBUG << "node_register_info delete sql: " << ostrsql.str().c_str();
+                        LOG_DEBUG << "node_register_info delete sql: " << ostrsql.str().c_str();
 
-                    DatabaseOperatorTask insert_task_0;
-                    insert_task_0.operator_type = 2;
-                    insert_task_0.content = ostrsql.str().c_str();
-                    g_DatabaseOperator.AddTask(insert_task_0);
+                        DatabaseOperatorTask insert_task_0;
+                        insert_task_0.operator_type = 0;
+                        insert_task_0.content = ostrsql.str().c_str();
+                        g_DatabaseOperator.AddTask(insert_task_0);
 
-
+                    }
 
                     ostrsql.str("");
                     ostrsql << "select * from machine_management where machine_id='" << m_pTmpMsgLogin->macID<< "'";
@@ -1002,8 +1026,6 @@ void JacServer::modifyDestAddr(UINT16 addr)
     stuModifyGateWayDestAddr->protocolTag3 = 0xEF;
     stuModifyGateWayDestAddr->funcCode = 0xD2;
 
-    //LOG_INFO << "modifyDestAddr, test01";
-    // UINT16 destAddr = m_curGateway->getNextNode()->addr;    // getNextNode锟斤拷要锟截革拷锟斤拷锟斤拷
     LOG_INFO << "^^^^^^^^^^^^^^^^^^ send modify dest node, addr = " << addr;
     stuModifyGateWayDestAddr->addr = addr;
 

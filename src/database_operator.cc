@@ -192,6 +192,36 @@ std::vector<INFO_Node>  DatabaseOperator::GetNodesOfGateway (string ipaddr )
     return tvNodes;
 }
 
+bool  DatabaseOperator::IsNodeExist (std::string machineId,std::string gate_addr,std::string node_addr )
+{
+    std::string strsql =
+        "select gateway_ip from node_register_info where machine_id='" + machineId + "'"+" and "
+        + "gateway_zig_addr=" + gate_addr + " and "
+        + "node_zig_addr=" + node_addr;
+    LOG_DEBUG << "IsNodeExist strsql, " << strsql;
+
+    reConnect();
+
+    MutexLockGuard lock(conn_mutex_);
+
+    mysqlpp::Query query = conn_.query(strsql.c_str());
+    if (mysqlpp::StoreQueryResult res = query.store())
+    {
+        if(res.num_rows()>0)
+        {
+            return true;
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return false;
+}
+
+
+
 UINT16 DatabaseOperator::GetZigAddrOfGateway(string ipaddr)
 {
     UINT16 zigAddr;
