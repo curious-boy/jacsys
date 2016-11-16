@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config desc="jacServer config">
+    <databaseinfo desc="数据库配置信息">
+        <dbserver desc="数据服务ip">127.0.0.1</dbserver>
+        <port desc="数据服务端口">3060</port>
+        <dbname desc="数据库名称">jacdb</dbname>
+        <username desc="用户名称">root</username>
+        <password desc="密码">111111</password>
+    </databaseinfo>
+    <nodeinfo>
+        <roundtimeinterval desc="节点轮询时间间隔,范围(100~10000),单位，ms">500</roundtimeinterval>
+        <timeoutofstop desc="节点停机超时时长阀值,与所传单位相同,范围(1~100000)">1800</timeoutofstop>
+        <respondtimes desc="节点掉线响应次数阀值,范围(1~10)">6</respondtimes>
+    </nodeinfo>
+    <options desc="后续完善，暂未启用">
+        <writelog desc="是否写日志文件">0</writelog>
+        <loglevel desc="日志级别,INFO/DEBUG/WARNING/ERROR">INFO</loglevel>
+        <logfilepath>./</logfilepath>
+    </options>
+</config>
