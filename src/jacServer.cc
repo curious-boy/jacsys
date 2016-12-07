@@ -147,16 +147,22 @@ void JacServer::onTimer()
 #if USE_DATABASE
             //insert fault record here
             std::ostringstream ostrsql;
-            ostrsql << "select * from fault_record,userorder where fault_record.fault_id = userorder.faultId and userorder.state <> 2 and fault_record.fault_type=3 and fault_record.machine_id='" << tnode->macId << "'" ;
-            ostrsql << ";";
-            ostrsql << "commit";
-            ostrsql << ";";
-            ostrsql << "insert into fault_record (fault_type,machine_id) VALUES(3,'" << tnode->macId << "')";
+            ostrsql << "select * from userorder where faulType='3' and machineId='" << tnode->macId << "' and state<>2" ;
+            if(!g_DatabaseOperator.IsRecordExist(ostrsql.str()))
+            {
+            	ostrsql.str("");
+            	ostrsql << "select * from fault_record where fault_type=3 and machine_id='" << tnode->macId << "' and remarks IS NULL" ;
+            	ostrsql << ";";
+            	ostrsql << "commit";
+            	ostrsql << ";";
+            	ostrsql << "insert into fault_record (fault_type,machine_id) VALUES(3,'" << tnode->macId << "')";
 
-            DatabaseOperatorTask insert_task_2;
-            insert_task_2.operator_type = 2;
-            insert_task_2.content = ostrsql.str().c_str();
-            g_DatabaseOperator.AddTask(insert_task_2);
+            	DatabaseOperatorTask insert_task_2;
+            	insert_task_2.operator_type = 2;
+            	insert_task_2.content = ostrsql.str().c_str();
+            	g_DatabaseOperator.AddTask(insert_task_2);
+            }
+            
 
             g_DatabaseOperator.DeleteNodeOfGateway(m_curGateway->getIp(), tnode->addr);
 #endif
@@ -852,16 +858,22 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                 // insert data to fault record
                 ostrsql.str("");
-                ostrsql << "select * from fault_record,userorder where fault_record.fault_id = userorder.faultId and userorder.state <> 2 and fault_record.fault_type=" << iHaltingReason << " and fault_record.machine_id='" << pNode->macId << "'" ;
-                ostrsql << ";";
-                ostrsql << "commit";
-                ostrsql << ";";
-                ostrsql << "insert into fault_record (fault_type,machine_id) VALUES(" << iHaltingReason<< ",'" << pNode->macId << "')";
+                ostrsql << "select * from userorder where faulType='" <<iHaltingReason << "' and machineId='" << pNode->macId << "' and state<>2" ;
+                if(!g_DatabaseOperator.IsRecordExist(ostrsql.str()))
+                {
+                	ostrsql.str("");
+                	ostrsql << "select * from fault_record where fault_type=" << iHaltingReason << " and machine_id='" << pNode->macId << "' and remarks IS NULL" ;
+                	ostrsql << ";";
+                	ostrsql << "commit";
+                	ostrsql << ";";
+                	ostrsql << "insert into fault_record (fault_type,machine_id) VALUES(" << iHaltingReason<< ",'" << pNode->macId << "')";
 
-                DatabaseOperatorTask insert_task_2;
-                insert_task_2.operator_type = 2;
-                insert_task_2.content = ostrsql.str().c_str();
-                g_DatabaseOperator.AddTask(insert_task_2);
+                	DatabaseOperatorTask insert_task_2;
+                	insert_task_2.operator_type = 2;
+                	insert_task_2.content = ostrsql.str().c_str();
+                	g_DatabaseOperator.AddTask(insert_task_2);
+                }
+                
             }
             m_curGateway->resetUnReplyNum(stuBody->header.srcAddr);
         }
@@ -1168,7 +1180,9 @@ int main(int argc, char *argv[])
 #if 0
     // write log to file
     std::ostringstream ostrlogfile;
-    ostrlogfile << argv[0] << "." << iport;
+    ostrlogfile <<"log//";
+    ostrlogfile << iport;
+    std::cout<<ostrlogfile.str().c_str()<<std::endl;
 
     g_logFile.reset(new muduo::LogFile(::basename(ostrlogfile.str().c_str()), 200 * 1000));
     muduo::Logger::setOutput(outputFunc);

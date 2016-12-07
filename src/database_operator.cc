@@ -220,6 +220,28 @@ bool  DatabaseOperator::IsNodeExist (std::string machineId,std::string gate_addr
     return false;
 }
 
+bool  DatabaseOperator::IsRecordExist (std::string strsql )
+{
+    reConnect();
+
+    MutexLockGuard lock(conn_mutex_);
+
+    mysqlpp::Query query = conn_.query(strsql.c_str());
+    if (mysqlpp::StoreQueryResult res = query.store())
+    {
+        if(res.num_rows()>0)
+        {
+            return true;
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return false;
+}
+
 
 
 UINT16 DatabaseOperator::GetZigAddrOfGateway(string ipaddr)
