@@ -108,6 +108,8 @@ void JacServer::onTimer()
 {
     UINT16 msgLen = 0;
     LOG_INFO << "onTimer....";
+    
+    g_DatabaseOperator.Ping();
 
     if (m_curGateway == NULL)
     {
@@ -373,7 +375,10 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                     ostrsql.str("");
                     ostrsql << "select * from machine_management where machine_id='" << m_pTmpMsgLogin->macID<< "'";
                     ostrsql << ";";
-                    ostrsql << "commit";
+                    ostrsql << "Update machine_management set register_time='" <<GetCurrentTime()<< "'，addr=" << Tranverse16(m_pTmpHeader->srcAddr) << ", gateway='" << m_pTmpMsgLogin->gatewayId <<"', machine_type='" 
+                            << m_pTmpMsgLogin->macType << "', row=" << (int)m_pTmpMsgLogin->Row << "，col=" << (int)m_pTmpMsgLogin->Col << "，thread_number=" << (int)m_pTmpMsgLogin->Warp << "，Mcuversion=" 
+                            << (int)m_pTmpMsgLogin->McuVer << "，Universion=" << (int)m_pTmpMsgLogin->UiVer << "，Hw1version=" << (int)m_pTmpMsgLogin->Hw1Ver << "，Hw2version=" << (int)m_pTmpMsgLogin->Hw2Ver
+                            << " where machine_id='" << m_pTmpMsgLogin->macID <<"'";
                     ostrsql << ";";
                     ostrsql << "INSERT INTO `jacdb`.`machine_management`(`machine_id`,`addr`,`gateway`,`machine_type`,`row`,`col`,`thread_number`,`Mcuversion`,`Universion`,`Hw1version`,`Hw2version`) VALUES('"
                             << m_pTmpMsgLogin->macID << "'," << Tranverse16(m_pTmpHeader->srcAddr) << ",'" << m_pTmpMsgLogin->gatewayId << "','"

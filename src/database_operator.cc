@@ -47,6 +47,16 @@ bool DatabaseOperator::reConnect()
     }
 }
 
+void DatabaseOperator::Ping()
+{
+	MutexLockGuard lock(conn_mutex_);
+
+    if( conn_.connected() )
+    {
+        conn_.ping();
+    }
+}
+
 bool DatabaseOperator::ExecTasks()
 {
     if(GetTaskList()==false)

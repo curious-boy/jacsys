@@ -58,6 +58,8 @@ public:
     void AddTask(DatabaseOperatorTask task);
     
     bool IsRecordExist (std::string strsql);
+    
+    void Ping();
 
 
     private:
