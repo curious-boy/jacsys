@@ -569,6 +569,31 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
             }
             memcpy(m_pTmpMsgLogin,buf->peek(),sizeof(MSG_Login));
             //m_pTmpMsgLogin = (MSG_Login *)const_cast<char *>(buf->peek());
+            
+            //锟斤拷锟侥合凤拷锟斤拷校锟斤拷
+            if (Tranverse16(m_pTmpMsgLogin->header.length) != sizeof(MSG_Login))
+            {
+                tmpAckCode_ = ACK_OUTOFMEM;
+                LOG_WARN << "ACK_OUTOFMEM";
+            }
+
+            if ((m_pTmpMsgLogin->header.Sof != COM_FRM_HEAD) || (m_pTmpMsgLogin->Eof != COM_FRM_END))
+            {
+                tmpAckCode_ = ACK_DATALOSS;
+                LOG_WARN << "ACK_DATALOSS";
+            }
+
+            if (m_pTmpMsgLogin->header.destAddr != m_localAddr)
+            {
+                tmpAckCode_ = ACK_MSG_ERROR;
+                LOG_WARN << "ACK_MSG_ERROR";
+            }
+            
+            if (tmpAckCode_ != ACK_OK)
+            {
+            	buf->retrieve(sizeof(MSG_Login));
+                return;
+            }
 
             if (m_localAddr == 0)
             {
@@ -600,24 +625,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
             LOG_DEBUG << "Hw1Ver: " << (m_pTmpMsgLogin->Hw1Ver);
             LOG_DEBUG << "Hw2Ver: " << (m_pTmpMsgLogin->Hw2Ver);
 
-            //锟斤拷锟侥合凤拷锟斤拷校锟斤拷
-            if (Tranverse16(m_pTmpMsgLogin->header.length) != sizeof(MSG_Login))
-            {
-                tmpAckCode_ = ACK_OUTOFMEM;
-                LOG_WARN << "ACK_OUTOFMEM";
-            }
-
-            if ((m_pTmpMsgLogin->header.Sof != COM_FRM_HEAD) || (m_pTmpMsgLogin->Eof != COM_FRM_END))
-            {
-                tmpAckCode_ = ACK_DATALOSS;
-                LOG_WARN << "ACK_DATALOSS";
-            }
-
-            if (m_pTmpMsgLogin->header.destAddr != m_localAddr)
-            {
-                tmpAckCode_ = ACK_MSG_ERROR;
-                LOG_WARN << "ACK_MSG_ERROR";
-            }
+            
 
             // 1 锟斤拷时取锟斤拷锟斤拷询锟斤拷时
             // 2 锟斤拷锟斤拷锟斤拷锟斤拷目锟斤拷锟节碉拷锟斤拷址为锟斤拷前注锟斤拷锟节碉拷锟斤拷址锟斤拷锟斤拷锟斤拷锟斤拷注锟斤拷锟缴癸拷应锟斤拷
