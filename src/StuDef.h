@@ -32,6 +32,8 @@ typedef struct
 	UINT32 total_day_produced;			//机台当时产量
 
 	std::string figure_name;			//花样名称
+	std::string last_figure_name;
+	std::string figure_batch;
 	UINT32 latitude;
 	UINT32	opening;
 	UINT32 tasks_number;
@@ -39,6 +41,8 @@ typedef struct
 	UINT32	how_long_to_finish;
 	UINT16	concurrent_produce_number;
 	std::string operator_num;
+	std::string last_operator_num;
+	std::string operator_num_batch;
 	UINT32  product_total_time;
 	UINT32  product_total_output;
 

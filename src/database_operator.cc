@@ -252,6 +252,36 @@ bool  DatabaseOperator::IsRecordExist (std::string strsql )
     return false;
 }
 
+std::string  DatabaseOperator::ExecuteScaler (std::string strsql )
+{
+    reConnect();
+
+    MutexLockGuard lock(conn_mutex_);
+
+    mysqlpp::Query query = conn_.query(strsql.c_str());
+    if (mysqlpp::StoreQueryResult res = query.store())
+    {
+        if(res.num_rows()>0)
+        {
+            mysqlpp::StoreQueryResult::const_iterator it;
+        	for (it = res.begin(); it != res.end(); ++it)
+        	{
+           	 	mysqlpp::Row row = *it;
+            	std::string str(row[0]);
+            	return str;
+        	}
+        }
+    }
+    else
+    {
+        return "";
+    }
+    
+    return "";
+
+}
+
+
 
 
 UINT16 DatabaseOperator::GetZigAddrOfGateway(string ipaddr)

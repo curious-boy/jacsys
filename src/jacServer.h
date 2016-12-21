@@ -84,6 +84,7 @@ private:
     void    updateTime();
 
     static void processDB();
+    static void pingDB();
 
     typedef std::set<TcpConnectionPtr> ConnectionList;
     EventLoop* m_loop;

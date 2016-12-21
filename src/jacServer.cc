@@ -21,6 +21,18 @@ void JacServer::processDB()
     }
 }
 
+void JacServer::pingDB()
+{
+    LOG_INFO << "... pingDB ...";
+
+    while (true)
+    {
+        g_DatabaseOperator.Ping();
+
+        usleep(50);
+    }
+}
+
 void JacServer::start()
 {
     LOG_INFO << "starting " << numThreads_ << " threads.";
@@ -109,7 +121,6 @@ void JacServer::onTimer()
     UINT16 msgLen = 0;
     LOG_INFO << "onTimer....";
     
-    g_DatabaseOperator.Ping();
 
     if (m_curGateway == NULL)
     {
@@ -575,12 +586,71 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
             {
                 tmpAckCode_ = ACK_OUTOFMEM;
                 LOG_WARN << "ACK_OUTOFMEM";
+                //buf->retrieve(sizeof(MSG_Login));
+                int iTempLen = buf->readableBytes();
+            	int iHeaderIndex = 0;
+            	int iEndIndex = 0;
+
+            	char *pTmpChar = const_cast<char *>(buf->peek());
+            	for (int i = 0; i < iTempLen; i++)
+            	{
+                	if ((UINT8)pTmpChar[i] == (UINT8)COM_FRM_HEAD)
+                	{
+                    	iHeaderIndex = i;
+                	}
+            	}
+            	for (int i = 0; i < iTempLen; i++)
+            	{
+                	if ((UINT8)pTmpChar[i] == (UINT8)COM_FRM_END)
+                	{
+                    	iEndIndex = i;
+                	}
+            	}
+            	if ((iHeaderIndex < iEndIndex) && (iEndIndex <= iTempLen))
+            	{
+                	buf->retrieve(iEndIndex);
+            	}
+            	else
+            	{
+                	buf->retrieve(iTempLen);
+            	}
+                return;
             }
 
             if ((m_pTmpMsgLogin->header.Sof != COM_FRM_HEAD) || (m_pTmpMsgLogin->Eof != COM_FRM_END))
             {
                 tmpAckCode_ = ACK_DATALOSS;
                 LOG_WARN << "ACK_DATALOSS";
+                //buf->retrieve(sizeof(MSG_Login));
+                int iTempLen = buf->readableBytes();
+            	int iHeaderIndex = 0;
+            	int iEndIndex = 0;
+
+            	char *pTmpChar = const_cast<char *>(buf->peek());
+            	for (int i = 0; i < iTempLen; i++)
+            	{
+                	if ((UINT8)pTmpChar[i] == (UINT8)COM_FRM_HEAD)
+                	{
+                    	iHeaderIndex = i;
+                	}
+            	}
+            	for (int i = 0; i < iTempLen; i++)
+            	{
+                	if ((UINT8)pTmpChar[i] == (UINT8)COM_FRM_END)
+                	{
+                    	iEndIndex = i;
+                	}
+            	}
+            	if ((iHeaderIndex < iEndIndex) && (iEndIndex <= iTempLen))
+            	{
+                	buf->retrieve(iEndIndex);
+            	}
+            	else
+            	{
+                	buf->retrieve(iTempLen);
+            	}
+                return;
+                return;
             }
 
             if (m_pTmpMsgLogin->header.destAddr != m_localAddr)
@@ -589,11 +659,6 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 LOG_WARN << "ACK_MSG_ERROR";
             }
             
-            if (tmpAckCode_ != ACK_OK)
-            {
-            	buf->retrieve(sizeof(MSG_Login));
-                return;
-            }
 
             if (m_localAddr == 0)
             {
@@ -637,7 +702,7 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
                 LOG_INFO << "gatewayId: " << m_pTmpMsgLogin->gatewayId;
             }
 
-            if (tmpAckCode_ == ACK_OK)
+            if (tmpAckCode_ == ACK_MSG_ERROR || tmpAckCode_ == ACK_OK)
             {
                 if (m_curGateway->isExistNode(m_pTmpMsgLogin->header.srcAddr))
                 {
@@ -965,32 +1030,144 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
 
                 //figure_info 当节点机花样名称发生变化时，插入新记录，并记录花样更新时间到update_time字段，后续过程此字段保持不变
                 //只更新其它字段 操作说明：当节点机的花样发生变化时，插入新记录，否则更新对应记录
-                ostrsql.str("");
-                ostrsql << "select * from figure_info where machine_id='" << pNode->macId <<"' and figure_name='" << stuBody->FileName << "'";
-                ostrsql << ";";
-                ostrsql << "update figure_info set register_time='"<<GetCurrentTime()<<"',figure_name='"<<stuBody->FileName<<"',latitude="<<(int)Tranverse16(stuBody->WeftDensity)/100<<",opening="<<(int)Tranverse16(stuBody->OpeningDegree)/100<<",tasks_number="<<(int)Tranverse32(stuBody->PatTask) <<",number_produced="<<(int)Tranverse32(stuBody->TotalOut)<<",how_long_to_finish="<<(int)Tranverse32(stuBody->RemainTm)<<",concurrent_produce_number="<<(int)stuBody->OutNum<<" where machine_id='"<<pNode->macId<<"' limit 1";
-                ostrsql << ";";
-                ostrsql << "insert into figure_info (machine_id,update_time,register_time, figure_name,latitude,opening,tasks_number,number_produced,how_long_to_finish,concurrent_produce_number) VALUES ('" << pNode->macId << "','" << GetCurrentTime() << "','"<<GetCurrentTime()<<"','" << stuBody->FileName << "'," << (int)Tranverse16(stuBody->WeftDensity)/100<<","<< (int)Tranverse16(stuBody->OpeningDegree)/100<<","<<(int)Tranverse32(stuBody->PatTask)<<","<<(int)Tranverse32(stuBody->TotalOut)<<","<<(int)Tranverse32(stuBody->RemainTm)<<","<<(int)stuBody->OutNum << ")";
+                std::string figure_batch;
+                if(pNode->last_figure_name=="")
+                {
+                	ostrsql.str("");
+                	//ostrsql << "select * from figure_info where machine_id='" << pNode->macId <<"' and figure_name='" << stuBody->FileName << "' and TIMESTAMPDIFF(HOUR,register_time,Now())<12";
+                	ostrsql << "select * from figure_info where machine_id='" << pNode->macId <<"' and figure_name='" << stuBody->FileName << "'";
+                	if(g_DatabaseOperator.IsRecordExist(ostrsql.str()))
+                	{
+                		ostrsql.str("");
+                		//ostrsql << "select update_time from figure_info where machine_id='" << pNode->macId <<"' and figure_name='" << stuBody->FileName << "' and TIMESTAMPDIFF(HOUR,register_time,Now())<12 ORDER BY register_time DESC";	
+                		ostrsql << "select update_time from figure_info where machine_id='" << pNode->macId <<"' and figure_name='" << stuBody->FileName << "' ORDER BY register_time DESC";	
+                		figure_batch=g_DatabaseOperator.ExecuteScaler(ostrsql.str());
+                		pNode->figure_batch=figure_batch;
+                		pNode->last_figure_name=stuBody->FileName;
+                		ostrsql.str("");
+                		ostrsql << "update figure_info set register_time='"<<GetCurrentTime()<<"',figure_name='"<<stuBody->FileName<<"',latitude="<<(int)Tranverse16(stuBody->WeftDensity)/100<<",opening="<<(int)Tranverse16(stuBody->OpeningDegree)/100<<",tasks_number="<<(int)Tranverse32(stuBody->PatTask) <<",number_produced="<<(int)Tranverse32(stuBody->TotalOut)<<",how_long_to_finish="<<(int)Tranverse32(stuBody->RemainTm)<<",concurrent_produce_number="<<(int)stuBody->OutNum<<" where machine_id='"<<pNode->macId<<"' and figure_name='" << stuBody->FileName << "' and update_time='" << pNode->figure_batch <<"' limit 1";
+                		DatabaseOperatorTask insert_task_2;
+                		insert_task_2.operator_type = 1;
+                		insert_task_2.content = ostrsql.str().c_str();
+                		g_DatabaseOperator.AddTask(insert_task_2);
+                	}      
+                	else
+                	{
+                		figure_batch= GetCurrentTime();
+                		pNode->figure_batch=figure_batch;
+                		pNode->last_figure_name=stuBody->FileName;
+                		ostrsql.str("");
+                		ostrsql << "insert into figure_info (machine_id,update_time,register_time, figure_name,latitude,opening,tasks_number,number_produced,how_long_to_finish,concurrent_produce_number) VALUES ('" << pNode->macId << "','" << figure_batch << "','"<<GetCurrentTime()<<"','" << stuBody->FileName << "'," << (int)Tranverse16(stuBody->WeftDensity)/100<<","<< (int)Tranverse16(stuBody->OpeningDegree)/100<<","<<(int)Tranverse32(stuBody->PatTask)<<","<<(int)Tranverse32(stuBody->TotalOut)<<","<<(int)Tranverse32(stuBody->RemainTm)<<","<<(int)stuBody->OutNum << ")";
+                		DatabaseOperatorTask insert_task_3;
+                		insert_task_3.operator_type = 0;
+                		insert_task_3.content = ostrsql.str().c_str();
+                		g_DatabaseOperator.AddTask(insert_task_3);
+                	}        	
+                }
+                else if(pNode->last_figure_name!=stuBody->FileName)
+                {
+                	figure_batch= GetCurrentTime();
+                	pNode->figure_batch=figure_batch;
+                	pNode->last_figure_name=stuBody->FileName;
+                	ostrsql.str("");
+                	ostrsql << "insert into figure_info (machine_id,update_time,register_time, figure_name,latitude,opening,tasks_number,number_produced,how_long_to_finish,concurrent_produce_number) VALUES ('" << pNode->macId << "','" << figure_batch << "','"<<GetCurrentTime()<<"','" << stuBody->FileName << "'," << (int)Tranverse16(stuBody->WeftDensity)/100<<","<< (int)Tranverse16(stuBody->OpeningDegree)/100<<","<<(int)Tranverse32(stuBody->PatTask)<<","<<(int)Tranverse32(stuBody->TotalOut)<<","<<(int)Tranverse32(stuBody->RemainTm)<<","<<(int)stuBody->OutNum << ")";
+                	DatabaseOperatorTask insert_task_4;
+                	insert_task_4.operator_type = 0;
+                	insert_task_4.content = ostrsql.str().c_str();
+                	g_DatabaseOperator.AddTask(insert_task_4);
+                }
+                else
+                {
+                	ostrsql.str("");
+                	ostrsql << "update figure_info set register_time='"<<GetCurrentTime()<<"',figure_name='"<<stuBody->FileName<<"',latitude="<<(int)Tranverse16(stuBody->WeftDensity)/100<<",opening="<<(int)Tranverse16(stuBody->OpeningDegree)/100<<",tasks_number="<<(int)Tranverse32(stuBody->PatTask) <<",number_produced="<<(int)Tranverse32(stuBody->TotalOut)<<",how_long_to_finish="<<(int)Tranverse32(stuBody->RemainTm)<<",concurrent_produce_number="<<(int)stuBody->OutNum<<" where machine_id='"<<pNode->macId<<"' and figure_name='" << stuBody->FileName << "' and update_time='" << pNode->figure_batch <<"' limit 1";
+                	DatabaseOperatorTask insert_task_5;
+                	insert_task_5.operator_type = 1;
+                	insert_task_5.content = ostrsql.str().c_str();
+                	g_DatabaseOperator.AddTask(insert_task_5);
+                }
+                
+                //ostrsql.str("");
+                //ostrsql << "select * from figure_info where machine_id='" << pNode->macId <<"' and figure_name='" << stuBody->FileName << "'";
+                //ostrsql << ";";
+                //ostrsql << "update figure_info set register_time='"<<GetCurrentTime()<<"',figure_name='"<<stuBody->FileName<<"',latitude="<<(int)Tranverse16(stuBody->WeftDensity)/100<<",opening="<<(int)Tranverse16(stuBody->OpeningDegree)/100<<",tasks_number="<<(int)Tranverse32(stuBody->PatTask) <<",number_produced="<<(int)Tranverse32(stuBody->TotalOut)<<",how_long_to_finish="<<(int)Tranverse32(stuBody->RemainTm)<<",concurrent_produce_number="<<(int)stuBody->OutNum<<" where machine_id='"<<pNode->macId<<"' and figure_name='" << stuBody->FileName << "' limit 1";
+                //ostrsql << ";";
+                //ostrsql << "insert into figure_info (machine_id,update_time,register_time, figure_name,latitude,opening,tasks_number,number_produced,how_long_to_finish,concurrent_produce_number) VALUES ('" << pNode->macId << "','" << GetCurrentTime() << "','"<<GetCurrentTime()<<"','" << stuBody->FileName << "'," << (int)Tranverse16(stuBody->WeftDensity)/100<<","<< (int)Tranverse16(stuBody->OpeningDegree)/100<<","<<(int)Tranverse32(stuBody->PatTask)<<","<<(int)Tranverse32(stuBody->TotalOut)<<","<<(int)Tranverse32(stuBody->RemainTm)<<","<<(int)stuBody->OutNum << ")";
 
-                DatabaseOperatorTask insert_task_2;
-                insert_task_2.operator_type = 2;
-                insert_task_2.content = ostrsql.str().c_str();
-                g_DatabaseOperator.AddTask(insert_task_2);
+                //DatabaseOperatorTask insert_task_2;
+                //insert_task_2.operator_type = 2;
+                //insert_task_2.content = ostrsql.str().c_str();
+                //g_DatabaseOperator.AddTask(insert_task_2);
 
                 //production_info 当值机工号发生变化时，插入新记录，并记录工号更新时间到update_time字段，后续过程该字段保持不变，
                 //只更新其它字段； 操作类型：当节点机的值机工号发生变化时插入新记录，否则更新对应记录
-                ostrsql.str("");
-                std::string  strWorkNum(stuBody->WorkNum);
-                ostrsql << "select * from production_info where machine_id='" << pNode->macId <<"' and operator='" << stuBody->WorkNum << "'";
-                ostrsql << ";";
-                ostrsql << "update  production_info set register_time='"<<GetCurrentTime()<<"',operator='"<<stuBody->WorkNum<<"',product_total_time="<<(int)Tranverse32(stuBody->ClassTmLen)<<",product_total_output="<<(int)Tranverse32(stuBody->ClassOut)<<" where machine_id='"<<pNode->macId<<"' limit 1";
-                ostrsql << ";";
-                ostrsql << "insert into production_info (machine_id,update_time,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "','"<<GetCurrentTime()<<"','"<< GetCurrentTime()<< "','" <<stuBody->WorkNum << "'," << (int)Tranverse32(stuBody->ClassTmLen)<<","<< (int)Tranverse32(stuBody->ClassOut)<<")";
+                std::string operator_num_batch;
+                if(pNode->last_operator_num=="")
+                {
+                	ostrsql.str("");
+                	//ostrsql << "select * from production_info where machine_id='" << pNode->macId <<"' and operator='" << stuBody->WorkNum << "' and TIMESTAMPDIFF(HOUR,register_time,Now())<12";
+                	ostrsql << "select * from production_info where machine_id='" << pNode->macId <<"' and operator='" << stuBody->WorkNum << "'";
+                	if(g_DatabaseOperator.IsRecordExist(ostrsql.str()))
+                	{
+                		ostrsql.str("");
+                		//ostrsql << "select update_time from production_info where machine_id='" << pNode->macId <<"' and operator='" << stuBody->WorkNum << "' and TIMESTAMPDIFF(HOUR,register_time,Now())<12 ORDER BY register_time DESC";
+                		ostrsql << "select update_time from production_info where machine_id='" << pNode->macId <<"' and operator='" << stuBody->WorkNum << "' ORDER BY register_time DESC";
+                		operator_num_batch=g_DatabaseOperator.ExecuteScaler(ostrsql.str());
+                		pNode->operator_num_batch=operator_num_batch;
+                		pNode->last_operator_num=stuBody->WorkNum;
+                		ostrsql.str("");
+                		ostrsql << "update  production_info set register_time='"<<GetCurrentTime()<<"',operator='"<<stuBody->WorkNum<<"',product_total_time="<<(int)Tranverse32(stuBody->ClassTmLen)<<",product_total_output="<<(int)Tranverse32(stuBody->ClassOut)<<" where machine_id='"<<pNode->macId<<"' and operator='" << stuBody->WorkNum << "' and update_time='" << pNode->operator_num_batch <<"'  limit 1";
+                		DatabaseOperatorTask insert_task_6;
+                		insert_task_6.operator_type = 1;
+                		insert_task_6.content = ostrsql.str().c_str();
+                		g_DatabaseOperator.AddTask(insert_task_6);
+                	}
+                	else
+                	{
+                		operator_num_batch= GetCurrentTime();
+                		pNode->operator_num_batch=operator_num_batch;
+                		pNode->last_operator_num=stuBody->WorkNum;
+                		ostrsql.str("");
+                		ostrsql << "insert into production_info (machine_id,update_time,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "','"<<operator_num_batch<<"','"<< GetCurrentTime()<< "','" <<stuBody->WorkNum << "'," << (int)Tranverse32(stuBody->ClassTmLen)<<","<< (int)Tranverse32(stuBody->ClassOut)<<")";
+                		DatabaseOperatorTask insert_task_7;
+                		insert_task_7.operator_type = 0;
+                		insert_task_7.content = ostrsql.str().c_str();
+                		g_DatabaseOperator.AddTask(insert_task_7);
+                	}
+                }
+                else if(pNode->last_operator_num!=stuBody->WorkNum)
+                {
+                	operator_num_batch= GetCurrentTime();
+                	pNode->operator_num_batch=operator_num_batch;
+                	pNode->last_operator_num=stuBody->WorkNum;
+                	ostrsql.str("");
+                	ostrsql << "insert into production_info (machine_id,update_time,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "','"<<operator_num_batch<<"','"<< GetCurrentTime()<< "','" <<stuBody->WorkNum << "'," << (int)Tranverse32(stuBody->ClassTmLen)<<","<< (int)Tranverse32(stuBody->ClassOut)<<")";
+                	DatabaseOperatorTask insert_task_8;
+                	insert_task_8.operator_type = 0;
+                	insert_task_8.content = ostrsql.str().c_str();
+                	g_DatabaseOperator.AddTask(insert_task_8);
+                }
+                else
+                {
+                	ostrsql.str("");
+                	ostrsql << "update  production_info set register_time='"<<GetCurrentTime()<<"',operator='"<<stuBody->WorkNum<<"',product_total_time="<<(int)Tranverse32(stuBody->ClassTmLen)<<",product_total_output="<<(int)Tranverse32(stuBody->ClassOut)<<" where machine_id='"<<pNode->macId<<"' and operator='" << stuBody->WorkNum << "' and update_time='" << pNode->operator_num_batch <<"'  limit 1";
+                	DatabaseOperatorTask insert_task_9;
+                	insert_task_9.operator_type = 1;
+                	insert_task_9.content = ostrsql.str().c_str();
+                	g_DatabaseOperator.AddTask(insert_task_9);
+                }
+                
+                //ostrsql.str("");
+                //std::string  strWorkNum(stuBody->WorkNum);
+                //ostrsql << "select * from production_info where machine_id='" << pNode->macId <<"' and operator='" << stuBody->WorkNum << "'";
+                //ostrsql << ";";
+                //ostrsql << "update  production_info set register_time='"<<GetCurrentTime()<<"',operator='"<<stuBody->WorkNum<<"',product_total_time="<<(int)Tranverse32(stuBody->ClassTmLen)<<",product_total_output="<<(int)Tranverse32(stuBody->ClassOut)<<" where machine_id='"<<pNode->macId<<"' and operator='" << stuBody->WorkNum << "' limit 1";
+                //ostrsql << ";";
+                //ostrsql << "insert into production_info (machine_id,update_time,register_time, operator,product_total_time,product_total_output) VALUES ('" << pNode->macId << "','"<<GetCurrentTime()<<"','"<< GetCurrentTime()<< "','" <<stuBody->WorkNum << "'," << (int)Tranverse32(stuBody->ClassTmLen)<<","<< (int)Tranverse32(stuBody->ClassOut)<<")";
 
-                DatabaseOperatorTask insert_task_3;
-                insert_task_3.operator_type = 2;
-                insert_task_3.content = ostrsql.str().c_str();
-                g_DatabaseOperator.AddTask(insert_task_3);
+                //DatabaseOperatorTask insert_task_3;
+                //insert_task_3.operator_type = 2;
+                //insert_task_3.content = ostrsql.str().c_str();
+                //g_DatabaseOperator.AddTask(insert_task_3);
 
                 //更新内存中的数据
                 pNode->total_run_time = stuBody->RunTmLen;
