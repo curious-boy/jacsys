@@ -47,6 +47,7 @@ void JacServer::start()
     }
 
     threadPool_.run(boost::bind(&processDB));
+    threadPool_.run(boost::bind(&pingDB));
 #endif
 
     server_.start();
@@ -649,7 +650,6 @@ void JacServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp t
             	{
                 	buf->retrieve(iTempLen);
             	}
-                return;
                 return;
             }
 
